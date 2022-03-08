@@ -11,9 +11,8 @@ namespace Colonie
         //liste de colon dans le building
         //protected List<Settlers> settlers;
         protected int _totalPlace;
-        protected int _x, _y;
 
-        public ReceptionBuilding(int x, int y)
+        public ReceptionBuilding(int x, int y): base(x,y)
         {
             _x = x;
             _y = y;
