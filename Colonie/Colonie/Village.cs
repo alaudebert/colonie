@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class Program
+    class Village
     {
-        static void Main(string[] args)
-        {
-        }
+        private int _maxNbSettlers;
+        private string[,] _gameBoard;
     }
 }

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class Program
+    class Builder : Settler
     {
-        static void Main(string[] args)
+        public Builder() : base() { }
+
+        public override void Play()
         {
+
         }
     }
 }

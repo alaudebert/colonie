@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class Program
+    class Coach : Settler
     {
-        static void Main(string[] args)
-        {
-        }
+        public Coach() : base() { }
+
     }
 }
