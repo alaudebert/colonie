@@ -18,5 +18,10 @@ namespace Colony
             _nbLines = 4;
             _nbColonnes = 3;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + "C'est un restaurant\n";
+        }
     }
 }

@@ -10,9 +10,10 @@ namespace Colony
     {
         public Builder() : base() { }
 
-        public override void Play()
-        {
 
+        public override string ToString()
+        {
+            return base.ToString() + "C'est un Batisseur \n";
         }
     }
 }

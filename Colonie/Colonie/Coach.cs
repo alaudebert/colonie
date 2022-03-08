@@ -10,5 +10,10 @@ namespace Colony
     {
         public Coach() : base() { }
 
+        public override string ToString()
+        {
+            return base.ToString() + "C'est un coach \n";
+        }
+
     }
 }
