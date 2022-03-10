@@ -30,6 +30,14 @@ namespace Colony
             Hotel h1 = new Hotel(12, 13);
             Console.WriteLine(h1);
 
+            string[,] plateau = new string[20, 30];
+            Village v1 = new Village(4, plateau);
+            Console.WriteLine(v1);
+
+            Simulation s1 = new Simulation();
+            Console.WriteLine(s1);
+
+
             Console.ReadLine();
 
         }

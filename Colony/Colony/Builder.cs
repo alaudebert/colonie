@@ -8,12 +8,18 @@ namespace Colony
 {
     class Builder : Settler
     {
-        public Builder() : base() { }
+        private static int _builderNb;
+        private int _builderId;
+        public Builder() : base() 
+        {
+            _builderNb++;
+            _builderId = _builderNb;
+        }
 
 
         public override string ToString()
         {
-            return base.ToString() + "C'est un Batisseur \n";
+            return base.ToString() + "C'est le Batisseur n° : " + _builderId + "\n";
         }
     }
 }

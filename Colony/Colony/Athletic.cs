@@ -8,12 +8,16 @@ namespace Colony
 {
     class Athletic : Settler
     {
+        private int _athleticId;
+        private static int _athleticNb;
         private int _level;
         private string _sport;
         private string _nationality;
 
         public Athletic(string nationality, string sport) : base()
         {
+            _athleticNb++;
+            _athleticId = _athleticNb;
             _nationality = nationality;
             _sport = sport;
         }
@@ -27,7 +31,7 @@ namespace Colony
 
         public override string ToString()
         {
-            return base.ToString() + "C'est une Athlète \nSon niveau : " + _level + "\nSport qu'il pratique : "
+            return base.ToString() + "C'est le sportif n° : " +_athleticId + "\nSon niveau : " + _level + "\nSport qu'il pratique : "
                 + _sport + "\nNationalité : " + _nationality + "\n"; ;
         }
     }

@@ -53,6 +53,7 @@
     <Compile Include="ReceptionBuilding.cs" />
     <Compile Include="Restaurant.cs" />
     <Compile Include="Settler.cs" />
+    <Compile Include="Simulation.cs" />
     <Compile Include="SportsInfrastructure.cs" />
     <Compile Include="Village.cs" />
   </ItemGroup>

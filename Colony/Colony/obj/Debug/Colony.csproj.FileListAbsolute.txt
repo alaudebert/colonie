@@ -5,3 +5,10 @@ C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Progra
 C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Colony\Colony\obj\Debug\Colony.csproj.CoreCompileInputs.cache
 C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Colony\Colony\obj\Debug\Colony.exe
 C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Colony\Colony\obj\Debug\Colony.pdb
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\bin\Debug\Colony.exe.config
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\bin\Debug\Colony.exe
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\bin\Debug\Colony.pdb
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\obj\Debug\Colony.csproj.AssemblyReference.cache
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\obj\Debug\Colony.csproj.CoreCompileInputs.cache
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\obj\Debug\Colony.exe
+C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colony\Colony\obj\Debug\Colony.pdb

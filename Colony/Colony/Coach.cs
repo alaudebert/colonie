@@ -8,11 +8,17 @@ namespace Colony
 {
     class Coach : Settler
     {
-        public Coach() : base() { }
+        private int _coachId;
+        private static int _coachNb = 0;
+        public Coach() : base() 
+        {
+            _coachNb++;
+            _coachId = _coachNb;
+        }
 
         public override string ToString()
         {
-            return base.ToString() + "C'est un coach \n";
+            return base.ToString() + "C'est le coach n° : " + _coachId + "\n";
         }
 
     }
