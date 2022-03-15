@@ -12,6 +12,7 @@ namespace Colony
         private int _level;
         private string _sport;
         private string _nationality;
+        private int _session = 0;
 
         public Athletic(string nationality, string sport) : base()
         {
@@ -23,15 +24,26 @@ namespace Colony
         }
 
 
-        public void Practice()
+        public override void Play()
         {
+            _session++;
+            if (_session == 3)
+            {
+                _session = 0;
+                _level++;
+            }
             _energyState -= 5;
+            if (_energyState < 0)
+                _energyState = 0;
             _hungerState -= 6;
+            if (_hungerState < 0)
+                _hungerState = 0;
         }
+
 
         public override string ToString()
         {
-            return base.ToString() +  _id + "\nSon niveau : " + _level + "\nSport qu'il pratique : "
+            return base.ToString() + "Son niveau : " + _level + "\nSport qu'il pratique : "
                 + _sport + "\nNationalité : " + _nationality + "\n"; ;
         }
     }

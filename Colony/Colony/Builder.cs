@@ -17,9 +17,14 @@ namespace Colony
         }
 
 
-        public override string ToString()
+        public override void Play()
         {
-            return base.ToString() + _id + "\n";
+            _energyState -= 3;
+            if (_energyState < 0)
+                _energyState = 0;
+            _hungerState -= 2;
+            if (_hungerState < 0)
+                _hungerState = 0;
         }
     }
 }

@@ -36,6 +36,21 @@ namespace Colony
             Simulation s1 = new Simulation();
             Console.WriteLine(s1);
 
+            a1.Play();
+            Console.WriteLine(a1);
+
+            a1.Play();
+            Console.WriteLine(a1);
+
+            a1.Play();
+            Console.WriteLine(a1);
+
+            b1.Play();
+            Console.WriteLine(b1);
+
+            c1.Play();
+            Console.WriteLine(c1);
+
 
             Console.ReadLine();
 

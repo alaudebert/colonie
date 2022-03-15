@@ -16,10 +16,17 @@ namespace Colony
             _id = _type + _coachNb.ToString();
         }
 
-        public override string ToString()
+        public override void Play()
         {
-            return base.ToString() + "C'est le coach n° : " + _id + "\n";
+            _energyState -= 5;
+            if (_energyState < 0)
+                _energyState = 0;
+            _hungerState -= 5;
+            if (_hungerState < 0)
+                _hungerState = 0;
         }
+
+
 
     }
 }

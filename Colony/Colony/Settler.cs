@@ -27,7 +27,7 @@ namespace Colony
             _available = true;
         }
 
-        public void Play()
+        public virtual void Play()
         {
             _energyState--;
             _hungerState--;
