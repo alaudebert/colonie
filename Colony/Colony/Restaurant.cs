@@ -11,6 +11,7 @@ namespace Colony
 
         protected string _type = "restaurant_";
         protected static int _restaurantNb = 0;
+        private Settler[] _settlers;
         public Restaurant(int x, int y) : base(x, y)
         {
             _totalPlace = 10;
@@ -20,11 +21,17 @@ namespace Colony
             _columnsNb = 3;
             _restaurantNb++;
             _id = _type + _restaurantNb.ToString();
+            _settlers = new Settler[3];
         }
 
         public override string ToString()
         {
             return base.ToString() + "C'est un restaurant\n";
+        }
+
+        public Settler[] getSettlers()
+        {
+            return _settlers;
         }
     }
 }

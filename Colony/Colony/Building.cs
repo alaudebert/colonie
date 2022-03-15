@@ -16,7 +16,7 @@ namespace Colony
         protected string _id;
 
 
-        public Building(int x, int y)
+        public Building(int x, int y, string type)
         {
             _x = x;
             _y = y;

@@ -11,6 +11,8 @@ namespace Colony
 
         protected string _type = "hotel_";
         protected static int _hotelNb = 0;
+        protected bool _fool;
+        private Settler[] _settlers;
 
         public Hotel(int x, int y) : base(x, y)
         {
@@ -22,11 +24,18 @@ namespace Colony
             _totalPlace = 10;
             _hotelNb++;
             _id = _type + _hotelNb.ToString();
+            _settlers = new Settler[5];
+            
         }
 
         public override string ToString()
         {
             return base.ToString() + "C'est une hotel\n";
+        }
+
+        public Settler[] getSettlers()
+        {
+            return _settlers;
         }
     }
 }
