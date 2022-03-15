@@ -8,14 +8,20 @@ namespace Colony
 {
     class Hotel : ReceptionBuilding
     {
+
+        protected string _type = "hotel_";
+        protected static int _hotelNb = 0;
+
         public Hotel(int x, int y) : base(x, y)
         {
-            _nbBuilder = 2;
-            _nbTurn = 2;
-            _nbBuilder = 3;
-            _nbLines = 3;
-            _nbColonnes = 3;
+            _builderNb = 2;
+            _turnNb = 2;
+            _builderNb = 3;
+            _linesNb = 3;
+            _columnsNb = 3;
             _totalPlace = 10;
+            _hotelNb++;
+            _id = _type + _hotelNb.ToString();
         }
 
         public override string ToString()

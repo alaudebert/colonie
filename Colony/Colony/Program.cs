@@ -22,7 +22,6 @@ namespace Colony
 
             SportsInfrastructure sp1 = new SportsInfrastructure(7,8);
             Console.WriteLine(sp1);
-            //Il y a un message d'erreur chelou
 
             Restaurant r1 = new Restaurant(2, 2);
             Console.WriteLine(r1);
@@ -31,7 +30,7 @@ namespace Colony
             Console.WriteLine(h1);
 
             string[,] plateau = new string[20, 30];
-            Village v1 = new Village(4, plateau);
+            Village v1 = new Village(4);
             Console.WriteLine(v1);
 
             Simulation s1 = new Simulation();

@@ -8,8 +8,7 @@ namespace Colony
 {
     class ReceptionBuilding : Building
     {
-        //liste de colon dans le building
-        //protected List<Settlers> settlers;
+        protected List<Settler> settlers;
         protected int _totalPlace;
 
         public ReceptionBuilding(int x, int y) : base(x, y)

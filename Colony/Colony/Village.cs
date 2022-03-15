@@ -9,17 +9,11 @@ namespace Colony
     class Village
     {
         private int _maxNbSettlers;
-        private string[,] _gameBoard;
-        //J'aurai donné un nom aussi non?
+        private string[,] _gameBoard = new string[20, 40];
 
-        public Village(int maxNbSettlers, string[,] gameBoard)//Je pense que c'est pas à nous d'entree au debut 4
-                                                              //joueurs mais que c'est automatique lors de la ceation
-                                                              //d'une simulation (pq pas ne pas avoir besoin de créer
-                                                              //de village mais il y a création automatique lors de la
-                                                              //simulation)
+        public Village(int maxNbSettlers)
         {
             _maxNbSettlers = maxNbSettlers;
-            _gameBoard = gameBoard;//Jsp si on le def par defaut au debut ou si on le def nous en jouant 
         }
 
         public override string ToString()
