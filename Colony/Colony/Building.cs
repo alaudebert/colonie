@@ -16,10 +16,20 @@ namespace Colony
         protected string _id;
 
 
-        public Building(int x, int y, string type)
+        public Building(int x, int y)
         {
             _x = x;
             _y = y;
+        }
+
+        public int X
+        {
+            get { return _x; }
+        }
+
+        public int Y
+        {
+            get { return _y; }
         }
 
         public void Build()
