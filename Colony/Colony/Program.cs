@@ -30,7 +30,7 @@ namespace Colony
             Console.WriteLine(h1);
 
             string[,] plateau = new string[20, 30];
-            Village v1 = new Village(4);
+            Village v1 = new Village();
             Console.WriteLine(v1);
 
             Simulation s1 = new Simulation();
@@ -50,6 +50,8 @@ namespace Colony
 
             c1.Play();
             Console.WriteLine(c1);
+
+            s1.addSettler();
 
 
             Console.ReadLine();
