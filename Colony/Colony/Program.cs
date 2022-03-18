@@ -53,7 +53,7 @@ namespace Colony
 
             s1.addSettler();
 
-
+            //Ajout d'un commentaire inutile pour tester
             Console.ReadLine();
 
         }
