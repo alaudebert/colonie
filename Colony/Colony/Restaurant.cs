@@ -17,8 +17,8 @@ namespace Colony
             _totalPlace = 10;
             _builderNb = 2;
             _turnNb = 2;
-            _linesNb = 4;
-            _columnsNb = 3;
+            _linesNb = 3;
+            _columnsNb = 5;
             _restaurantNb++;
             _id = _type + _restaurantNb.ToString();
             _settlers = new Settler[3];

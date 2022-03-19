@@ -51,10 +51,19 @@ namespace Colony
             c1.Play();
             Console.WriteLine(c1);
 
-            s1.addSettler();
+            //s1.addSettler();
+
+            s1.addBuilding();
+            Console.WriteLine(s1);
+
+
+            s1.addBuilding();
+            Console.WriteLine(s1);
+
 
             //Ajout d'un commentaire inutile pour tester
             Console.ReadLine();
+
 
         }
     }
