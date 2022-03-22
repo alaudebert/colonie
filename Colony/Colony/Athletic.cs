@@ -21,6 +21,8 @@ namespace Colony
             _id = _type + _athleticNb.ToString();
             _nationality = nationality;
             _sport = sport;
+            _decreasingEnergy = 5;
+            _decreasingHunger = 6;
         }
 
 
@@ -32,12 +34,6 @@ namespace Colony
                 _session = 0;
                 _level++;
             }
-            _energyState -= 5;
-            if (_energyState < 0)
-                _energyState = 0;
-            _hungerState -= 6;
-            if (_hungerState < 0)
-                _hungerState = 0;
         }
 
 
@@ -45,6 +41,11 @@ namespace Colony
         {
             return base.ToString() + "Son niveau : " + _level + "\nSport qu'il pratique : "
                 + _sport + "\nNationalité : " + _nationality + "\n"; ;
+        }
+
+        public int getLevel()
+        {
+            return _level;
         }
     }
 }

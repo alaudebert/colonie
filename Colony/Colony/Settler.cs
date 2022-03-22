@@ -15,6 +15,8 @@ namespace Colony
         protected int _x, _y;
         protected bool _available;
         protected string _type;
+        protected int _decreasingEnergy = 1;
+        protected int _decreasingHunger = 1;
 
 
         public Settler()
@@ -29,8 +31,13 @@ namespace Colony
 
         public virtual void Play()
         {
-            _energyState--;
-            _hungerState--;
+            _energyState -= _decreasingEnergy;
+            _hungerState -= _decreasingHunger; 
+
+            if (_energyState < 0)
+                _energyState = 0;
+            if (_hungerState < 0)
+                _hungerState = 0;
         }
 
         public override string ToString()

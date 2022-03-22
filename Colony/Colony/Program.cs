@@ -10,9 +10,9 @@ namespace Colony
     {
         static void Main(string[] args)
         {
-
+            Village v = new Village();
             Athletic a1 = new Athletic("Belge", "Golfeur");
-            Console.WriteLine(a1);
+                
 
             Builder b1 = new Builder();
             Console.WriteLine(b1);
@@ -53,7 +53,6 @@ namespace Colony
 
             s1.addSettler();
 
-            //Ajout d'un commentaire inutile pour tester
             Console.ReadLine();
 
         }

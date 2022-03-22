@@ -14,19 +14,8 @@ namespace Colony
             _type = "coach_";
             _coachNb++;
             _id = _type + _coachNb.ToString();
+            _decreasingHunger = 5;
+            _decreasingEnergy = 5;
         }
-
-        public override void Play()
-        {
-            _energyState -= 5;
-            if (_energyState < 0)
-                _energyState = 0;
-            _hungerState -= 5;
-            if (_hungerState < 0)
-                _hungerState = 0;
-        }
-
-
-
     }
 }

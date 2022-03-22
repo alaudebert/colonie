@@ -14,17 +14,9 @@ namespace Colony
             _builderNb++;
             _type = "batisseur_";
             _id = _type + _builderNb.ToString();
+            _decreasingEnergy = 3;
+            _decreasingHunger = 2;
         }
 
-
-        public override void Play()
-        {
-            _energyState -= 3;
-            if (_energyState < 0)
-                _energyState = 0;
-            _hungerState -= 2;
-            if (_hungerState < 0)
-                _hungerState = 0;
-        }
     }
 }
