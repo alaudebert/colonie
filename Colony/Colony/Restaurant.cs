@@ -9,7 +9,6 @@ namespace Colony
     class Restaurant : ReceptionBuilding
     {
 
-        protected string _type = "restaurant_";
         protected static int _restaurantNb = 0;
         private Settler[] _settlers;
         public Restaurant(int x, int y) : base(x, y)
@@ -20,8 +19,9 @@ namespace Colony
             _linesNb = 3;
             _columnsNb = 5;
             _restaurantNb++;
-            _id = _type + _restaurantNb.ToString();
-            _settlers = new Settler[3];
+            Type = "R";
+            _id = Type + _restaurantNb.ToString();
+            _settlers = new Settler[3]; 
         }
 
         public override string ToString()

@@ -43,10 +43,7 @@ namespace Colony
                 {
                     if (_village.GameBoard[i, j] is null)
                     {
-                        //Console.ForegroundColor = ConsoleColor.Green; //Je cherche un truc pour mettre des couleurs mais ça ça colore toute ma simulation
-                        //Console.BackgroundColor = ConsoleColor.Red;
-                        //Console.ResetColor(); //reset to default values
-                        retour += "_";
+                        retour += "__";
                     }
                     else
                         retour += _village.GameBoard[i, j];
@@ -90,19 +87,36 @@ namespace Colony
 
         }
 
-        public bool FreeSpaceBuilding(Building building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
+        public bool FreeSpaceBuilding(string building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
             // Ca a l'aire de marcher
         {
-            if (x + building.LinesNb >= _village.GameBoard.GetLength(0) || y + building.ColumnsNb >= _village.GameBoard.GetLength(1))
+            int lines;
+            int columns;
+            if (building == Hotel.Type)
+            {
+                lines = Hotel._linesNb;
+                columns = Hotel._columnsNb;
+            }
+            else if (building == Restaurant.Type)
+            {
+                lines = Restaurant._linesNb;
+                columns = Restaurant._columnsNb;
+            }
+            else
+            {
+                lines = SportsInfrastructure._linesNb;
+                columns = SportsInfrastructure._columnsNb;
+            }
+            if (x + lines >= _village.GameBoard.GetLength(0) || y + columns >= _village.GameBoard.GetLength(1))
             {
                 Console.WriteLine("Vous ne pouvez pas construire ici, vous sortirez du plateau de jeu");
                 return false;
             }
-            for (int i = x; i <= x + building.LinesNb - 1; i++)
+            for (int i = x; i <= x + lines - 1; i++)
             {
-                for (int j = y; j<= y + building.ColumnsNb - 1; j++)
+                for (int j = y; j<= y + columns - 1; j++)
                 {
-                    if (_village.GameBoard[i, j] == "O")//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'iéale juste colorier case
+                    if (_village.GameBoard[i, j] != null )//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'idéal juste colorier case
                     {
                         Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà, choisi un autre emplacement!");
                         return false;
@@ -127,28 +141,26 @@ namespace Colony
             switch (create)
             {
                 case 1:
-                    Hotel hotel = new Hotel(x, y);
-                    if (FreeSpaceBuilding(hotel, x, y))
+                    if (FreeSpaceBuilding(Hotel.Type, x, y))
                     {
+                        Hotel hotel = new Hotel(x, y);
                         _village.addBuildings(hotel); //Pour l'instant, si on entre ligne 5, ca crée en ligne 6 (le fameux 0), on laisse comme ça ou on change?
                         LocationOccupiedBuilding(hotel);
                     }
-                    //Trouver autre solution qui verifie que l'hotel c'est ok avant de le créér,
-                    //ou alors le supprimer après. Même chose pour Restau et infrastructure sportive
 
                     break;
                 case 2:
-                    Restaurant restaurant = new Restaurant(x, y);
-                    if (FreeSpaceBuilding(restaurant, x, y))
+                    if (FreeSpaceBuilding(Restaurant.Type, x, y))
                     {
+                        Restaurant restaurant = new Restaurant(x, y);
                         _village.addBuildings(restaurant);
                         LocationOccupiedBuilding(restaurant);
                     }
                     break;
                 case 3:
-                    SportsInfrastructure sportInfrastructure = new SportsInfrastructure(x, y);
-                    if (FreeSpaceBuilding(sportInfrastructure, x, y))
+                    if (FreeSpaceBuilding(SportsInfrastructure.Type, x, y))
                     {
+                        SportsInfrastructure sportInfrastructure = new SportsInfrastructure(x, y);
                         _village.addBuildings(sportInfrastructure);
                         LocationOccupiedBuilding(sportInfrastructure);
                     }
@@ -157,12 +169,12 @@ namespace Colony
 
         }
 
-        public void LocationOccupiedBuilding(Building building)
+        public void LocationOccupiedBuilding(Building building) //Création du building
         {
             for (int x = building.X; x < building.LinesNb + building.X; x++)
             {
                 for (int y = building.Y; y < building.ColumnsNb + building.Y; y++)
-                    _village.GameBoard[x, y] = "O";
+                    _village.GameBoard[x, y] = building.Id;
             }
         }
 

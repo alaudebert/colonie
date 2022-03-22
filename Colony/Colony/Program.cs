@@ -10,7 +10,8 @@ namespace Colony
     {
         static void Main(string[] args)
         {
-            Village v = new Village();
+            /*Village v = new Village();
+            
             Athletic a1 = new Athletic("Belge", "Golfeur");
                 
 
@@ -33,8 +34,7 @@ namespace Colony
             Village v1 = new Village();
             Console.WriteLine(v1);
 
-            Simulation s1 = new Simulation();
-            Console.WriteLine(s1);
+           
 
             a1.Play();
             Console.WriteLine(a1);
@@ -52,14 +52,18 @@ namespace Colony
             Console.WriteLine(c1);
 
             //s1.addSettler();
+            */
 
-            s1.addBuilding();
+            Simulation s1 = new Simulation();
             Console.WriteLine(s1);
 
 
             s1.addBuilding();
             Console.WriteLine(s1);
 
+
+            s1.addBuilding();
+            Console.WriteLine(s1);
 
             Console.ReadLine();
 

@@ -8,8 +8,6 @@ namespace Colony
 {
     class Hotel : ReceptionBuilding
     {
-
-        protected string _type = "hotel_";
         protected static int _hotelNb = 0;
         protected bool _fool;
         private Settler[] _settlers;
@@ -23,14 +21,15 @@ namespace Colony
             _columnsNb = 3;
             _totalPlace = 10;
             _hotelNb++;
-            _id = _type + _hotelNb.ToString();
+            Type = "H";
+            _id = Type + _hotelNb.ToString();
             _settlers = new Settler[5];
-            
+
         }
 
         public override string ToString()
         {
-            return base.ToString() + "C'est une hotel\n";
+            return base.ToString() + "C'est un hotel\n";
         }
 
         public Settler[] getSettlers()

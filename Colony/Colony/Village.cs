@@ -52,12 +52,7 @@ namespace Colony
             return _settlers;
         }
 
-        public void addBuildings(Building building) //Ajouter que quand on crée building, ca remplie le plateau de jeu,
-                                                    //je pense qu'il faut le faire dans la simulation, mais du coup faut
-                                                    //faire une fonction qui permet de créer buikding dans simulation
-                                                    //(et qui remplierai le plateau en mêmme temps), et qui fait appel à
-                                                    //cette fonction pour crééer un building qu'on ajoute das la liste des
-                                                    //buildings du village
+        public void addBuildings(Building building)
         {
             _buildings.Add(building);
         }
