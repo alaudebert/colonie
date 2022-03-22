@@ -32,9 +32,14 @@ namespace Colony
             get { return _y; }
         }
 
-        public void Build()
+        public int LinesNb
         {
+            get { return _linesNb; }
+        }
 
+        public int ColumnsNb
+        {
+            get { return _columnsNb; }
         }
 
         public override string ToString()

@@ -33,9 +33,30 @@ namespace Colony
             foreach (Settler s in _village.getSettlers())
                 retour += s.ToString();
             retour += "\n";
+
+            retour += "-------------Plateau de jeu-------------";
+
+            for (int i = 0; i < _village.GameBoard.GetLength(0); i++) 
+            {
+                retour += "\n";
+                for (int j = 0; j < _village.GameBoard.GetLength(1); j++)
+                {
+                    if (_village.GameBoard[i, j] is null)
+                    {
+                        //Console.ForegroundColor = ConsoleColor.Green; //Je cherche un truc pour mettre des couleurs mais ça ça colore toute ma simulation
+                        //Console.BackgroundColor = ConsoleColor.Red;
+                        //Console.ResetColor(); //reset to default values
+                        retour += "_";
+                    }
+                    else
+                        retour += _village.GameBoard[i, j];
+                }
+            }
+            retour += "\n";
             return retour;
-            //Prochaine etape : dessiner le plateau de jeu
         }
+
+
 
         public void Play()
         {
@@ -69,14 +90,23 @@ namespace Colony
 
         }
 
-        public bool FreeSpace(Building building, int x, int y)  // Pas encore verifié si ça marche
+        public bool FreeSpaceBuilding(Building building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
+            // Ca a l'aire de marcher
         {
-            for (int i = x; i <= x + building.X - 1; i++)
+            if (x + building.LinesNb >= _village.GameBoard.GetLength(0) || y + building.ColumnsNb >= _village.GameBoard.GetLength(1))
             {
-                for (int j = y; j<= y + building.Y - 1; j++)
+                Console.WriteLine("Vous ne pouvez pas construire ici, vous sortirez du plateau de jeu");
+                return false;
+            }
+            for (int i = x; i <= x + building.LinesNb - 1; i++)
+            {
+                for (int j = y; j<= y + building.ColumnsNb - 1; j++)
                 {
-                    if (_village.GameBoard[i, j] == "")
+                    if (_village.GameBoard[i, j] == "O")//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'iéale juste colorier case
+                    {
+                        Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà, choisi un autre emplacement!");
                         return false;
+                    }
                 }
             }
             return true;
@@ -98,24 +128,49 @@ namespace Colony
             {
                 case 1:
                     Hotel hotel = new Hotel(x, y);
-                    if (FreeSpace(hotel, x, y))//Trouver autre solution qui verifie que l'hotel c'est ok avant de le créér,
-                                               //ou alors le supprimer après. Même chose pour Restau eu infrastructure sportive
-                        _village.addBuildings(hotel);
+                    if (FreeSpaceBuilding(hotel, x, y))
+                    {
+                        _village.addBuildings(hotel); //Pour l'instant, si on entre ligne 5, ca crée en ligne 6 (le fameux 0), on laisse comme ça ou on change?
+                        LocationOccupiedBuilding(hotel);
+                    }
+                    //Trouver autre solution qui verifie que l'hotel c'est ok avant de le créér,
+                    //ou alors le supprimer après. Même chose pour Restau et infrastructure sportive
+
                     break;
                 case 2:
                     Restaurant restaurant = new Restaurant(x, y);
-                    if (FreeSpace(restaurant, x, y))
+                    if (FreeSpaceBuilding(restaurant, x, y))
+                    {
                         _village.addBuildings(restaurant);
+                        LocationOccupiedBuilding(restaurant);
+                    }
                     break;
                 case 3:
                     SportsInfrastructure sportInfrastructure = new SportsInfrastructure(x, y);
-                    if (FreeSpace(sportInfrastructure, x, y))
+                    if (FreeSpaceBuilding(sportInfrastructure, x, y))
+                    {
                         _village.addBuildings(sportInfrastructure);
+                        LocationOccupiedBuilding(sportInfrastructure);
+                    }
                     break;
             }
 
         }
+
+        public void LocationOccupiedBuilding(Building building)
+        {
+            for (int x = building.X; x < building.LinesNb + building.X; x++)
+            {
+                for (int y = building.Y; y < building.ColumnsNb + building.Y; y++)
+                    _village.GameBoard[x, y] = "O";
+            }
+        }
+
+
         public void addSettler() //Je l'ai mis en public temporairement pour les tests
+            //Faut ajouter que quand on crée bonhomme ça remplie son emplacement dans le plateau
+            //Jsp si le mieux c'est de remplir de tableau, et modifier à chaque fois que le personnage bouge, ou si c'est dans
+            //l'affichage qu'on cherche les position x et y  de chaque sellter (risquer car peut sortir du plateau)
         {
             Console.WriteLine("Entrez 1 pour recruter un Batisseur");
             Console.WriteLine("Entrez 2 pour recruter un Sportif");
