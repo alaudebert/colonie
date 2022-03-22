@@ -21,7 +21,7 @@ namespace Colony
             Builder s4 = new Builder();
             _settlers = new List<Settler> { s1, s2, s3, s4 };
             _maxNbSettlers = 4;
-            Hotel h1 = new Hotel(4, 4);
+            Hotel h1 = new Hotel(0, 0);
             Restaurant r1 = new Restaurant(8, 8);
             _buildings = new List<Building> { h1, r1 };
         }
@@ -103,6 +103,17 @@ namespace Colony
         public bool freePlaces()
         {
             return placesNb() != 0;
+        }
+
+
+
+        public void LocationOccupiedBuilding(Building building) //Création du building dans le plateau
+        {
+            for (int x = building.X; x < building.LinesNb + building.X; x++)
+            {
+                for (int y = building.Y; y < building.ColumnsNb + building.Y; y++)
+                    GameBoard[x, y] = building.Id;
+            }
         }
 
 
