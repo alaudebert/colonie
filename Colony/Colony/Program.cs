@@ -34,8 +34,6 @@ namespace Colony
             Village v1 = new Village();
             Console.WriteLine(v1);
 
-           
-
             a1.Play();
             Console.WriteLine(a1);
 
@@ -55,17 +53,7 @@ namespace Colony
             */
 
             Simulation s1 = new Simulation();
-            Console.WriteLine(s1);
-
-
-            s1.addBuilding();
-            Console.WriteLine(s1);
-
-
-            s1.addBuilding();
-            Console.WriteLine(s1);
-
-            Console.ReadLine();
+            s1.Play();
 
 
         }

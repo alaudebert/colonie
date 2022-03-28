@@ -12,7 +12,7 @@ namespace Colony
         public Builder() : base() 
         {
             _builderNb++;
-            _type = "batisseur_";
+            _type = "B";
             _id = _type + _builderNb.ToString();
             _decreasingEnergy = 3;
             _decreasingHunger = 2;

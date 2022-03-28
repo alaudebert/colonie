@@ -6,32 +6,29 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class Restaurant : ReceptionBuilding
+    class Restaurant : Building
     {
 
         protected static int _restaurantNb = 0;
         private Settler[] _settlers;
+        public static int _builderNb = 2; 
+        public static int _turnNb = 2;
         public Restaurant(int x, int y) : base(x, y)
         {
             _totalPlace = 10;
-            _builderNb = 2;
-            _turnNb = 2;
+            _nbPlaces = _totalPlace;
             _linesNb = 3;
             _columnsNb = 5;
             _restaurantNb++;
-            Type = "R";
-            _id = Type + _restaurantNb.ToString();
+            _type = "R";
+            type = _type;
+            _id = _type + _restaurantNb.ToString();
             _settlers = new Settler[3]; 
         }
 
         public override string ToString()
         {
             return base.ToString() + "C'est un restaurant\n";
-        }
-
-        public Settler[] getSettlers()
-        {
-            return _settlers;
         }
     }
 }

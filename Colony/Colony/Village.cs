@@ -8,22 +8,28 @@ namespace Colony
 {
     class Village
     {
-        private List<Building> _buildings;
+        private List<Building> _buildings = new List<Building>();
+        private List<Tuple<string, int, int, int, List<Settler>>> _inConstruction = new List<Tuple<string, int, int, int, List<Settler>>>(); 
         private int _maxNbSettlers;
         private string[,] _gameBoard = new string[20, 40];
-        private List<Settler> _settlers;
+        private List<Settler> _settlers = new List<Settler>();
+        
 
         public Village()
         {
+            Restaurant r1 = new Restaurant(8, 8);
+            Hotel hotel = new Hotel(0, 0);
             Builder s1 = new Builder();
             Builder s2 = new Builder();
             Builder s3 = new Builder();
             Builder s4 = new Builder();
-            _settlers = new List<Settler> { s1, s2, s3, s4 };
             _maxNbSettlers = 4;
-            Hotel h1 = new Hotel(0, 0);
-            Restaurant r1 = new Restaurant(8, 8);
-            _buildings = new List<Building> { h1, r1 };
+            _buildings.Add(hotel);
+            _buildings.Add(r1);
+            addSettler(s1);
+            addSettler(s2);
+            addSettler(s3);
+            addSettler(s4);
         }
 
         public string[,] GameBoard
@@ -34,6 +40,11 @@ namespace Colony
         public List<Building> Buildings
         {
             get { return _buildings; }
+        }
+        public List<Tuple<string, int, int, int, List<Settler>>> InConstruction
+        {
+            get { return _inConstruction; }
+            set { _inConstruction = value;  }
         }
 
         public override string ToString()
@@ -52,57 +63,93 @@ namespace Colony
             return _settlers;
         }
 
+        public int NbSettlerAvailable(string type)
+        {
+            return findAvailable(type).Count();
+        }
+
+        /// <summary>
+        /// Return a table of settlers free
+        /// </summary>
+        /// <param name="type">The type of the settlers required</param>
+        /// <returns>A table of settlers available with the good type</returns>
+        public List<Settler> findAvailable(string type)
+        {
+            List<Settler> availables = new List<Settler>();
+            foreach (Settler settler in _settlers)
+            {
+                if (settler.isAvailable() && settler.Type.Equals(type))
+                {
+                    availables.Add(settler);
+                }
+            }
+            return availables;
+        }
+
+
         public void addBuildings(Building building)
         {
+            Console.WriteLine("coucou je suis un test");
             _buildings.Add(building);
         }
 
         public void addSettler(Settler settler)
         {
+            if (_gameBoard[settler.X, settler.Y] != "C")
+            {
+                _gameBoard[settler.X, settler.Y] = "C";
+            }
             _settlers.Add(settler);
+            int i = 0;
+            bool addHotel = false;
+            bool addRestaurant = false;
+            while (i<_buildings.Count() && ( addHotel == false || addRestaurant == false) )
+            {
+                if (_buildings[i].haveFreePlace()) { 
+                    if (_buildings[i].Type == "H")
+                    {
+                        _buildings[i].Settlers.Add(settler);
+                        addHotel = true;
+                    }
+                    if (_buildings[i].Type == "R")
+                    {
+                        _buildings[i].Settlers.Add(settler);
+                        addRestaurant = true;
+                    }
+                }
+                i++;
+            }
 
         }
 
-        public int freeHotelPlaces()
+     
+        public bool freeRestaurantPlaces()
         {
-            int places = 0;
-            foreach (Hotel hotel in _buildings)
+            bool places = false;
+            foreach (Building building in _buildings)
             {
-                foreach (Settler settler in hotel.getSettlers())
+                if (building.Type == "R" && building.Settlers.Count() < building.TotalPlace){
+                        places = true;
+                }
+            }
+            return places;
+        }
+        public bool freeHotelPlaces()
+        {
+            bool places = false;
+            foreach (Building building in _buildings)
+            {
+                if (building.Type == "H" && building.Settlers.Count() < building.TotalPlace)
                 {
-                    if (settler is null)
-                    {
-                        places++;
-                    }
+                    places = true;
                 }
             }
             return places;
         }
 
-
-        public int freeRestaurantPlaces()
+        public bool canRecruit()
         {
-            int places = 0;
-            foreach (Restaurant restaurant in _buildings)
-            {
-                foreach (Settler settler in restaurant.getSettlers())
-                {
-                    if (settler is null)
-                    {
-                        places++;
-                    }
-                }
-            }
-            return places;
-        }
-
-        public int placesNb()
-        {
-            return Math.Min(freeRestaurantPlaces(),freeHotelPlaces());
-        }
-        public bool freePlaces()
-        {
-            return placesNb() != 0;
+            return freeHotelPlaces() && freeRestaurantPlaces();
         }
 
 
@@ -115,7 +162,5 @@ namespace Colony
                     GameBoard[x, y] = building.Id;
             }
         }
-
-
     }
 }

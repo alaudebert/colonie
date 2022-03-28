@@ -6,24 +6,27 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class Hotel : ReceptionBuilding
+    class Hotel : Building
     {
         protected static int _hotelNb = 0;
         protected bool _fool;
         private Settler[] _settlers;
+        public static int _builderNb = 2;// TODO vérifier que les statiques sont bien defini ne dehors du constructeur
+        public static int _turnNb = 3;
 
         public Hotel(int x, int y) : base(x, y)
         {
-            _builderNb = 2;
-            _turnNb = 2;
-            _builderNb = 3;
             _linesNb = 3;
             _columnsNb = 3;
-            _totalPlace = 10;
+            _totalPlace = 5;
+            _nbPlaces = _totalPlace;
             _hotelNb++;
-            Type = "H";
-            _id = Type + _hotelNb.ToString();
+            _type = "H";
+            type = _type;
+            _id = _type + _hotelNb.ToString();
             _settlers = new Settler[5];
+            _x = x;
+            _y = y;
 
         }
 

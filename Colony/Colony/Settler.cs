@@ -12,11 +12,13 @@ namespace Colony
         protected string _id;
         protected int _energyState;
         protected int _hungerState;
-        protected int _x, _y;
         protected bool _available;
         protected string _type;
         protected int _decreasingEnergy = 1;
         protected int _decreasingHunger = 1;
+
+        protected int _x, _y;
+        public int[] _itinerary = { 0, 0 }; 
 
 
         public Settler()
@@ -27,6 +29,30 @@ namespace Colony
             _x = 0;
             _y = 0;
             _available = true;
+        }
+
+        public int X
+        {
+            get { return _x; }
+        }
+
+        public int Y
+        {
+            get { return _y; }
+        }
+        public string Type
+        {
+            get { return _type; }
+        } 
+        
+        public bool Available
+        {
+            set { _available = value; }
+        }
+
+        public bool isAvailable() {
+
+            return _available;
         }
 
         public virtual void Play()
@@ -44,6 +70,27 @@ namespace Colony
         {
             return _id + "\nNiveau d'énergie : " + _energyState + "\nNiveau de faim : " + _hungerState
                 + "\nCoodronnées : " + _x + " , " + _y + "\nDisponibilité : " + _available + "\n";
+        }
+
+        public void calculatingItinerary(int xDestination, int yDestination)
+        {
+            _itinerary[0] =  _x - xDestination;
+            _itinerary[1] =  _y - yDestination;
+        }
+
+        public void move()
+        {
+            if (_itinerary[0] != 0)
+            {
+               _x = _itinerary[0] > 0 ? _x + 1 : _x - 1;
+                _itinerary[0]--;
+            }
+            else if (_itinerary[1] > 0)
+            {
+                _y = _itinerary[1] > 0 ? _y + 1 : _y - 1;
+                _itinerary[1]--;
+            }
+
         }
 
     }
