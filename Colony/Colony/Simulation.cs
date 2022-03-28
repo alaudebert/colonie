@@ -29,9 +29,9 @@ namespace Colony
                 retour += "Les batiments existants sont les suivants : \n";
             foreach (Building b in _village.Buildings)
                 retour += b.ToString();
-            if (_village.getSettlers().Count() != 0)
+            if (_village.GetSettlers().Count() != 0)
                 retour += "Les colons existants sont les suivants : \n";
-            foreach (Settler s in _village.getSettlers())
+            foreach (Settler s in _village.GetSettlers())
                 retour += s.ToString();
             retour += "\n";
 
@@ -54,77 +54,112 @@ namespace Colony
             return retour;
         }
 
-
+        //Méthode qui nous permet de jouer
         public void Play()
         {
             bool end = false;
             foreach (Building building in _village.Buildings)
             {
                 _village.LocationOccupiedBuilding(building);
-                end = true;
+                end = false;
             }
-            while (!end || _turnNb < 20)
+            while (!end && _turnNb < 20)
             {
                 PendingBuildingCreation();
-                Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
-                //DisplayGameBoard();
 
-                //Debug
-                Console.WriteLine("nb colon : " + _village.NbSettlerAvailable("B"));
-                Console.WriteLine("nombre de constructeur necessaire :" + Math.Max(Math.Max(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
-                Console.WriteLine("Colon dans le village : "); 
-                foreach (Settler settler in _village.getSettlers())
+                if (Proceed() == true)
                 {
-                    Console.WriteLine(settler.isAvailable());
+                    Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
+                    //DisplayGameBoard();
+
+                    //Debug
+                    Console.WriteLine("nb colon : " + _village.NbSettlerAvailable("B"));
+                    Console.WriteLine("nombre de constructeur necessaire :" + Math.Max(Math.Max(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
+                    Console.WriteLine("Colon dans le village : ");
+                    foreach (Settler settler in _village.GetSettlers())
+                    {
+                        Console.WriteLine(settler.IsAvailable());
+                    }
+
+                    Console.WriteLine("nb place resto : " + _village.FreeRestaurantPlaces());
+                    Console.WriteLine("nb place hotel : " + _village.FreeHotelPlaces());
+
+                    //fin debug
+
+                    if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
+                    {
+                        Console.WriteLine("Entrez 1 pour créer un batiment");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vous n'avez pas assez de Colon pour construire un batiment");
+                    }
+                    if (_village.CanRecruit())
+                    {
+                        Console.WriteLine("Entrez 2 pour recruter un colon");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vous n'avez pas assez d'infrastructure pour accueillir des colons, ");
+                        if (!_village.FreeHotelPlaces())
+                        {
+                            Console.WriteLine("Il vous faut un hotel");
+                        }
+                        if (!_village.FreeRestaurantPlaces())
+                        {
+                            Console.WriteLine("Il vous faut un restaurant");
+                        }
+                    }
+
+
+                    bool creation = true;
+                    int create = int.Parse(Console.ReadLine());
+                    switch (create)
+                    {
+                        case 1:
+                            creation = createBuilding();
+                            break;
+                        case 2:
+                            creation = AddSettler(); //Ca serait pas mieux de pas proposer de créer de colon quand il peut pas?
+                            break;
+                        default:
+                            Console.WriteLine("Votre réponse n'est pas valide");
+                            creation = false;
+                            break;
+                    }
+
+                    if (creation == true)
+                        _turnNb++;
                 }
 
-                Console.WriteLine("nb place resto : " + _village.freeRestaurantPlaces());
-                Console.WriteLine("nb place hotel : " + _village.freeHotelPlaces());
-
-                //fin debug
-
-                if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
-                {
-                    Console.WriteLine("Entrez 1 pour créer un batiment");
-                }
-                else { 
-                    Console.WriteLine("Vous n'avez pas assez de Colon pour construire un batiment");
-                }
-                if (_village.canRecruit())
-                {
-                    Console.WriteLine("Entrez 2 pour recruter un colon");
-                }
                 else
-                {
-                    Console.WriteLine("Vous n'avez pas assez d'infrastructure pour accueillir des colons, ");
-                    if (!_village.freeHotelPlaces()) 
-                    {
-                        Console.WriteLine("Il vous faut un hotel");
-                    }
-                    if (!_village.freeRestaurantPlaces()) 
-                    {
-                        Console.WriteLine("Il vous faut un restaurant");
-                    }
-                }
+                    _turnNb++;
 
-                int create = int.Parse(Console.ReadLine());
-                switch (create)
-                {
-                    case 1:
-                        createBuilding();
-                        break;
-                    case 2:
-                        addSettler();
-                        break;
-                    default:
-                        Console.WriteLine("Votre réponse n'est pas valide");
-                        break;
-                }
-                _turnNb++;
+
             }
 
         }
 
+
+        public bool Proceed() //Permet de savoir si des actions sont réalisable, si c'est pas le cas on passe au tour suivant
+        {
+            bool proceed = false;
+            if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
+            {
+                proceed = true;
+            }
+            else
+            {
+                if (_village.CanRecruit())
+                {
+                    proceed = true;
+                }
+            }
+            return proceed;
+        }
+
+
+        //Crée les building qui sont en cours de création si on est bien à leur tour de création
         public void PendingBuildingCreation()
         {
             foreach(Tuple<string, int, int, int, List<Settler>> building in _village.InConstruction)
@@ -158,6 +193,7 @@ namespace Colony
             }
         }
 
+        //Affiche le plateau de jeu
         public void DisplayGameBoard()
         {
             string retour = "";
@@ -177,7 +213,6 @@ namespace Colony
         }
 
         public bool FreeSpaceBuilding(string building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
-                                                                     // Ca a l'aire de marcher
         {
             int lines;
             int columns;
@@ -215,8 +250,9 @@ namespace Colony
             return true;
         }
 
-        public void createBuilding()
+        public bool createBuilding()
         {
+            bool creation = true;
             if (_village.NbSettlerAvailable("B") >= Hotel._builderNb)
             {
                 Console.WriteLine("Entrez 1 pour créer un Hotel");
@@ -237,22 +273,38 @@ namespace Colony
             Console.WriteLine("Entrez la colonne de l'angle en haut à gauche de votre batiment");
             int y = int.Parse(Console.ReadLine());
             int nbBuilders = 0;
-            if (create == 1 && FreeSpaceBuilding(Hotel.type, x, y))
+            if (create == 1)
             {
-                nbBuilders = Hotel._builderNb;
-                _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Hotel.type, _turnNb + Hotel._turnNb, x, y, busyBulderList(nbBuilders)));
-                
+                if (FreeSpaceBuilding(Hotel.type, x, y))
+                {
+                    nbBuilders = Hotel._builderNb;
+                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Hotel.type, _turnNb + Hotel._turnNb, x, y, busyBulderList(nbBuilders)));
+                }
+                else
+                    creation = false;
+
             }
-            else if (create == 2 && FreeSpaceBuilding(Restaurant.type, x, y))
+            else if (create == 2)
             {
-                nbBuilders = Restaurant._builderNb;
-                _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Restaurant.type, _turnNb + Restaurant._turnNb, x, y, busyBulderList(nbBuilders)));
+                if (FreeSpaceBuilding(Restaurant.type, x, y))
+                {
+                    nbBuilders = Restaurant._builderNb;
+                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Restaurant.type, _turnNb + Restaurant._turnNb, x, y, busyBulderList(nbBuilders)));
+                }
+                else
+                    creation = false;
             }
-            else if (create == 3 && FreeSpaceBuilding(SportsInfrastructure.type, x, y))
+            else if (create == 3)
             {
-                nbBuilders = SportsInfrastructure._builderNb;
-                _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(SportsInfrastructure.type, _turnNb + SportsInfrastructure._turnNb, x, y, busyBulderList(nbBuilders)));
+                if (FreeSpaceBuilding(SportsInfrastructure.type, x, y))
+                {
+                    nbBuilders = SportsInfrastructure._builderNb;
+                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(SportsInfrastructure.type, _turnNb + SportsInfrastructure._turnNb, x, y, busyBulderList(nbBuilders)));
+                }
+                else
+                    creation = false;
             }
+            return creation;
         }
 
         /// <summary>
@@ -265,9 +317,9 @@ namespace Colony
             List<Settler> busyBuilder = new List<Settler>();
             for (int i = 0; i < nbBuilders; i++)
             {
-                Console.WriteLine(_village.findAvailable("B").Count());
-                busyBuilder.Add(_village.findAvailable("B")[0]);
-                _village.findAvailable("B")[0].Available = false;
+                Console.WriteLine(_village.FindAvailable("B").Count());
+                busyBuilder.Add(_village.FindAvailable("B")[0]);
+                _village.FindAvailable("B")[0].Available = false;
             }
 
             return busyBuilder;
@@ -275,7 +327,7 @@ namespace Colony
         }
 
 
-        public void addSettler() //Je l'ai mis en public temporairement pour les tests
+        public bool AddSettler() //Je l'ai mis en public temporairement pour les tests
                                  //Faut ajouter que quand on crée bonhomme ça remplie son emplacement dans le plateau
                                  //Jsp si le mieux c'est de remplir de tableau, et modifier à chaque fois que le personnage bouge, ou si c'est dans
                                  //l'affichage qu'on cherche les position x et y  de chaque sellter (risquer car peut sortir du plateau)
@@ -284,11 +336,12 @@ namespace Colony
             Console.WriteLine("Entrez 2 pour recruter un Sportif");
             Console.WriteLine("Entrez 3 pour recruter un Coach");
             int create = int.Parse(Console.ReadLine());
+            bool creation = true;
             switch (create)
             {
                 case 1:
                     Builder builder = new Builder();
-                    _village.addSettler(builder);
+                    _village.AddSettler(builder);
                     Console.WriteLine("Vous avez recruté un nouveau batisseur : ");
                     Console.WriteLine(builder);
                     break;
@@ -297,15 +350,16 @@ namespace Colony
                     break;
                 case 3:
                     Coach coach = new Coach();
-                    _village.addSettler(coach);
+                    _village.AddSettler(coach);
                     Console.WriteLine("Vous avez recruté un nouveau coach : ");
                     Console.WriteLine(coach);
                     break;
                 default:
                     Console.WriteLine("Votre réponse n'est pas valide");
-                    addSettler();
+                    AddSettler();
                     break;
             }
+            return creation;
         }
 
 
@@ -375,7 +429,7 @@ namespace Colony
             }
 
             Athletic athletic = new Athletic(nationality2, sport2);
-            _village.addSettler(athletic);
+            _village.AddSettler(athletic);
             Console.WriteLine("Vous avez recruté un nouveau sportif : ");
             Console.WriteLine(athletic);
         }

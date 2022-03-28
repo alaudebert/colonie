@@ -26,10 +26,10 @@ namespace Colony
             _maxNbSettlers = 4;
             _buildings.Add(hotel);
             _buildings.Add(r1);
-            addSettler(s1);
-            addSettler(s2);
-            addSettler(s3);
-            addSettler(s4);
+            AddSettler(s1);
+            AddSettler(s2);
+            AddSettler(s3);
+            AddSettler(s4);
         }
 
         public string[,] GameBoard
@@ -58,14 +58,14 @@ namespace Colony
             return retour;
         }
 
-        public List<Settler> getSettlers()
+        public List<Settler> GetSettlers()
         {
             return _settlers;
         }
 
         public int NbSettlerAvailable(string type)
         {
-            return findAvailable(type).Count();
+            return FindAvailable(type).Count();
         }
 
         /// <summary>
@@ -73,12 +73,12 @@ namespace Colony
         /// </summary>
         /// <param name="type">The type of the settlers required</param>
         /// <returns>A table of settlers available with the good type</returns>
-        public List<Settler> findAvailable(string type)
+        public List<Settler> FindAvailable(string type)
         {
             List<Settler> availables = new List<Settler>();
             foreach (Settler settler in _settlers)
             {
-                if (settler.isAvailable() && settler.Type.Equals(type))
+                if (settler.IsAvailable() && settler.Type.Equals(type))
                 {
                     availables.Add(settler);
                 }
@@ -93,7 +93,7 @@ namespace Colony
             _buildings.Add(building);
         }
 
-        public void addSettler(Settler settler)
+        public void AddSettler(Settler settler)
         {
             if (_gameBoard[settler.X, settler.Y] != "C")
             {
@@ -123,7 +123,7 @@ namespace Colony
         }
 
      
-        public bool freeRestaurantPlaces()
+        public bool FreeRestaurantPlaces()
         {
             bool places = false;
             foreach (Building building in _buildings)
@@ -134,7 +134,7 @@ namespace Colony
             }
             return places;
         }
-        public bool freeHotelPlaces()
+        public bool FreeHotelPlaces()
         {
             bool places = false;
             foreach (Building building in _buildings)
@@ -147,9 +147,9 @@ namespace Colony
             return places;
         }
 
-        public bool canRecruit()
+        public bool CanRecruit()
         {
-            return freeHotelPlaces() && freeRestaurantPlaces();
+            return FreeHotelPlaces() && FreeRestaurantPlaces();
         }
 
 

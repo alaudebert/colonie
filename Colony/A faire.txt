@@ -1,0 +1,2 @@
+Erreur : Si on sort du plateau, on passe au tour suivant quand meme
+Que quand on peur rien faire, passe au tour suivant tout seul

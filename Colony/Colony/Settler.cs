@@ -50,7 +50,7 @@ namespace Colony
             set { _available = value; }
         }
 
-        public bool isAvailable() {
+        public bool IsAvailable() {
 
             return _available;
         }

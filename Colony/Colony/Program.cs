@@ -49,7 +49,7 @@ namespace Colony
             c1.Play();
             Console.WriteLine(c1);
 
-            //s1.addSettler();
+            //s1.AddSettler();
             */
 
             Simulation s1 = new Simulation();

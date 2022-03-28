@@ -35,7 +35,7 @@ namespace Colony
             return base.ToString() + "C'est un hotel\n";
         }
 
-        public Settler[] getSettlers()
+        public Settler[] GetSettlers()
         {
             return _settlers;
         }
