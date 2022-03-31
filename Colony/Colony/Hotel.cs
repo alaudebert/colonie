@@ -12,7 +12,7 @@ namespace Colony
         protected bool _fool;
         private Settler[] _settlers;
         public static int _builderNb = 2;// TODO vérifier que les statiques sont bien defini ne dehors du constructeur
-        public static int _turnNb = 3;
+        public static int _turnNb = 2;
 
         public Hotel(int x, int y) : base(x, y)
         {

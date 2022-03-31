@@ -12,6 +12,7 @@ namespace Colony
         private static int _turn = 1;
         private int _turnNb;
 
+
         public Simulation()
         {
             _turnNb = _turn;
@@ -40,20 +41,19 @@ namespace Colony
         public void Play()
         {
             bool end = false;
-            while (!end && _turnNb < 20)
+            while (!end && _turnNb < 100)
             {
+                Console.WriteLine("turn :" +  _turnNb);
                 PendingBuildingCreation();
                 foreach (Building building in _village.Buildings)
                 {
                     _village.LocationOccupiedBuilding(building);
                 }
-                if (Proceed() == true)
-                {
                     Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
                     DisplayGameBoard();
 
 
-                    if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
+                if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
                         Console.WriteLine("Entrez 1 pour créer un batiment");
                     }
@@ -83,6 +83,8 @@ namespace Colony
                     int create = int.Parse(Console.ReadLine());
                     switch (create)
                     {
+                    case 0:
+                        break;
                         case 1:
                             creation = createBuilding();
                             break;
@@ -97,12 +99,6 @@ namespace Colony
 
                     if (creation == true)
                         _turnNb++;
-                }
-
-                else
-                    _turnNb++;
-
-
             }
 
         }
@@ -129,43 +125,51 @@ namespace Colony
         //Crée les building qui sont en cours de création si on est bien à leur tour de création
         public void PendingBuildingCreation()
         {
-            foreach(Tuple<string, int, int, int, List<Settler>> building in _village.InConstruction)
+            foreach ( InConstructionBuilding inConstruction in _village.InConstruction)
             {
-                foreach(Settler settler in building.Item5)
+                foreach (Settler settler in inConstruction.Settlers)
                 {
+                    _village.GameBoardSettler[settler.X, settler.Y] = null;
                     settler.Move();
                 }
-                if (building.Item2 == _turnNb) 
+                Console.WriteLine("tour de construction"+ inConstruction.CreationTurn);
+                Console.WriteLine("tout actuel"+_turnNb);
+                if (inConstruction.CreationTurn == _turnNb) 
                 { 
-                    if(building.Item1 == "H")
+                    if(inConstruction.BuildingType == "H")
                     {
-                        Hotel hotel = new Hotel(building.Item3, building.Item4);
+                        Hotel hotel = new Hotel(inConstruction.X, inConstruction.Y);
                         _village.addBuildings(hotel); 
                         _village.LocationOccupiedBuilding(hotel);
                     }
-                    else if(building.Item1 == "R")
+                    else if(inConstruction.BuildingType == "R")
                     {
-                        Restaurant restaurant = new Restaurant(building.Item3, building.Item4);
+                        Restaurant restaurant = new Restaurant(inConstruction.X, inConstruction.Y);
                         _village.addBuildings(restaurant); 
                         _village.LocationOccupiedBuilding(restaurant);
                     }
                     else
                     {
-                        SportsInfrastructure sportsInfrastructurel = new SportsInfrastructure(building.Item3, building.Item4);
+                        SportsInfrastructure sportsInfrastructurel = new SportsInfrastructure(inConstruction.X, inConstruction.Y);
                         _village.addBuildings(sportsInfrastructurel); 
                         _village.LocationOccupiedBuilding(sportsInfrastructurel);
                     }
-                    foreach (Settler builder in building.Item5)
+                    foreach (Settler builder in inConstruction.Settlers)
                     {
                         builder.Available = true;
                     }
                 }
+             
             }
         }
 
         //Affiche le plateau de jeu
         public void DisplayGameBoard()
         {
+            foreach (Settler settler in _village.GetSettlers())
+            {
+                _village.GameBoardSettler[settler.X, settler.Y] = settler;
+            }
             for (int i = 0; i < _village.Lenght; i++)
             {
                 Console.Write("\n");
@@ -313,14 +317,13 @@ namespace Colony
             {
                 if (FreeSpaceBuilding(Hotel.type, x, y))//TODO faire une fonction pour empecher la recurrence de code
                 {
-                    nbBuilders = Hotel._builderNb; 
-                    List<Settler> settlers = busyBulderList(nbBuilders);
-                    Tuple<string, int, int, int, List<Settler>> inConstructionBuilding = new Tuple<string, int, int, int, List<Settler>>(Hotel.type, _turnNb + Hotel._turnNb, x, y,settlers);
-                    foreach(Settler settler in settlers)
+                    nbBuilders = Hotel._builderNb;
+                    List<Settler> settlers = busyBulderList(nbBuilders); foreach (Settler settler in settlers)
                     {
-                        settler.CalculatingItinerary(inConstructionBuilding.Item3, inConstructionBuilding.Item4);
+                        settler.CalculatingItinerary(x, y);
                     }
-                    _village.InConstruction.Add(inConstructionBuilding);
+                    InConstructionBuilding inConstruction = new InConstructionBuilding("H",Hotel._turnNb,x,y,settlers);
+                    _village.InConstruction.Add(inConstruction);
                 }
                 else
                     creation = false;
@@ -331,7 +334,12 @@ namespace Colony
                 if (FreeSpaceBuilding(Restaurant.type, x, y))
                 {
                     nbBuilders = Restaurant._builderNb;
-                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Restaurant.type, _turnNb + Restaurant._turnNb, x, y, busyBulderList(nbBuilders)));
+                    List<Settler> settlers = busyBulderList(nbBuilders);
+                    foreach (Settler settler in settlers)
+                    {
+                        settler.CalculatingItinerary(x, y);
+                    }
+                    _village.InConstruction.Add(new InConstructionBuilding("R", Restaurant._turnNb, x, y, settlers));
                 }
                 else
                     creation = false;
@@ -341,7 +349,12 @@ namespace Colony
                 if (FreeSpaceBuilding(SportsInfrastructure.type, x, y))
                 {
                     nbBuilders = SportsInfrastructure._builderNb;
-                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(SportsInfrastructure.type, _turnNb + SportsInfrastructure._turnNb, x, y, busyBulderList(nbBuilders)));
+                    List<Settler> settlers = busyBulderList(nbBuilders);
+                    foreach (Settler settler in settlers)
+                    {
+                        settler.CalculatingItinerary(x, y);
+                    }
+                    _village.InConstruction.Add(new InConstructionBuilding("R", SportsInfrastructure._turnNb, x, y, settlers));
                 }
                 else
                     creation = false;
@@ -357,9 +370,11 @@ namespace Colony
         public List<Settler> busyBulderList(int nbBuilders)
         {
             List<Settler> busyBuilder = new List<Settler>();
+            int nbAvailable = 0;
             for (int i = 0; i < nbBuilders; i++)
             {
-                Console.WriteLine(_village.FindAvailable("B").Count());
+                nbAvailable = _village.FindAvailable("B").Count();
+                Console.WriteLine(nbAvailable);
                 busyBuilder.Add(_village.FindAvailable("B")[0]);
                 _village.FindAvailable("B")[0].Available = false;
             }
@@ -384,8 +399,6 @@ namespace Colony
                 case 1:
                     Builder builder = new Builder();
                     _village.AddSettler(builder);
-                    Console.WriteLine("Vous avez recruté un nouveau batisseur : ");
-                    Console.WriteLine(builder);
                     break;
                 case 2:
                     createAthletics();
@@ -393,8 +406,8 @@ namespace Colony
                 case 3:
                     Coach coach = new Coach();
                     _village.AddSettler(coach);
-                    Console.WriteLine("Vous avez recruté un nouveau coach : ");
-                    Console.WriteLine(coach);
+                    //Console.WriteLine("Vous avez recruté un nouveau coach : ");
+                    //Console.WriteLine(coach);
                     break;
                 default:
                     Console.WriteLine("Votre réponse n'est pas valide");

@@ -6,10 +6,56 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
+    struct InConstructionBuilding
+    {
+        private string _buildingType;
+        private int _x;
+        private int _y;
+        private List<Settler> _settlers;
+        private int _creationTurn;
+        private int _turnNb;
+
+        public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> settlers)
+        {
+            _buildingType = type;
+            _x = x;
+            _y = y;
+            _settlers = settlers;
+            _creationTurn = 0;
+
+            foreach (Settler settler in settlers)
+            {
+                _creationTurn = Math.Max(_creationTurn, Math.Abs(settler._itinerary[0]) + Math.Abs(settler._itinerary[1]) + turnNb);
+            }
+            _turnNb = turnNb;
+        }
+
+        public string BuildingType
+        {
+            get { return _buildingType; }
+        }
+        public int X
+        {
+            get { return _x; }
+        }
+        public int Y
+        {
+            get { return _y; }
+        }
+        public List<Settler> Settlers
+        {
+            get { return _settlers; }
+        }
+        public int CreationTurn
+        {
+            get { return _creationTurn; }
+        }
+
+    }
     class Village
     {
         private List<Building> _buildings = new List<Building>();
-        private List<Tuple<string, int, int, int, List<Settler>>> _inConstruction = new List<Tuple<string, int, int, int, List<Settler>>>(); 
+        private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
         private int _maxNbSettlers;
         private int _lenght;
         private int _width;
@@ -30,6 +76,12 @@ namespace Colony
             Builder s2 = new Builder();
             Builder s3 = new Builder();
             Builder s4 = new Builder();
+            s2.X = 0;
+            s2.Y = 1;
+            s3.X = 0;
+            s3.Y = 2;
+            s4.X = 0;
+            s4.Y = 3;
             _maxNbSettlers = 4;
             _buildings.Add(hotel);
             _buildings.Add(r1);
@@ -62,7 +114,7 @@ namespace Colony
         {
             get { return _buildings; }
         }
-        public List<Tuple<string, int, int, int, List<Settler>>> InConstruction
+        public List<InConstructionBuilding> InConstruction
         {
             get { return _inConstruction; }
             set { _inConstruction = value;  }
@@ -125,8 +177,6 @@ namespace Colony
                     settler.X++;
                 }
             }
-
-            _gameBoardSettler[settler.X, settler.Y] = settler;
             _settlers.Add(settler);
             int i = 0;
             bool addHotel = false;
