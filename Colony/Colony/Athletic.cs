@@ -17,7 +17,7 @@ namespace Colony
         public Athletic(string nationality, string sport) : base()
         {
             _athleticNb++;
-            _type = "athlete_";
+            _type = "A";
             _id = _type + _athleticNb.ToString();
             _nationality = nationality;
             _sport = sport;

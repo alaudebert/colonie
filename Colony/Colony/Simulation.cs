@@ -16,7 +16,6 @@ namespace Colony
         {
             _turnNb = _turn;
             _village = new Village();
-
         }
 
 
@@ -34,23 +33,6 @@ namespace Colony
             foreach (Settler s in _village.GetSettlers())
                 retour += s.ToString();
             retour += "\n";
-
-            retour += "-------------Plateau de jeu-------------";
-
-            for (int i = 0; i < _village.GameBoard.GetLength(0); i++)
-            {
-                retour += "\n";
-                for (int j = 0; j < _village.GameBoard.GetLength(1); j++)
-                {
-                    if (_village.GameBoard[i, j] is null)
-                    {
-                        retour += "__";
-                    }
-                    else
-                        retour += _village.GameBoard[i, j];
-                }
-            }
-            retour += "\n";
             return retour;
         }
 
@@ -58,33 +40,18 @@ namespace Colony
         public void Play()
         {
             bool end = false;
-            foreach (Building building in _village.Buildings)
-            {
-                _village.LocationOccupiedBuilding(building);
-                end = false;
-            }
             while (!end && _turnNb < 20)
             {
                 PendingBuildingCreation();
-
+                foreach (Building building in _village.Buildings)
+                {
+                    _village.LocationOccupiedBuilding(building);
+                }
                 if (Proceed() == true)
                 {
                     Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
-                    //DisplayGameBoard();
+                    DisplayGameBoard();
 
-                    //Debug
-                    Console.WriteLine("nb colon : " + _village.NbSettlerAvailable("B"));
-                    Console.WriteLine("nombre de constructeur necessaire :" + Math.Max(Math.Max(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
-                    Console.WriteLine("Colon dans le village : ");
-                    foreach (Settler settler in _village.GetSettlers())
-                    {
-                        Console.WriteLine(settler.IsAvailable());
-                    }
-
-                    Console.WriteLine("nb place resto : " + _village.FreeRestaurantPlaces());
-                    Console.WriteLine("nb place hotel : " + _village.FreeHotelPlaces());
-
-                    //fin debug
 
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
@@ -120,7 +87,7 @@ namespace Colony
                             creation = createBuilding();
                             break;
                         case 2:
-                            creation = AddSettler(); //Ca serait pas mieux de pas proposer de créer de colon quand il peut pas?
+                            creation = AddSettler();
                             break;
                         default:
                             Console.WriteLine("Votre réponse n'est pas valide");
@@ -164,7 +131,10 @@ namespace Colony
         {
             foreach(Tuple<string, int, int, int, List<Settler>> building in _village.InConstruction)
             {
-                
+                foreach(Settler settler in building.Item5)
+                {
+                    settler.Move();
+                }
                 if (building.Item2 == _turnNb) 
                 { 
                     if(building.Item1 == "H")
@@ -196,20 +166,86 @@ namespace Colony
         //Affiche le plateau de jeu
         public void DisplayGameBoard()
         {
-            string retour = "";
-            for (int i = 0; i < _village.GameBoard.GetLength(0); i++)
+            for (int i = 0; i < _village.Lenght; i++)
             {
-                retour += "\n";
-                for (int j = 0; j < _village.GameBoard.GetLength(1); j++)
+                Console.Write("\n");
+                for (int j = 0; j < _village.Width; j++)
                 {
-                    if (_village.GameBoard[i, j] is null)
-                        retour += "__";
+                    char info = ' ';
+                    ConsoleColor foreGroundColor = ConsoleColor.White;
+                    ConsoleColor backGroundColor = ConsoleColor.Black;
+                    if (_village.GameBoardBuilder[i, j] is null && _village.GameBoardSettler[i, j] is null)
+                    {
+                        Console.Write('.');
+                    }
                     else
-                        retour += _village.GameBoard[i, j];
+                    {
+                        if (_village.GameBoardSettler[i, j] != null)
+                        {
+                            foreGroundColor = _village.GameBoardSettler[i, j].Available ? ConsoleColor.White : ConsoleColor.Red;
+                            if (_village.GameBoardSettler[i, j] is Builder)
+                            {
+                                info = 'B';
+                            }
+                            else if (_village.GameBoardSettler[i, j] is Athletic)
+                            {
+                                info = 'A';
+                            }
+                            else if (_village.GameBoardSettler[i, j] is Coach)
+                            {
+                                info = 'C';
+                            }
+                        }
+                        if (_village.GameBoardBuilder[i, j] != null)
+                        {
+                            if(foreGroundColor == ConsoleColor.White)
+                            {
+                                foreGroundColor = ConsoleColor.Black;
+                            }
+                            else
+                            {
+                                foreGroundColor = ConsoleColor.Red;
+                            }
+                            if (_village.GameBoardBuilder[i, j].Equals("H"))
+                            {
+                                backGroundColor = ConsoleColor.Cyan;
+                            }
+                            else if (_village.GameBoardBuilder[i, j].Equals("R"))
+                            {
+                                backGroundColor = ConsoleColor.Red;
+                            }
+                            else if (_village.GameBoardBuilder[i, j].Equals("S"))
+                            {
+                                backGroundColor = ConsoleColor.Green;
+                            }
+                        }
+                        
+
+                        Console.BackgroundColor = backGroundColor;
+                        Console.ForegroundColor = foreGroundColor;
+                        Console.Write(info);
+                        Console.ResetColor();
+                    }
                 }
             }
-            retour += "\n";
-            Console.WriteLine(retour);
+            Console.Write("\n");
+            //WriteLineWithColoredLetter(retour, 'H', ConsoleColor.Cyan);
+        }
+
+        public void WriteLineWithColoredLetter(string letters, char c, ConsoleColor color) {
+            for (int i = 0; i<letters.Length; i++)
+            {
+                if (letters[i] == c)
+                {
+                    Console.BackgroundColor = color; 
+                    Console.Write(' ');
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.Write(letters[i]);
+                }
+            }
         }
 
         public bool FreeSpaceBuilding(string building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
@@ -231,7 +267,7 @@ namespace Colony
                 lines = SportsInfrastructure._linesNb;
                 columns = SportsInfrastructure._columnsNb;
             }
-            if (x + lines >= _village.GameBoard.GetLength(0) || y + columns >= _village.GameBoard.GetLength(1))
+            if (x + lines >= _village.GameBoardBuilder.GetLength(0) || y + columns >= _village.GameBoardBuilder.GetLength(1))
             {
                 Console.WriteLine("Vous ne pouvez pas construire ici, vous sortirez du plateau de jeu");
                 return false;
@@ -240,7 +276,7 @@ namespace Colony
             {
                 for (int j = y; j <= y + columns - 1; j++)
                 {
-                    if (_village.GameBoard[i, j] != null)//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'idéal juste colorier case
+                    if (_village.GameBoardBuilder[i, j] != null)//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'idéal juste colorier case
                     {
                         Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà, choisi un autre emplacement!");
                         return false;
@@ -275,10 +311,16 @@ namespace Colony
             int nbBuilders = 0;
             if (create == 1)
             {
-                if (FreeSpaceBuilding(Hotel.type, x, y))
+                if (FreeSpaceBuilding(Hotel.type, x, y))//TODO faire une fonction pour empecher la recurrence de code
                 {
-                    nbBuilders = Hotel._builderNb;
-                    _village.InConstruction.Add(new Tuple<string, int, int, int, List<Settler>>(Hotel.type, _turnNb + Hotel._turnNb, x, y, busyBulderList(nbBuilders)));
+                    nbBuilders = Hotel._builderNb; 
+                    List<Settler> settlers = busyBulderList(nbBuilders);
+                    Tuple<string, int, int, int, List<Settler>> inConstructionBuilding = new Tuple<string, int, int, int, List<Settler>>(Hotel.type, _turnNb + Hotel._turnNb, x, y,settlers);
+                    foreach(Settler settler in settlers)
+                    {
+                        settler.CalculatingItinerary(inConstructionBuilding.Item3, inConstructionBuilding.Item4);
+                    }
+                    _village.InConstruction.Add(inConstructionBuilding);
                 }
                 else
                     creation = false;

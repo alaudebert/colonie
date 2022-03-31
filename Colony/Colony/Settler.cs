@@ -13,7 +13,7 @@ namespace Colony
         protected int _energyState;
         protected int _hungerState;
         protected bool _available;
-        protected string _type;
+        public static string _type;
         protected int _decreasingEnergy = 1;
         protected int _decreasingHunger = 1;
 
@@ -34,11 +34,13 @@ namespace Colony
         public int X
         {
             get { return _x; }
+            set { _x = value; }
         }
 
         public int Y
         {
             get { return _y; }
+            set { _y = value;  }
         }
         public string Type
         {
@@ -47,6 +49,7 @@ namespace Colony
         
         public bool Available
         {
+            get { return _available;  }
             set { _available = value; }
         }
 
@@ -72,23 +75,27 @@ namespace Colony
                 + "\nCoodronnées : " + _x + " , " + _y + "\nDisponibilité : " + _available + "\n";
         }
 
-        public void calculatingItinerary(int xDestination, int yDestination)
+        /// <summary>
+        /// Calculate the distance between the destination and the setller location
+        /// </summary>
+        /// <param name="xDestination">Abscisse</param>
+        /// <param name="yDestination"></param>
+        public void CalculatingItinerary(int xDestination, int yDestination)
         {
             _itinerary[0] =  _x - xDestination;
             _itinerary[1] =  _y - yDestination;
         }
 
-        public void move()
+        public void Move()
         {
             if (_itinerary[0] != 0)
             {
-               _x = _itinerary[0] > 0 ? _x + 1 : _x - 1;
-                _itinerary[0]--;
+               _x = _itinerary[0] > 0 ? _x - 1 : _x + 1;
             }
             else if (_itinerary[1] > 0)
             {
-                _y = _itinerary[1] > 0 ? _y + 1 : _y - 1;
-                _itinerary[1]--;
+                _y = _itinerary[1] > 0 ? _y - 1 : _y + 1;
+                _itinerary[1] = _itinerary[1] > 0 ? _itinerary[1] - 1 : _itinerary[1] + 1;
             }
 
         }

@@ -11,12 +11,19 @@ namespace Colony
         private List<Building> _buildings = new List<Building>();
         private List<Tuple<string, int, int, int, List<Settler>>> _inConstruction = new List<Tuple<string, int, int, int, List<Settler>>>(); 
         private int _maxNbSettlers;
-        private string[,] _gameBoard = new string[20, 40];
+        private int _lenght;
+        private int _width;
+        private string[,] _gameBoardBuilder;
+        private Settler[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
         
 
         public Village()
         {
+            _lenght = 20;
+            _width = 40;
+            _gameBoardSettler = new Settler[_lenght, _width];
+            _gameBoardBuilder = new string[_lenght, _width];
             Restaurant r1 = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
             Builder s1 = new Builder();
@@ -32,9 +39,23 @@ namespace Colony
             AddSettler(s4);
         }
 
-        public string[,] GameBoard
+        public string[,] GameBoardBuilder
         {
-            get { return _gameBoard; }
+            get { return _gameBoardBuilder; }
+        }
+
+        public Settler[,] GameBoardSettler
+        {
+            get { return _gameBoardSettler; }
+        }
+        public int Width
+        {
+            get { return _width; }
+        }
+
+        public int Lenght
+        {
+            get { return _lenght; }
         }
 
         public List<Building> Buildings
@@ -89,16 +110,23 @@ namespace Colony
 
         public void addBuildings(Building building)
         {
-            Console.WriteLine("coucou je suis un test");
             _buildings.Add(building);
         }
 
         public void AddSettler(Settler settler)
         {
-            if (_gameBoard[settler.X, settler.Y] != "C")
+            while (_gameBoardSettler[settler.X, settler.Y] != null)
             {
-                _gameBoard[settler.X, settler.Y] = "C";
+                if (settler.Y < _width) { 
+                settler.Y++;
+                }
+                else
+                {
+                    settler.X++;
+                }
             }
+
+            _gameBoardSettler[settler.X, settler.Y] = settler;
             _settlers.Add(settler);
             int i = 0;
             bool addHotel = false;
@@ -159,7 +187,7 @@ namespace Colony
             for (int x = building.X; x < building.LinesNb + building.X; x++)
             {
                 for (int y = building.Y; y < building.ColumnsNb + building.Y; y++)
-                    GameBoard[x, y] = building.Id;
+                    _gameBoardBuilder[x, y] = building.Type;
             }
         }
     }
