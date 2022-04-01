@@ -19,6 +19,7 @@ namespace Colony
         protected string _type;
         private Village _myVillage;
         private List<Settler> _settlers;
+        public string _name;
 
         public Village MyVillage
         {
@@ -27,6 +28,11 @@ namespace Colony
         public string Id
         {
             get { return _id; }
+        }
+
+        public string Name
+        {
+            get { return _name; }
         }
 
         public int LinesNb

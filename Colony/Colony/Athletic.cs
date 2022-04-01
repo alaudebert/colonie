@@ -8,11 +8,13 @@ namespace Colony
 {
     class Athletic : Settler
     {
+        public static int LevelIncrease = 1;
         private static int _athleticNb;
         private int _level;
         private string _sport;
         private string _nationality;
         private int _session = 0;
+
 
         public Athletic(string nationality, string sport) : base()
         {
@@ -32,7 +34,7 @@ namespace Colony
             if (_session == 3)
             {
                 _session = 0;
-                _level++;
+                _level+= LevelIncrease;
             }
         }
 

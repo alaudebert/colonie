@@ -1,1 +1,10 @@
-test
+A faire :
+quand on veut construire batiment, si on entre n'importe quoi pour créé hotel ou restu ca marche quand meme (juste un else je pense au lieu d'un else if = 14, else c'est pas valide)
+
+Penser à pas construire batiment quand il y en a deja un en cours de construction à cet endroit
+
+Faire en sorte qu'on puisse retourner en arriere dans chaque choix
+
+Faire en sorte qu'on ait le choix de sauter le tour à chaque tour
+
+Rajouter un parametre dans la structure inConstructionBuilding pour les IS

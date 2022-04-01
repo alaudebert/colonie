@@ -55,7 +55,11 @@ namespace Colony
     class Village
     {
         private List<Building> _buildings = new List<Building>();
+<<<<<<< Updated upstream
         private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
+=======
+        private List<Tuple<string, int, int, int, List<Settler>, string>> _inConstruction = new List<Tuple<string, int, int, int, List<Settler>, string>>(); 
+>>>>>>> Stashed changes
         private int _maxNbSettlers;
         private int _lenght;
         private int _width;
@@ -114,7 +118,11 @@ namespace Colony
         {
             get { return _buildings; }
         }
+<<<<<<< Updated upstream
         public List<InConstructionBuilding> InConstruction
+=======
+        public List<Tuple<string, int, int, int, List<Settler>, string>> InConstruction
+>>>>>>> Stashed changes
         {
             get { return _inConstruction; }
             set { _inConstruction = value;  }
