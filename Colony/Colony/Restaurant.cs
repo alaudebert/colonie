@@ -20,8 +20,8 @@ namespace Colony
             _linesNb = 3;
             _columnsNb = 5;
             _restaurantNb++;
-            _type = "R";
-            type = _type;
+            type = "R";
+            _type = type;
             _id = _type + _restaurantNb.ToString();
             _settlers = new Settler[3]; 
         }

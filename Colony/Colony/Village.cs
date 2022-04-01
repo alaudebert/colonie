@@ -14,20 +14,27 @@ namespace Colony
         private List<Settler> _settlers;
         private int _creationTurn;
         private int _turnNb;
+        private string _name;
 
-        public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> settlers)
+        public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> builders, string name)
         {
             _buildingType = type;
             _x = x;
             _y = y;
-            _settlers = settlers;
+            _settlers = builders;
             _creationTurn = 0;
+            _name = name;
 
-            foreach (Settler settler in settlers)
+            foreach (Builder builder in builders)
             {
-                _creationTurn = Math.Max(_creationTurn, Math.Abs(settler._itinerary[0]) + Math.Abs(settler._itinerary[1]) + turnNb);
+                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb);
             }
             _turnNb = turnNb;
+        }
+
+        public string Name
+        {
+            get { return _name; }
         }
 
         public string BuildingType
@@ -42,7 +49,7 @@ namespace Colony
         {
             get { return _y; }
         }
-        public List<Settler> Settlers
+        public List<Settler> Settlers//TODO cahnger le nom de la variable
         {
             get { return _settlers; }
         }
@@ -50,16 +57,12 @@ namespace Colony
         {
             get { return _creationTurn; }
         }
-
     }
+
     class Village
     {
         private List<Building> _buildings = new List<Building>();
-<<<<<<< Updated upstream
         private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
-=======
-        private List<Tuple<string, int, int, int, List<Settler>, string>> _inConstruction = new List<Tuple<string, int, int, int, List<Settler>, string>>(); 
->>>>>>> Stashed changes
         private int _maxNbSettlers;
         private int _lenght;
         private int _width;
@@ -74,7 +77,7 @@ namespace Colony
             _width = 40;
             _gameBoardSettler = new Settler[_lenght, _width];
             _gameBoardBuilder = new string[_lenght, _width];
-            Restaurant r1 = new Restaurant(8, 8);
+            Restaurant restaurant = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
             Builder s1 = new Builder();
             Builder s2 = new Builder();
@@ -88,7 +91,7 @@ namespace Colony
             s4.Y = 3;
             _maxNbSettlers = 4;
             _buildings.Add(hotel);
-            _buildings.Add(r1);
+            _buildings.Add(restaurant);
             AddSettler(s1);
             AddSettler(s2);
             AddSettler(s3);
@@ -118,11 +121,8 @@ namespace Colony
         {
             get { return _buildings; }
         }
-<<<<<<< Updated upstream
         public List<InConstructionBuilding> InConstruction
-=======
-        public List<Tuple<string, int, int, int, List<Settler>, string>> InConstruction
->>>>>>> Stashed changes
+
         {
             get { return _inConstruction; }
             set { _inConstruction = value;  }

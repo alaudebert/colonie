@@ -21,8 +21,8 @@ namespace Colony
             _totalPlace = 5;
             _nbPlaces = _totalPlace;
             _hotelNb++;
-            _type = "H";
-            type = _type;
+            type = "H";
+            _type = type;
             _id = _type + _hotelNb.ToString();
             _settlers = new Settler[5];
             _x = x;

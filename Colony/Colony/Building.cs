@@ -19,7 +19,7 @@ namespace Colony
         protected string _type;
         private Village _myVillage;
         private List<Settler> _settlers;
-        public string _name;
+        protected string _name;
 
         public Village MyVillage
         {

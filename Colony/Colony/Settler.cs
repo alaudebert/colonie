@@ -90,7 +90,6 @@ namespace Colony
         {
             if (_itinerary[0] != 0)
             {
-                Console.WriteLine("coucou éléa");
                 _x = _itinerary[0] > 0 ? _x - 1 : _x + 1;
                 _itinerary[0] = _itinerary[0] > 0 ? _itinerary[0] - 1 : _itinerary[0] + 1;
             }
@@ -99,8 +98,6 @@ namespace Colony
                 _y = _itinerary[1] > 0 ? _y - 1 : _y + 1;
                 _itinerary[1] = _itinerary[1] > 0 ? _itinerary[1] - 1 : _itinerary[1] + 1;
             }
-
-            Console.WriteLine(_itinerary[0] + " " + _itinerary[1]);
         }
 
     }
