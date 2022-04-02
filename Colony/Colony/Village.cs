@@ -240,7 +240,7 @@ namespace Colony
 
 
 
-        public void LocationOccupiedBuilding(Building building) //Création du building dans le plateau
+        public void CreationBuilding(Building building) //Création du building dans le plateau
         {
             for (int x = building.X; x < building.LinesNb + building.X; x++)
             {

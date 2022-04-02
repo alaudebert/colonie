@@ -10,8 +10,7 @@ namespace Colony
     {
         protected static int _sportsInfrastructureNb = 0;
         public static int _builderNb = 2; 
-        public static int _turnNb = 3;
-        protected string _name;
+        public static int _turnNb = 1;
         public SportsInfrastructure(int x, int y, string name) : base(x, y)
         {
             _linesNb = 5;
@@ -20,12 +19,9 @@ namespace Colony
             type = "S";
             _type = type;
             _id = _type + _sportsInfrastructureNb.ToString();
+            _name = name;
         }
 
-        public string Name
-        {
-            get { return _name; }
-        }
 
         public override string ToString()
         {

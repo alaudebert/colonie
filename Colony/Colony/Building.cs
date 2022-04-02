@@ -115,7 +115,8 @@ namespace Colony
         public override string ToString()
         {
             return "\nIl sera réalisé en : "
-                + ColumnsNb + " colonnes \nIl a comme coodronnées : " + _x + " , " + _y + "\n";
+                + ColumnsNb + " colonnes \nIl a comme coodronnées : " + _x + " , " + _y
+                + "\n Son nom est : " + _name + "\n";
         }
     }
 }
