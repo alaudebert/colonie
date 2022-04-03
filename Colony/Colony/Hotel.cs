@@ -13,11 +13,11 @@ namespace Colony
         private Settler[] _settlers;
         public static int _builderNb = 2;// TODO vérifier que les statiques sont bien defini ne dehors du constructeur
         public static int _turnNb = 2;
+        public int _linesNb;
+        public int _columnsNb;
 
         public Hotel(int x, int y) : base(x, y)
         {
-            _linesNb = 3;
-            _columnsNb = 3;
             _totalPlace = 5;
             _nbPlaces = _totalPlace;
             _hotelNb++;
@@ -38,6 +38,15 @@ namespace Colony
         public Settler[] GetSettlers()
         {
             return _settlers;
+        }
+
+        public int LinesNb
+        {
+            get {return Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[0];}
+        }
+        public int ColumnsNb
+        {
+            get { return Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[1]; }
         }
     }
 }

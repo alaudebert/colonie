@@ -242,9 +242,27 @@ namespace Colony
 
         public void CreationBuilding(Building building) //Création du building dans le plateau
         {
-            for (int x = building.X; x < building.LinesNb + building.X; x++)
+            int nbColumns = 0;
+            int nbLines = 0;
+            if (building is Hotel)
             {
-                for (int y = building.Y; y < building.ColumnsNb + building.Y; y++)
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[0];
+            }
+            else if (building is Restaurant)
+            {
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0];
+            }
+            else if(building is SportsInfrastructure)
+            {
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[0];
+
+            }
+            for (int x = building.X; x < nbLines + building.X; x++)
+            {
+                for (int y = building.Y; y < nbColumns + building.Y; y++)
                     _gameBoardBuilder[x, y] = building.Type;
             }
         }

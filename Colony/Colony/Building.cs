@@ -9,8 +9,6 @@ namespace Colony
     abstract class Building
     {
         protected bool _haveFreePlaces;
-        public static int _linesNb;
-        public static int _columnsNb;
         protected int _totalPlace;
         protected int _nbPlaces;
         protected int _x, _y;
@@ -20,6 +18,8 @@ namespace Colony
         private Village _myVillage;
         private List<Settler> _settlers;
         protected string _name;
+        public static Dictionary<string, int[]> _buildingSize = new Dictionary<string, int[]> { { "H", new int[2] { 3, 3 } }, { "R", new int[2]{ 3, 5 } }, { "S", new int[2]{ 5, 5 } } };
+
 
         public Village MyVillage
         {
@@ -35,15 +35,21 @@ namespace Colony
             get { return _name; }
         }
 
-        public int LinesNb
+        public Dictionary<string, int[]> BuildingSize
         {
-            get { return _linesNb; }
+            get { return _buildingSize; }
         }
 
-        public int ColumnsNb
+        public static int getLinesNb(string type)
         {
-            get { return _columnsNb; }
+            return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[0];
         }
+        public static int getColumnsNb(string type)
+        {
+            return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[1];
+        }
+        
+
         public int NbPlaces
         {
             get { return _nbPlaces; }
@@ -114,8 +120,7 @@ namespace Colony
         }
         public override string ToString()
         {
-            return "\nIl sera réalisé en : "
-                + ColumnsNb + " colonnes \nIl a comme coodronnées : " + _x + " , " + _y
+            return "\ncolonnes \nIl a comme coodronnées : " + _x + " , " + _y
                 + "\n Son nom est : " + _name + "\n";
         }
     }

@@ -43,7 +43,6 @@ namespace Colony
             bool end = false;
             while (!end && _turnNb < 100)
             {
-                Console.WriteLine("turn :" +  _turnNb); //A supprimer
                 PendingBuildingCreation();
 
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
@@ -58,19 +57,7 @@ namespace Colony
                     DisplayGameBoard();
 
 
-                    //Debug
-                    Console.WriteLine("nb colon : " + _village.NbSettlerAvailable("B"));
-                    Console.WriteLine("nombre de constructeur necessaire :" + Math.Max(Math.Max(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
-                    Console.WriteLine("Colon dans le village : ");
-                    foreach (Settler settler in _village.GetSettlers())
-                    {
-                        Console.WriteLine(settler.IsAvailable());
-                    }
-
-                    Console.WriteLine("nb place resto : " + _village.FreeRestaurantPlaces());
-                    Console.WriteLine("nb place hotel : " + _village.FreeHotelPlaces());
-
-
+                   
                     Console.WriteLine("Entrez 0 pour passer au tour suivant sans effectuer aucune action");
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
@@ -116,8 +103,6 @@ namespace Colony
                             break;
                     }
 
-                    Console.WriteLine(_village); //A supprimer
-
                     if (creation == true)
                         _turnNb++;
                 }
@@ -161,8 +146,6 @@ namespace Colony
                     _village.GameBoardSettler[settler.X, settler.Y] = null;
                     settler.Move();
                 }
-                Console.WriteLine("tour de construction"+ inConstruction.CreationTurn);
-                Console.WriteLine("tout actuel"+_turnNb);
                 if (inConstruction.CreationTurn == _turnNb) 
                 { 
                     if(inConstruction.BuildingType == "H")
@@ -266,25 +249,12 @@ namespace Colony
 
        
 
-        public bool FreeSpaceBuilding(string building, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
+        public bool FreeSpaceBuilding(string type, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
         {
             int lines;
             int columns;
-            if (building == Hotel.type)
-            {
-                lines = Hotel._linesNb;
-                columns = Hotel._columnsNb;
-            }
-            else if (building == Restaurant.type)
-            {
-                lines = Restaurant._linesNb;
-                columns = Restaurant._columnsNb;
-            }
-            else
-            {
-                lines = SportsInfrastructure._linesNb;
-                columns = SportsInfrastructure._columnsNb;
-            }
+            lines = Building.getLinesNb(type);
+            columns = Building.getColumnsNb(type);
             if (x + lines >= _village.GameBoardBuilder.GetLength(0) || y + columns >= _village.GameBoardBuilder.GetLength(1))
             {
                 Console.WriteLine("Vous ne pouvez pas construire ici, vous sortirez du plateau de jeu");
@@ -428,7 +398,6 @@ namespace Colony
                 Console.WriteLine("Votre réponse n'est pas valable. Veuillez entrer une réponse valide");
                 ChoiceSportsInfrastructure();
             }
-            Console.WriteLine("Infrastrucutre : " + sportsinfrasctructure);//A supprimer
             return sportsinfrasctructure; 
         }
 
@@ -569,8 +538,6 @@ namespace Colony
                             Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                             break;
                     }
-
-                    Console.WriteLine("Sport 2 : " + sport2 + " Infrastructure : " + infrastructure); //A supprimer
                 }
 
                 bool construction = false;
