@@ -9,7 +9,7 @@ namespace Colony
     class SportsInfrastructure : Building
     {
         protected static int _sportsInfrastructureNb = 0;
-        public static int _builderNb = 7; 
+        public static int _builderNb = 2; 
         public static int _turnNb = 1;
         public int _linesNb;
         public int _columnsNb;

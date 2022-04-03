@@ -198,7 +198,7 @@ namespace Colony
                     {
                         Console.WriteLine(_buildings[i]);//A supprimer
                         Console.WriteLine(settler); //A supprimer
-                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter un coeach en premier je sais pas pourquoi
+                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
                         addHotel = true;
                     }
                     else if (_buildings[i].Type == "R")
@@ -268,6 +268,37 @@ namespace Colony
             {
                 for (int y = building.Y; y < nbColumns + building.Y; y++)
                     _gameBoardBuilder[x, y] = building.Type;
+            }
+        }
+
+        public void CreatePendingBuilding(InConstructionBuilding inConstruction) //J'essaye
+        {
+            int nbColumns = 0;
+            int nbLines = 0;
+            string inCreation = "";
+            if (inConstruction.BuildingType == "H")
+            {
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[0];
+                inCreation = "XH";
+            }
+            else if (inConstruction.BuildingType == "R")
+            {
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0];
+                inCreation = "XR";
+            }
+            else if (inConstruction.BuildingType == "S")
+            {
+                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[1];
+                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[0];
+                inCreation = "XS";
+
+            }
+            for (int x = inConstruction.X; x < nbLines + inConstruction.X; x++)
+            {
+                for (int y = inConstruction.Y; y < nbColumns + inConstruction.Y; y++)
+                    _gameBoardBuilder[x, y] = inCreation;
             }
         }
     }

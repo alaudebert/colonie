@@ -3,4 +3,4 @@ A faire :
 
 Penser à pas construire batiment quand il y en a deja un en cours de construction à cet endroit
 
-On peut pas recruter un colon en premier je sais pas pourquoi, j'ai mis des commentaires au bon endroit
+On peut pas recruter un colon ou un athlete en premier (que batisseur) je sais pas pourquoi, j'ai mis des commentaires au bon endroit

@@ -47,8 +47,6 @@ namespace Colony
 
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
                 {
-
-
                     foreach (Building building in _village.Buildings)
                     {
                         _village.CreationBuilding(building);
@@ -210,6 +208,24 @@ namespace Colony
                     {
                         Console.Write('.');
                     }
+                    else if (_village.GameBoardBuilder[i, j] == "XH")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("X");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (_village.GameBoardBuilder[i, j] == "XR")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("X");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (_village.GameBoardBuilder[i, j] == "XS")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("X");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     else
                     {
                         if (_village.GameBoardSettler[i, j] != null)
@@ -230,7 +246,7 @@ namespace Colony
                         }
                         if (_village.GameBoardBuilder[i, j] != null)
                         {
-                            if(foreGroundColor == ConsoleColor.White)
+                            if (foreGroundColor == ConsoleColor.White)
                             {
                                 foreGroundColor = ConsoleColor.Black;
                             }
@@ -251,7 +267,7 @@ namespace Colony
                                 backGroundColor = ConsoleColor.Green;
                             }
                         }
-                        
+
 
                         Console.BackgroundColor = backGroundColor;
                         Console.ForegroundColor = foreGroundColor;
@@ -282,7 +298,7 @@ namespace Colony
                 {
                     if (_village.GameBoardBuilder[i, j] != null)//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'idéal juste colorier case
                     {
-                        Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà, choisi un autre emplacement!");
+                        Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà ou qui est en cours de construction, choisi un autre emplacement!");
                         return false;
                     }
                 }
@@ -338,6 +354,7 @@ namespace Colony
                             InConstructionBuilding inConstruction = new InConstructionBuilding("H", Hotel._turnNb, x, y, settlers, "");
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
+                            _village.CreatePendingBuilding(inConstruction);//J'essaye
                         }
                     }
                     else
@@ -356,8 +373,10 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            _village.InConstruction.Add(new InConstructionBuilding("R", Restaurant._turnNb, x, y, settlers, ""));
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("R", Restaurant._turnNb, x, y, settlers, "");
+                            _village.InConstruction.Add(inConstruction);
                             creation = true;
+                            _village.CreatePendingBuilding(inConstruction);//J'essaye
                         }
                     }
                     else
@@ -376,8 +395,10 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            _village.InConstruction.Add(new InConstructionBuilding("S", SportsInfrastructure._turnNb, x, y, settlers, sportsinfrasctructure));
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("S", SportsInfrastructure._turnNb, x, y, settlers, sportsinfrasctructure);
+                            _village.InConstruction.Add(inConstruction);
                             creation = true;
+                            _village.CreatePendingBuilding(inConstruction);//J'essaye
                         }
                     }
                     else 
@@ -577,11 +598,8 @@ namespace Colony
                 bool construction = false;
                 foreach (Building building in _village.Buildings)
                 {
-                    Console.WriteLine("On rentre dans la boucle, le nom de mon building est : " + building.Name);
                     if (building is SportsInfrastructure)
                     {
-                        Console.WriteLine("On rentre dans la  2eme boucle, le nom de mon building est : " + building.Name);
-                        Console.WriteLine(building.Name); //Pour tester les noms de mes infrastructures créée voir si le pblm est la
                         if (building.Name == infrastructure)
                             construction = true;
                     }
