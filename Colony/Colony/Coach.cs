@@ -11,7 +11,7 @@ namespace Colony
         private static int _coachNb = 0;
         public Coach() : base() 
         {
-            _type = "coach_";
+            _type = "C";
             _coachNb++;
             _id = _type + _coachNb.ToString();
             _decreasingHunger = 5;

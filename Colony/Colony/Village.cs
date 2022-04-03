@@ -168,7 +168,7 @@ namespace Colony
         }
 
 
-        public void addBuildings(Building building)
+        public void AddBuildings(Building building)
         {
             _buildings.Add(building);
         }
@@ -177,8 +177,9 @@ namespace Colony
         {
             while (_gameBoardSettler[settler.X, settler.Y] != null)
             {
-                if (settler.Y < _width) { 
-                settler.Y++;
+                if (settler.Y < _width) 
+                {
+                    settler.Y++;
                 }
                 else
                 {
@@ -191,13 +192,16 @@ namespace Colony
             bool addRestaurant = false;
             while (i<_buildings.Count() && ( addHotel == false || addRestaurant == false) )
             {
-                if (_buildings[i].haveFreePlace()) { 
-                    if (_buildings[i].Type == "H")
+                if (_buildings[i].haveFreePlace()) 
+                { 
+                    if (_buildings[i].Type == "H") 
                     {
-                        _buildings[i].Settlers.Add(settler);
+                        Console.WriteLine(_buildings[i]);//A supprimer
+                        Console.WriteLine(settler); //A supprimer
+                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter un coeach en premier je sais pas pourquoi
                         addHotel = true;
                     }
-                    if (_buildings[i].Type == "R")
+                    else if (_buildings[i].Type == "R")
                     {
                         _buildings[i].Settlers.Add(settler);
                         addRestaurant = true;

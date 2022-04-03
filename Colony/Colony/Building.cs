@@ -40,11 +40,11 @@ namespace Colony
             get { return _buildingSize; }
         }
 
-        public static int getLinesNb(string type)
+        public static int GetLinesNb(string type)
         {
             return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[0];
         }
-        public static int getColumnsNb(string type)
+        public static int GetColumnsNb(string type)
         {
             return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[1];
         }
