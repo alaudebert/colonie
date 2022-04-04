@@ -1,6 +1,6 @@
 A faire :
 
 
-Penser à pas construire batiment quand il y en a deja un en cours de construction à cet endroit
-
 On peut pas recruter un colon ou un athlete en premier (que batisseur) je sais pas pourquoi, j'ai mis des commentaires au bon endroit
+
+J'ai l'impression que des que les batisseur atteignent la batiment à construire, il le construit directement (et pas suivant le nombre de tour)

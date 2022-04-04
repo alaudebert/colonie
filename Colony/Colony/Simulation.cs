@@ -208,23 +208,26 @@ namespace Colony
                     {
                         Console.Write('.');
                     }
-                    else if (_village.GameBoardBuilder[i, j] == "XH")
+                    else if (_village.GameBoardSettler[i, j] is null && _village.GameBoardBuilder[i, j] == "XH" || _village.GameBoardBuilder[i, j] == "XR" || _village.GameBoardBuilder[i, j] == "XS")
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("X");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (_village.GameBoardBuilder[i, j] == "XR")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("X");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (_village.GameBoardBuilder[i, j] == "XS")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("X");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        if (_village.GameBoardBuilder[i, j] == "XH")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write("X");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else if (_village.GameBoardBuilder[i, j] == "XR")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("X");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else if (_village.GameBoardBuilder[i, j] == "XS")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write("X");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
                     }
                     else
                     {
