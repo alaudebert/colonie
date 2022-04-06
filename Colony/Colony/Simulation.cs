@@ -157,8 +157,9 @@ namespace Colony
             {
                 foreach (Settler settler in inConstruction.Settlers)
                 {
-                    _village.GameBoardSettler[settler.X, settler.Y] = null;
+                    _village.GameBoardSettler[settler.X, settler.Y].Remove(settler);
                     settler.Move();
+                    _village.GameBoardSettler[settler.X, settler.Y].Add(settler);
                 }
                 if (inConstruction.CreationTurn == _turnNb) 
                 { 
@@ -192,61 +193,41 @@ namespace Colony
         //Affiche le plateau de jeu
         public void DisplayGameBoard()
         {
-            foreach (Settler settler in _village.GetSettlers())
-            {
-                _village.GameBoardSettler[settler.X, settler.Y] = settler;
-            }
             for (int i = 0; i < _village.Lenght; i++)
             {
                 Console.Write("\n");
                 for (int j = 0; j < _village.Width; j++)
                 {
-                    char info = ' ';
+                    string info = " ";
                     ConsoleColor foreGroundColor = ConsoleColor.White;
                     ConsoleColor backGroundColor = ConsoleColor.Black;
-                    if (_village.GameBoardBuilder[i, j] is null && _village.GameBoardSettler[i, j] is null)
+                    if (_village.GameBoardBuilder[i, j] is null && _village.GameBoardSettler[i, j].Count == 0)
                     {
-                        Console.Write('.');
+                        Console.Write(".\t");
                     }
-                    else if (_village.GameBoardSettler[i, j] is null && _village.GameBoardBuilder[i, j] == "XH" || _village.GameBoardBuilder[i, j] == "XR" || _village.GameBoardBuilder[i, j] == "XS")
+                    else if (_village.GameBoardSettler[i, j].Count == 0 && _village.GameBoardBuilder[i, j] == "XH" || _village.GameBoardBuilder[i, j] == "XR" || _village.GameBoardBuilder[i, j] == "XS")
                     {
                         if (_village.GameBoardBuilder[i, j] == "XH")
                         {
                             Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else if (_village.GameBoardBuilder[i, j] == "XR")
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else if (_village.GameBoardBuilder[i, j] == "XS")
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                     }
                     else
                     {
-                        if (_village.GameBoardSettler[i, j] != null)
-                        {
-                            foreGroundColor = _village.GameBoardSettler[i, j].Available ? ConsoleColor.White : ConsoleColor.Red;
-                            if (_village.GameBoardSettler[i, j] is Builder)
-                            {
-                                info = 'B';
-                            }
-                            else if (_village.GameBoardSettler[i, j] is Athletic)
-                            {
-                                info = 'A';
-                            }
-                            else if (_village.GameBoardSettler[i, j] is Coach)
-                            {
-                                info = 'C';
-                            }
-                        }
                         if (_village.GameBoardBuilder[i, j] != null)
                         {
                             if (foreGroundColor == ConsoleColor.White)
@@ -270,11 +251,28 @@ namespace Colony
                                 backGroundColor = ConsoleColor.Green;
                             }
                         }
-
-
                         Console.BackgroundColor = backGroundColor;
-                        Console.ForegroundColor = foreGroundColor;
-                        Console.Write(info);
+                        if (_village.GameBoardSettler[i, j] != null)
+                        {
+                            foreach(Settler settler in _village.GameBoardSettler[i, j]) { 
+                                foreGroundColor = settler.Available ? ConsoleColor.White : ConsoleColor.Red;
+                                if (settler is Builder)
+                                {
+                                    info = "B";
+                                }
+                                else if (settler is Athletic)
+                                {
+                                    info = "A";
+                                }
+                                else if (settler is Coach)
+                                {
+                                    info = "C";
+                                }
+                                Console.ForegroundColor = foreGroundColor;
+                                Console.Write(info);
+                            }
+                        }
+                        Console.Write("\t");
                         Console.ResetColor();
                     }
                 }

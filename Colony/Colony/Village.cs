@@ -67,16 +67,23 @@ namespace Colony
         private int _lenght;
         private int _width;
         private string[,] _gameBoardBuilder;
-        private Settler[,] _gameBoardSettler;
+        private List<Settler>[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
         
 
         public Village()
         {
             _lenght = 20;
-            _width = 40;
-            _gameBoardSettler = new Settler[_lenght, _width];
+            _width = 15;
+            _gameBoardSettler = new List<Settler>[_lenght, _width];
             _gameBoardBuilder = new string[_lenght, _width];
+            for (int i = 0; i < _width; i++)
+            {
+                for (int y = 0; y < _lenght; y++)
+                {
+                    GameBoardSettler[y,i] = new List<Settler>();
+                }
+            }
             Restaurant restaurant = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
             Builder s1 = new Builder();
@@ -103,7 +110,7 @@ namespace Colony
             get { return _gameBoardBuilder; }
         }
 
-        public Settler[,] GameBoardSettler
+        public List<Settler>[,] GameBoardSettler
         {
             get { return _gameBoardSettler; }
         }
@@ -175,7 +182,7 @@ namespace Colony
 
         public void AddSettler(Settler settler)
         {
-            while (_gameBoardSettler[settler.X, settler.Y] != null)
+            while (_gameBoardSettler[settler.X, settler.Y].Count != 0)
             {
                 if (settler.Y < _width) 
                 {
@@ -187,6 +194,11 @@ namespace Colony
                 }
             }
             _settlers.Add(settler);
+            if (GameBoardSettler[settler.X, settler.Y] == null)
+            {
+                GameBoardSettler[settler.X, settler.Y] = new List<Settler>();
+            }
+            _gameBoardSettler[settler.X, settler.Y].Add(settler);
             int i = 0;
             bool addHotel = false;
             bool addRestaurant = false;
