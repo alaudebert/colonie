@@ -14,8 +14,8 @@ namespace Colony
             _builderNb++;
             _type = "B";
             _id = _type + _builderNb.ToString();
-            _decreasingEnergy = 3;
-            _decreasingHunger = 2;
+            _decreasingEnergy = 5;
+            _decreasingHunger = 4;
         }
 
     }
