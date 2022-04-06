@@ -103,6 +103,7 @@ namespace Colony
             get { return _gameBoardBuilder; }
         }
 
+
         public Settler[,] GameBoardSettler
         {
             get { return _gameBoardSettler; }
@@ -271,7 +272,7 @@ namespace Colony
             }
         }
 
-        public void CreatePendingBuilding(InConstructionBuilding inConstruction) //J'essaye
+        public void CreatePendingBuilding(InConstructionBuilding inConstruction)
         {
             int nbColumns = 0;
             int nbLines = 0;

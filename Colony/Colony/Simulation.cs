@@ -43,6 +43,8 @@ namespace Colony
             bool end = false;
             while (!end && _turnNb < 100)
             {
+                foreach (Settler settler in _village.GetSettlers())
+                    Console.WriteLine(settler);
                 PendingBuildingCreation();
 
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
@@ -125,8 +127,6 @@ namespace Colony
                     _turnNb++;
                 }
 
-
-                    
             }
 
         }
@@ -151,7 +151,7 @@ namespace Colony
 
 
         //Crée les building qui sont en cours de création si on est bien à leur tour de création
-        public void PendingBuildingCreation()
+        public void PendingBuildingCreation()//TODO a déplacer dans la classe village
         {
             foreach ( InConstructionBuilding inConstruction in _village.InConstruction)
             {
@@ -182,6 +182,7 @@ namespace Colony
                     }
                     foreach (Settler builder in inConstruction.Settlers)
                     {
+                        builder.Play();
                         builder.Available = true;
                     }
                 }
@@ -488,8 +489,11 @@ namespace Colony
         {
             Console.WriteLine("Entrez 0 pour revenir en arrière");
             Console.WriteLine("Entrez 1 pour recruter un Batisseur");
-            Console.WriteLine("Entrez 2 pour recruter un Sportif");
-            Console.WriteLine("Entrez 3 pour recruter un Coach");
+            Console.WriteLine("Entrez 2 pour recruter un Coach");
+            if (CanRecruitAthlete())
+                Console.WriteLine("Entrez 3 pour recruter un Sportif");
+            else
+                Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive");
             int create = int.Parse(Console.ReadLine());
             bool creation = true;
             if (create ==0)
@@ -502,18 +506,23 @@ namespace Colony
             }
             else if (create == 2)
             {
-                bool createAthletic = CreateAthletics();
-                if (createAthletic == false)
-                    AddSettler();
-            }
-            else if (create == 3)
-            {
                 Coach coach = new Coach();
                 _village.AddSettler(coach); //Ca nous fait sortir de la boucle 
                 Console.WriteLine("Vous avez recruté un nouveau coach : ");
                 Console.WriteLine(coach);
                 Athletic.LevelIncrease++;
                 Console.WriteLine("Athletic.LevelIncrease : " + Athletic.LevelIncrease);
+            }
+            else if (create == 3)
+            {
+                if (CanRecruitAthlete())
+                {
+                    bool createAthletic = CreateAthletics();
+                    if (createAthletic == false)
+                        AddSettler();
+                }
+                else
+                    Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive, veuillez entrer une réponse valide");
             }
             else
             {
@@ -622,9 +631,17 @@ namespace Colony
                 }
             }
 
-            return createAthletics;
+            return createAthletics;            
+        }
 
-            
+
+        public bool CanRecruitAthlete()
+        {
+            bool canRecruitAthlete = false;
+            foreach (Building building in _village.Buildings)
+                if (building is SportsInfrastructure)
+                    canRecruitAthlete = true;
+            return canRecruitAthlete;
         }
     }
 }
