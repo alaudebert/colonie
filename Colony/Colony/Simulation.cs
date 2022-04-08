@@ -50,7 +50,7 @@ namespace Colony
                 FinishedSleepingOrEating(); //Tentative Roche
                 GoEatAndSleep(); //Tentative Roche
                 foreach (Settler settler in _village.GetSettlers())
-                    Console.WriteLine(settler);
+                Console.WriteLine(settler);
                 PendingBuildingCreation();
 
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
@@ -112,7 +112,7 @@ namespace Colony
                             break;
                         case 2:
                             if (recruitSettler == true)
-                                creation = AddSettler();
+                                creation = createSettler();
                             else
                             {
                                 Console.WriteLine("Vous n'avez toujours pas assez d'infrastructure pour accueillir des colons, veuillez entrer une réponse valide ");
@@ -163,8 +163,9 @@ namespace Colony
             {
                 foreach (Settler settler in inConstruction.Settlers)
                 {
-                    _village.GameBoardSettler[settler.X, settler.Y] = null;
+                    _village.GameBoardSettler[settler.X, settler.Y].Remove(settler);
                     settler.Move();
+                    _village.GameBoardSettler[settler.X, settler.Y].Add(settler);
                 }
                 if (inConstruction.CreationTurn == _turnNb) 
                 { 
@@ -199,61 +200,41 @@ namespace Colony
         //Affiche le plateau de jeu
         public void DisplayGameBoard()
         {
-            foreach (Settler settler in _village.GetSettlers())
-            {
-                _village.GameBoardSettler[settler.X, settler.Y] = settler;
-            }
             for (int i = 0; i < _village.Lenght; i++)
             {
                 Console.Write("\n");
                 for (int j = 0; j < _village.Width; j++)
                 {
-                    char info = ' ';
+                    string info = " ";
                     ConsoleColor foreGroundColor = ConsoleColor.White;
                     ConsoleColor backGroundColor = ConsoleColor.Black;
-                    if (_village.GameBoardBuilder[i, j] is null && _village.GameBoardSettler[i, j] is null)
+                    if (_village.GameBoardBuilder[i, j] is null && _village.GameBoardSettler[i, j].Count == 0)
                     {
-                        Console.Write('.');
+                        Console.Write(".\t");
                     }
-                    else if (_village.GameBoardSettler[i, j] is null && _village.GameBoardBuilder[i, j] == "XH" || _village.GameBoardBuilder[i, j] == "XR" || _village.GameBoardBuilder[i, j] == "XS")
+                    else if (_village.GameBoardSettler[i, j].Count == 0 && _village.GameBoardBuilder[i, j] == "XH" || _village.GameBoardBuilder[i, j] == "XR" || _village.GameBoardBuilder[i, j] == "XS")
                     {
                         if (_village.GameBoardBuilder[i, j] == "XH")
                         {
                             Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else if (_village.GameBoardBuilder[i, j] == "XR")
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else if (_village.GameBoardBuilder[i, j] == "XS")
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("X");
+                            Console.Write("X\t");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                     }
                     else
                     {
-                        if (_village.GameBoardSettler[i, j] != null)
-                        {
-                            foreGroundColor = _village.GameBoardSettler[i, j].Available ? ConsoleColor.White : ConsoleColor.Red;
-                            if (_village.GameBoardSettler[i, j] is Builder)
-                            {
-                                info = 'B';
-                            }
-                            else if (_village.GameBoardSettler[i, j] is Athletic)
-                            {
-                                info = 'A';
-                            }
-                            else if (_village.GameBoardSettler[i, j] is Coach)
-                            {
-                                info = 'C';
-                            }
-                        }
                         if (_village.GameBoardBuilder[i, j] != null)
                         {
                             if (foreGroundColor == ConsoleColor.White)
@@ -277,11 +258,28 @@ namespace Colony
                                 backGroundColor = ConsoleColor.Green;
                             }
                         }
-
-
                         Console.BackgroundColor = backGroundColor;
-                        Console.ForegroundColor = foreGroundColor;
-                        Console.Write(info);
+                        if (_village.GameBoardSettler[i, j] != null)
+                        {
+                            foreach(Settler settler in _village.GameBoardSettler[i, j]) { 
+                                foreGroundColor = settler.Available ? ConsoleColor.White : ConsoleColor.Red;
+                                if (settler is Builder)
+                                {
+                                    info = "B";
+                                }
+                                else if (settler is Athletic)
+                                {
+                                    info = "A";
+                                }
+                                else if (settler is Coach)
+                                {
+                                    info = "C";
+                                }
+                                Console.ForegroundColor = foreGroundColor;
+                                Console.Write(info);
+                            }
+                        }
+                        Console.Write("\t");
                         Console.ResetColor();
                     }
                 }
@@ -488,7 +486,7 @@ namespace Colony
         }
 
 
-        public bool AddSettler() //Je l'ai mis en public temporairement pour les tests
+        public bool createSettler() //Je l'ai mis en public temporairement pour les tests
                                  //Faut ajouter que quand on crée bonhomme ça remplie son emplacement dans le plateau
                                  //Jsp si le mieux c'est de remplir de tableau, et modifier à chaque fois que le personnage bouge, ou si c'est dans
                                  //l'affichage qu'on cherche les position x et y  de chaque sellter (risquer car peut sortir du plateau)
@@ -513,9 +511,7 @@ namespace Colony
             else if (create == 2)
             {
                 Coach coach = new Coach();
-                _village.AddSettler(coach); //Ca nous fait sortir de la boucle 
-                Console.WriteLine("Vous avez recruté un nouveau coach : ");
-                Console.WriteLine(coach);
+                _village.AddSettler(coach); //Ca nous fait sortir de la boucle
                 Athletic.LevelIncrease++;
                 Console.WriteLine("Athletic.LevelIncrease : " + Athletic.LevelIncrease);
             }
@@ -525,7 +521,7 @@ namespace Colony
                 {
                     bool createAthletic = CreateAthletics();
                     if (createAthletic == false)
-                        AddSettler();
+                        createSettler();
                 }
                 else
                     Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive, veuillez entrer une réponse valide");
@@ -533,7 +529,7 @@ namespace Colony
             else
             {
                 Console.WriteLine("Votre réponse n'est pas valide");
-                AddSettler();
+                createSettler();
             }
             return creation;
         }
