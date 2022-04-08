@@ -194,10 +194,6 @@ namespace Colony
                 }
             }
             _settlers.Add(settler);
-            if (GameBoardSettler[settler.X, settler.Y] == null)
-            {
-                GameBoardSettler[settler.X, settler.Y] = new List<Settler>();
-            }
             _gameBoardSettler[settler.X, settler.Y].Add(settler);
             int i = 0;
             bool addHotel = false;
@@ -205,18 +201,16 @@ namespace Colony
             while (i<_buildings.Count() && ( addHotel == false || addRestaurant == false) )
             {
                 if (_buildings[i].haveFreePlace()) 
-                { 
-                    if (_buildings[i].Type == "H") 
-                    {
-                        Console.WriteLine(_buildings[i]);//A supprimer
-                        Console.WriteLine(settler); //A supprimer
-                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
-                        addHotel = true;
-                    }
-                    else if (_buildings[i].Type == "R")
+                {
+                    if (_buildings[i] is Restaurant)
                     {
                         _buildings[i].Settlers.Add(settler);
                         addRestaurant = true;
+                    }
+                    else if(_buildings[i] is Hotel) 
+                    {
+                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
+                        addHotel = true;
                     }
                 }
                 i++;

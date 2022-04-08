@@ -8,23 +8,16 @@ namespace Colony
 {
     abstract class Building
     {
-        protected bool _haveFreePlaces;
         protected int _totalPlace;
         protected int _nbPlaces;
         protected int _x, _y;
         protected string _id;
         public static string type;
         protected string _type;
-        private Village _myVillage;
         private List<Settler> _settlers;
         protected string _name;
         public static Dictionary<string, int[]> _buildingSize = new Dictionary<string, int[]> { { "H", new int[2] { 3, 3 } }, { "R", new int[2]{ 3, 5 } }, { "S", new int[2]{ 5, 5 } } };
 
-
-        public Village MyVillage
-        {
-            get { return _myVillage; }
-        }
         public string Id
         {
             get { return _id; }

@@ -44,7 +44,7 @@ namespace Colony
             while (!end && _turnNb < 100)
             {
                 foreach (Settler settler in _village.GetSettlers())
-                    Console.WriteLine(settler);
+                Console.WriteLine(settler);
                 PendingBuildingCreation();
 
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
@@ -106,7 +106,7 @@ namespace Colony
                             break;
                         case 2:
                             if (recruitSettler == true)
-                                creation = AddSettler();
+                                creation = createSettler();
                             else
                             {
                                 Console.WriteLine("Vous n'avez toujours pas assez d'infrastructure pour accueillir des colons, veuillez entrer une réponse valide ");
@@ -480,7 +480,7 @@ namespace Colony
         }
 
 
-        public bool AddSettler() //Je l'ai mis en public temporairement pour les tests
+        public bool createSettler() //Je l'ai mis en public temporairement pour les tests
                                  //Faut ajouter que quand on crée bonhomme ça remplie son emplacement dans le plateau
                                  //Jsp si le mieux c'est de remplir de tableau, et modifier à chaque fois que le personnage bouge, ou si c'est dans
                                  //l'affichage qu'on cherche les position x et y  de chaque sellter (risquer car peut sortir du plateau)
@@ -505,9 +505,7 @@ namespace Colony
             else if (create == 2)
             {
                 Coach coach = new Coach();
-                _village.AddSettler(coach); //Ca nous fait sortir de la boucle 
-                Console.WriteLine("Vous avez recruté un nouveau coach : ");
-                Console.WriteLine(coach);
+                _village.AddSettler(coach); //Ca nous fait sortir de la boucle
                 Athletic.LevelIncrease++;
                 Console.WriteLine("Athletic.LevelIncrease : " + Athletic.LevelIncrease);
             }
@@ -517,7 +515,7 @@ namespace Colony
                 {
                     bool createAthletic = CreateAthletics();
                     if (createAthletic == false)
-                        AddSettler();
+                        createSettler();
                 }
                 else
                     Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive, veuillez entrer une réponse valide");
@@ -525,7 +523,7 @@ namespace Colony
             else
             {
                 Console.WriteLine("Votre réponse n'est pas valide");
-                AddSettler();
+                createSettler();
             }
             return creation;
         }
