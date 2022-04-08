@@ -11,6 +11,10 @@ namespace Colony
         private Village _village;
         private static int _turn = 1;
         private int _turnNb;
+        private List<Settler> _settlersUnavailableEat = new List<Settler>();
+        private List<int> _settlersTowerUnavailableEat = new List<int>();
+        private List<Settler> _settlersUnavailableSleep = new List<Settler>();
+        private List<int> _settlersTowerUnavailableSleep = new List<int>();
 
 
         public Simulation()
@@ -43,6 +47,8 @@ namespace Colony
             bool end = false;
             while (!end && _turnNb < 100)
             {
+                FinishedSleepingOrEating(); //Tentative Roche
+                GoEatAndSleep(); //Tentative Roche
                 foreach (Settler settler in _village.GetSettlers())
                     Console.WriteLine(settler);
                 PendingBuildingCreation();
@@ -351,7 +357,7 @@ namespace Colony
                         if (FreeSpaceBuilding(Hotel.type, x, y))//TODO faire une fonction pour empecher la recurrence de code
                         {
                             nbBuilders = Hotel._builderNb;
-                            List<Settler> settlers = busyBulderList(nbBuilders); foreach (Settler settler in settlers)
+                            List<Settler> settlers = BusyBulderList(nbBuilders); foreach (Settler settler in settlers)
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
@@ -372,7 +378,7 @@ namespace Colony
                         if (FreeSpaceBuilding(Restaurant.type, x, y))
                         {
                             nbBuilders = Restaurant._builderNb;
-                            List<Settler> settlers = busyBulderList(nbBuilders);
+                            List<Settler> settlers = BusyBulderList(nbBuilders);
                             foreach (Settler settler in settlers)
                             {
                                 settler.CalculatingItinerary(x, y);
@@ -394,7 +400,7 @@ namespace Colony
                         {
                             string sportsinfrasctructure = ChoiceSportsInfrastructure();
                             nbBuilders = SportsInfrastructure._builderNb;
-                            List<Settler> settlers = busyBulderList(nbBuilders);
+                            List<Settler> settlers = BusyBulderList(nbBuilders);
                             foreach (Settler settler in settlers)
                             {
                                 settler.CalculatingItinerary(x, y);
@@ -434,7 +440,7 @@ namespace Colony
             }
             else if (infrasctructure == 3)
             {
-                sportsinfrasctructure = "Piscine olymptique";
+                sportsinfrasctructure = "Piscine olympique";
             }
             else if (infrasctructure == 4)
             {
@@ -465,7 +471,7 @@ namespace Colony
         /// </summary>
         /// <param name="nbBuilders">The number of builder assigments</param>
         /// <returns>A list of builder assigment's</returns>
-        public List<Settler> busyBulderList(int nbBuilders)
+        public List<Settler> BusyBulderList(int nbBuilders)
         {
             List<Settler> busyBuilder = new List<Settler>();
             int nbAvailable = 0;
@@ -591,7 +597,7 @@ namespace Colony
                             break;
                         case 5:
                             sport2 = "Natation";
-                            infrastructure = "Piscine olymptique";
+                            infrastructure = "Piscine olympique";
                             break;
                         case 6:
                             sport2 = "Athlétisme";
@@ -642,6 +648,63 @@ namespace Colony
                 if (building is SportsInfrastructure)
                     canRecruitAthlete = true;
             return canRecruitAthlete;
+        }
+
+
+        //Send settlers to eat or sleep as needed
+        public void GoEatAndSleep() //Tentative Roche
+        {
+            foreach (Settler settler in _village.GetSettlers())
+            {
+                if (settler.Available == true) //Verifie qu'il est dispo
+                {
+                    if (settler.IsSleepy()) //Verifie qu'il est fatigué
+                    {
+                        settler.Available = false;  //Je le rend indispo
+                        _settlersUnavailableSleep.Add(settler); //Je l'ajouter à la liste des indispo
+                        settler.CalculatingItinerary(settler.Buildings[0].X, settler.Buildings[0].Y); //Ca lui fout son intinéraire qui est son hotel pour dodo
+                        _settlersTowerUnavailableSleep.Add(_turn + Math.Abs(settler._itinerary[0]) + Math.Abs(settler._itinerary[1]) + settler.TimeToEat); //Ca prend en compte le nombre de tour actuel, le temps d'aller à l'hotel (on a bien calculé l'itiéraire avant) , et le temps de dormir
+                        int j = _turn + Math.Abs(settler._itinerary[0]) + Math.Abs(settler._itinerary[1]) + settler.TimeToEat;
+                        Console.WriteLine("---------------"+ j);
+                    }
+
+                    if (settler.Available == true) //Car il peut pas dormir et manger en même temps
+                    {
+                        if (settler.IsHungry())
+                        {
+                            settler.Available = false; 
+                            _settlersUnavailableEat.Add(settler);
+                            settler.CalculatingItinerary(settler.Buildings[1].X, settler.Buildings[1].Y);
+                            _settlersTowerUnavailableEat.Add(_turn + Math.Abs(settler._itinerary[0]) + Math.Abs(settler._itinerary[1]) + settler.TimeToSleep);
+
+                        }
+                    }
+
+                }
+            }
+        }
+
+
+        //Make available colonists who have finished eating or sleeping, and complete their level of hunger or fatigue
+        public void FinishedSleepingOrEating() //Tentative Roche
+        {
+            for (int i = 0; i < _settlersTowerUnavailableEat.Count; i++)//Ca regarde tous les tours des colons indispo car  faim
+            {
+                if (_settlersTowerUnavailableEat[i] == _turn) //Si on est au tour correspondant
+                {
+                    _settlersUnavailableEat[i].Available = true; //Le colons devient dispo
+                    _settlersUnavailableEat[i].HungerState = Settler.Hunger; //On lui re rempli son niveau de faim
+                }
+            }
+
+            for (int i = 0; i < _settlersTowerUnavailableSleep.Count; i++)//Ca regarde tous les tours des colons indispo car fatigué
+            {
+                if (_settlersTowerUnavailableSleep[i] == _turn) //Si on est au tour correspondant
+                {
+                    _settlersUnavailableSleep[i].Available = true; //Le colons devient dispo
+                    _settlersUnavailableSleep[i].EnergyState = Settler.Energy;//On lui re rempli son niveau d'energie
+                }
+            }
         }
     }
 }

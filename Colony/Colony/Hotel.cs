@@ -9,7 +9,6 @@ namespace Colony
     class Hotel : Building
     {
         protected static int _hotelNb = 0;
-        protected bool _fool; //Inutile je crois
         private Settler[] _settlers;
         public static int _builderNb = 2;// TODO vérifier que les statiques sont bien defini ne dehors du constructeur
         public static int _turnNb = 2;

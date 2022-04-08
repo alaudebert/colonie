@@ -55,6 +55,7 @@ namespace Colony
             get { return _nbPlaces; }
         }
 
+
         public Building(int x, int y)
         {
             _x = x;

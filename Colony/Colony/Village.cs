@@ -27,7 +27,7 @@ namespace Colony
 
             foreach (Builder builder in builders)
             {
-                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb);
+                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb);  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
             }
             _turnNb = turnNb;
         }
@@ -87,8 +87,8 @@ namespace Colony
             s2.Y = 1;
             s3.X = 0;
             s3.Y = 2;
-            s4.X = 0;
-            s4.Y = 3;
+            //s4.X = 0;
+            //s4.Y = 3;
             _maxNbSettlers = 4;
             _buildings.Add(hotel);
             _buildings.Add(restaurant);
@@ -160,7 +160,7 @@ namespace Colony
             List<Settler> availables = new List<Settler>();
             foreach (Settler settler in _settlers)
             {
-                if (settler.IsAvailable() && settler.Type.Equals(type))
+                if (settler.Available && settler.Type.Equals(type))
                 {
                     availables.Add(settler);
                 }
@@ -200,11 +200,12 @@ namespace Colony
                         Console.WriteLine(_buildings[i]);//A supprimer
                         Console.WriteLine(settler); //A supprimer
                         _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
-                        addHotel = true;
+                        settler.Buildings[0] = _buildings[i]; //Tentative Roche
                     }
                     else if (_buildings[i].Type == "R")
                     {
                         _buildings[i].Settlers.Add(settler);
+                        settler.Buildings[1] = _buildings[i]; //Tentative Roche
                         addRestaurant = true;
                     }
                 }
@@ -302,5 +303,6 @@ namespace Colony
                     _gameBoardBuilder[x, y] = inCreation;
             }
         }
+
     }
 }

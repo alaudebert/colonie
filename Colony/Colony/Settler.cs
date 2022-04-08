@@ -10,25 +10,56 @@ namespace Colony
     {
         protected static int _settlersNb = 0;
         protected string _id;
+        public static int Energy = 15;
+        public static int Hunger = 10;
         protected int _energyState;
         protected int _hungerState;
         protected bool _available;
         public static string _type;
         protected int _decreasingEnergy = 1;
         protected int _decreasingHunger = 1;
-
+        protected int _timeToEat = 3;
+        protected int _timeToSleep = 5;
         protected int _x, _y;
-        public int[] _itinerary = { 0, 0 }; 
+        public int[] _itinerary = { 0, 0 };
+        protected Building[] _buildings = new Building[2];
 
 
         public Settler()
         {
             _settlersNb++;
-            _energyState = 15;
-            _hungerState = 10;
+            _energyState = Energy;
+            _hungerState = Hunger;
             _x = 0;
             _y = 0;
             _available = true;
+        }
+
+        public int EnergyState
+        {
+            get { return _energyState; }
+            set { _energyState = value; }
+        }
+
+        public int HungerState
+        {
+            get { return _hungerState; }
+            set { _hungerState = value; }
+        }
+
+        public Building[] Buildings
+        {
+            get { return _buildings; }
+        }
+
+        public int TimeToEat
+        {
+            get { return _timeToEat; }
+        }
+
+        public int TimeToSleep
+        {
+            get { return _timeToSleep; }
         }
 
         public int X
@@ -51,11 +82,6 @@ namespace Colony
         {
             get { return _available;  }
             set { _available = value; }
-        }
-
-        public bool IsAvailable() {
-
-            return _available;
         }
 
         public virtual void Play()
@@ -98,6 +124,24 @@ namespace Colony
                 _y = _itinerary[1] > 0 ? _y - 1 : _y + 1;
                 _itinerary[1] = _itinerary[1] > 0 ? _itinerary[1] - 1 : _itinerary[1] + 1;
             }
+        }
+
+        //This method makes it possible to know if the colon must go to eat
+        public bool IsHungry()
+        {
+            bool isHungry = false;
+            if (_hungerState == 0)
+                isHungry = true;
+            return isHungry;
+        }
+
+        //This method allows you to know if the colon should go to sleep
+        public bool IsSleepy()
+        {
+            bool isSleepy = false;
+            if (_energyState == 0)
+                isSleepy = true;
+            return isSleepy;
         }
 
     }

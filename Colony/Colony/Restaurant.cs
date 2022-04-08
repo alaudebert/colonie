@@ -25,7 +25,7 @@ namespace Colony
             type = "R";
             _type = type;
             _id = _type + _restaurantNb.ToString();
-            _settlers = new Settler[3]; 
+            _settlers = new Settler[10]; 
         }
 
         public int LinesNb

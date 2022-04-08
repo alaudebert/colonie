@@ -1,17 +1,31 @@
 A faire :
 
 
-On peut pas recruter un colon ou un athlete en premier (que batisseur) je sais pas pourquoi, j'ai mis des commentaires au bon endroit
+On peut pas recruter un colon ou un athlete en premier (que batisseur) je sais pas pourquoi, j'ai mis des commentaires au bon endroit //SI que 3 batisseurs ou 5 au début plus de bug hehe
 
-J'ai l'impression que des que les batisseur atteignent la batiment à construire, il le construit directement (et pas suivant le nombre de tour)
+J'ai l'impression que des que les batisseur atteignent la batiment à construire, il le construit directement (et pas suivant le nombre de tour) //J'ai mis un commentaire 
 
 
-Faut que les athletes, sportifs et batisseurs aillent manger et se reposer quand il le faut, et soient indispo le temps de le faire
+Faut que les athletes, sportif, batisseurs aillent manger et se reposer quand il le faut, et soient indispo le temps de le faire //J'ai essayé de la faire, il y a un soucis il rerennent jamais leurs point de vie
+
+Faut baisser niveau de faim et vie a chaque fois qu'ils jouent
+
 
 Condition d'arret du jeu
 
 
-Quand 2 batisseurs sur une même case, mettre 2
+Quand 2 batisseurs sur une même case, mettre 2 //Normalement alex l'a fait
+
+Mettre des commentaires en anglais à chaque méthode
+
+
+Je pense qu'il faut limiter la fréquence de recrutement de coach, mais ça sera à la fin si on a le temps
+
 
 Parfois les colons ou quoi se déplacent un peut trop vite (de 5 cases en 5 cases)
 
+
+Ajouter la possibilité de relancer une partie quand le jeu est fini (que ce soit pardu ou gagner)
+
+ //Tentative Roche
+Pour retrouver mes nouvelles méthodes
