@@ -67,16 +67,23 @@ namespace Colony
         private int _lenght;
         private int _width;
         private string[,] _gameBoardBuilder;
-        private Settler[,] _gameBoardSettler;
+        private List<Settler>[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
         
 
         public Village()
         {
             _lenght = 20;
-            _width = 40;
-            _gameBoardSettler = new Settler[_lenght, _width];
+            _width = 15;
+            _gameBoardSettler = new List<Settler>[_lenght, _width];
             _gameBoardBuilder = new string[_lenght, _width];
+            for (int i = 0; i < _width; i++)
+            {
+                for (int y = 0; y < _lenght; y++)
+                {
+                    GameBoardSettler[y,i] = new List<Settler>();
+                }
+            }
             Restaurant restaurant = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
             Builder s1 = new Builder();
@@ -103,8 +110,7 @@ namespace Colony
             get { return _gameBoardBuilder; }
         }
 
-
-        public Settler[,] GameBoardSettler
+        public List<Settler>[,] GameBoardSettler
         {
             get { return _gameBoardSettler; }
         }
@@ -176,7 +182,7 @@ namespace Colony
 
         public void AddSettler(Settler settler)
         {
-            while (_gameBoardSettler[settler.X, settler.Y] != null)
+            while (_gameBoardSettler[settler.X, settler.Y].Count != 0)
             {
                 if (settler.Y < _width) 
                 {
@@ -188,24 +194,27 @@ namespace Colony
                 }
             }
             _settlers.Add(settler);
+            _gameBoardSettler[settler.X, settler.Y].Add(settler);
             int i = 0;
             bool addHotel = false;
             bool addRestaurant = false;
             while (i<_buildings.Count() && ( addHotel == false || addRestaurant == false) )
             {
                 if (_buildings[i].haveFreePlace()) 
-                { 
-                    if (_buildings[i].Type == "H") 
+                {
+                    if (_buildings[i] is Restaurant)
                     {
-                        Console.WriteLine(_buildings[i]);//A supprimer
-                        Console.WriteLine(settler); //A supprimer
+                        _buildings[i].Settlers.Add(settler);
+                        addRestaurant = true;
+                    }
+                    else if(_buildings[i] is Hotel) 
+                    {
                         _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
                         settler.Buildings[0] = _buildings[i]; //Tentative Roche
                     }
                     else if (_buildings[i].Type == "R")
                     {
                         _buildings[i].Settlers.Add(settler);
-                        settler.Buildings[1] = _buildings[i]; //Tentative Roche
                         addRestaurant = true;
                     }
                 }
