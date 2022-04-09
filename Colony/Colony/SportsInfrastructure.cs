@@ -13,6 +13,7 @@ namespace Colony
         public static int _turnNb = 1;
         public int _linesNb;
         public int _columnsNb;
+        protected string _name;
         public SportsInfrastructure(int x, int y, string name) : base(x, y)
         {
             _sportsInfrastructureNb++;

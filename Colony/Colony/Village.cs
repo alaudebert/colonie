@@ -69,10 +69,17 @@ namespace Colony
         private string[,] _gameBoardBuilder;
         private List<Settler>[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
-        
+        public Dictionary<string, bool> SportsInfrastructures { get; set; }
+
+
 
         public Village()
         {
+            SportsInfrastructures = new Dictionary<string, bool>();
+            SportsInfrastructures.Add("Piscine olympique", false);
+            SportsInfrastructures.Add("Terrain de sport collectif intérieur", false);
+            SportsInfrastructures.Add("Stade", false);
+
             _lenght = 20;
             _width = 15;
             _gameBoardSettler = new List<Settler>[_lenght, _width];

@@ -126,7 +126,6 @@ namespace Colony
                     Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
-                        Console.WriteLine("test");
                         _energyState = Energy;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;

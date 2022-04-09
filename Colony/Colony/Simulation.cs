@@ -61,6 +61,7 @@ namespace Colony
                     bool buildBuilding = true;
                     bool recruitSettler = true;
                     Console.WriteLine("Entrez 0 pour passer au tour suivant sans effectuer aucune action");
+                    Console.WriteLine("--------------------" + Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
                         Console.WriteLine("Entrez 1 pour créer un batiment");
@@ -175,6 +176,7 @@ namespace Colony
                         SportsInfrastructure sportsInfrastructurel = new SportsInfrastructure(inConstruction.X, inConstruction.Y, inConstruction.Name);
                         _village.AddBuildings(sportsInfrastructurel); 
                         _village.CreationBuilding(sportsInfrastructurel);
+                        _village.SportsInfrastructures[inConstruction.Name] = true;
                     }
                     foreach (Settler builder in inConstruction.Settlers)
                     {
@@ -377,7 +379,7 @@ namespace Colony
                         }
                     }
                     else
-                        Console.WriteLine("Cette réponse n'est pas valide car tu n'as pas assez de batisseur pour construire un restaurat, choisi une réponse qui t'es proposé");
+                        Console.WriteLine("Cette réponse n'est pas valide car tu n'as pas assez de batisseur pour construire un restaurant, choisi une réponse qui t'es proposé");
                 }
                 else if (create == 3)
                 {
@@ -416,34 +418,18 @@ namespace Colony
         public string ChoiceSportsInfrastructure()
         {
             Console.WriteLine("Choisissez l'infrastructure sportive que vous souhaitez construire");
-            Console.WriteLine("Entrez 1 pour une salle de musculation \nEntrez 2 pour une piste d'athlétisme \nEntrez 3 pour une piscine olympique \nEntrez 4 pour un terrain de tennis \nEntrez 5 pour un terrain de basket \nEntrez 6 pour un terrain de football \nEntrez 7 pour un terrain de volley");
+            Console.WriteLine("Entrez 1 pour une piscine olympique \nEntrez 2 pour un terrain de sport collectif intérieur \nEntrez 3 pour un stade");
             int infrasctructure = int.Parse(Console.ReadLine());
             string sportsinfrasctructure = "";
             if (infrasctructure == 1)
-                sportsinfrasctructure = "Salle de musculation";
+                sportsinfrasctructure = "Piscine olympique";
             else if (infrasctructure == 2)
             {
-                sportsinfrasctructure = "Piste d'athlétisme";
+                sportsinfrasctructure = "Terrain de sport collectif intérieur";
             }
             else if (infrasctructure == 3)
             {
-                sportsinfrasctructure = "Piscine olympique";
-            }
-            else if (infrasctructure == 4)
-            {
-                sportsinfrasctructure = "Terrain de tennis";
-            }
-            else if (infrasctructure == 5)
-            {
-                sportsinfrasctructure = "Terrain de basket";
-            }
-            else if (infrasctructure == 6)
-            {
-                sportsinfrasctructure = "Terrain de football";
-            }
-            else if (infrasctructure == 7)
-            {
-                sportsinfrasctructure = "Terrain de volley";
+                sportsinfrasctructure = "Stade";
             }
             else
             {
@@ -506,14 +492,9 @@ namespace Colony
             }
             else if (create == 3)
             {
-                if (CanRecruitAthlete())
-                {
-                    bool createAthletic = CreateAthletics();
-                    if (createAthletic == false)
-                        createSettler();
-                }
-                else
-                    Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive, veuillez entrer une réponse valide");
+                bool createAthletic = CreateAthletics();
+                if (createAthletic == false)
+                    createSettler();
             }
             else
             {
@@ -556,70 +537,92 @@ namespace Colony
             {
                 string sport2 = "";
                 string infrastructure = "";
-
+                bool swimingPool = false;
+                bool field = false;
+                bool stage = false;
+                bool value;
                 while (sport2 == "")
                 {
-                    Console.WriteLine("Choisissez son sport : \nEntrez 1 pour du football \nEntrez 2 pour du volley \nEntrez 3 pour du tennis \nEntrez 4 pour du basketball \nEntrez 5 pour de la natation \nEntrez 6 pour de l'athlétisme \nEntrez 7 pour du crossfit");//A en rajouter 
+                    Console.WriteLine("Choisissez son sport :");
+                    _village.SportsInfrastructures.TryGetValue("Piscine olympique", out value);
+                    if (value == true)
+                    {
+                        Console.WriteLine("Entrez 1 pour de la natation ");
+                        swimingPool = true;
+                    }
+                    else
+                    {
+                        _village.SportsInfrastructures.TryGetValue("Terrain de sport collectif intérieur", out value);
+                        if (value == true)
+                        {
+                            Console.WriteLine("Entrez 2 pour du volley ");
+                            Console.WriteLine("Entrez 3 pour du hand");
+                            Console.WriteLine("Entrez 4 pour du basket");
+                            field = true;
+                        }
+                        else
+                        {
+                            _village.SportsInfrastructures.TryGetValue("Stade", out value);
+                            if (value  == true)
+                            {
+                                Console.WriteLine("Entrez 5 pour du football ");
+                                Console.WriteLine("Entrez 6 pour du rugby");
+                                Console.WriteLine("Entrez 7 pour de l'athlétisme");
+                                stage = true;
+                            }
+                        }
+                    }
+                    
                     int sport = int.Parse(Console.ReadLine());
 
-                    switch (sport)
+                    if (sport == 1 && swimingPool)
                     {
-                        case 1:
-                            sport2 = "Football";
-                            infrastructure = "Terrain de football";
-                            break;
-                        case 2:
+                        sport2 = "Natation";
+                        infrastructure = "Piscine olympique";
+                    }
+                    else if (field)
+                    {
+                        infrastructure = "Terrain de sport collectif intérieur";
+                        if (sport == 2)
+                        {
                             sport2 = "Volley";
-                            infrastructure = "Terrain de volley";
-                            break;
-                        case 3:
-                            sport2 = "Tennis";
-                            infrastructure = "Terrain de tennis";
-                            break;
-                        case 4:
+                        }
+                        else if (sport == 3)
+                        {
+                            sport2 = "Hand";
+                        }
+                        else if (sport == 4 && field)
+                        {
                             sport2 = "Basketball";
-                            infrastructure = "Terrain de basket";
-                            break;
-                        case 5:
-                            sport2 = "Natation";
-                            infrastructure = "Piscine olympique";
-                            break;
-                        case 6:
-                            sport2 = "Athlétisme";
-                            infrastructure = "Piste d'athlétisme";
-                            break;
-                        case 7:
-                            sport2 = "Crossfit";
-                            infrastructure = "Salle de musculation";
-                            break;
-                        default:
-                            Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
-                            break;
+                        }
                     }
-                }
-
-                bool construction = false;
-                foreach (Building building in _village.Buildings)
-                {
-                    if (building is SportsInfrastructure)
+                    else if (stage)
                     {
-                        if (building.Name == infrastructure)
-                            construction = true;
+                        infrastructure = "Stade";
+                        if (sport == 5)
+                        {
+                            sport2 = "Football";
+                        }
+                        else if (sport == 6 && stage)
+                        {
+                            sport2 = "Rugby";
+                        }
+                        else if (sport == 7 && stage)
+                        {
+                            sport2 = "Athlétisme";
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                     }
                 }
 
-                if (construction == true)
-                {
                     Athletic athletic = new Athletic(nationality2, sport2);
                     _village.AddSettler(athletic);
                     Console.WriteLine("Vous avez recruté un nouveau sportif : ");
                     Console.WriteLine(athletic);
-                }
-                else
-                {
-                    Console.WriteLine("Vous ne pouvez pas recruter ce sportif car vous n'avez pas l'infrastructure spotive adapté à sa discipline");
-                    CreateAthletics();
-                }
+                
             }
 
             return createAthletics;            
