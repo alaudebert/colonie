@@ -11,10 +11,6 @@ namespace Colony
         private Village _village;
         private static int _turn = 1;
         private int _turnNb;
-        private List<Settler> _settlersUnavailableEat = new List<Settler>();
-        private List<int> _settlersTowerUnavailableEat = new List<int>();
-        private List<Settler> _settlersUnavailableSleep = new List<Settler>();
-        private List<int> _settlersTowerUnavailableSleep = new List<int>();
 
 
         public Simulation()
@@ -61,7 +57,6 @@ namespace Colony
                     bool buildBuilding = true;
                     bool recruitSettler = true;
                     Console.WriteLine("Entrez 0 pour passer au tour suivant sans effectuer aucune action");
-                    Console.WriteLine("--------------------" + Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb));
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
                         Console.WriteLine("Entrez 1 pour créer un batiment");
@@ -323,7 +318,6 @@ namespace Colony
             }
             if (_village.NbSettlerAvailable("B") >= SportsInfrastructure._builderNb)//TODO les conditions pour construire une infrastructure ne sont pas les mêmes
             {
-                Console.WriteLine(_village.NbSettlerAvailable("B") + " "+SportsInfrastructure._builderNb); //A supprimer je crois
                 Console.WriteLine("Entrez 3 pour créer une Infrastructure Sportive");
                 createSportsInfrastructure = true;
             }
@@ -578,11 +572,9 @@ namespace Colony
                     if (sport == 1 && swimingPool)
                     {
                         sport2 = "Natation";
-                        infrastructure = "Piscine olympique";
                     }
                     else if (field)
                     {
-                        infrastructure = "Terrain de sport collectif intérieur";
                         if (sport == 2)
                         {
                             sport2 = "Volley";
@@ -598,7 +590,6 @@ namespace Colony
                     }
                     else if (stage)
                     {
-                        infrastructure = "Stade";
                         if (sport == 5)
                         {
                             sport2 = "Football";
@@ -622,9 +613,7 @@ namespace Colony
                     _village.AddSettler(athletic);
                     Console.WriteLine("Vous avez recruté un nouveau sportif : ");
                     Console.WriteLine(athletic);
-                
             }
-
             return createAthletics;            
         }
 

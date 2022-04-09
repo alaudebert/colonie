@@ -17,7 +17,6 @@ namespace Colony
         public bool IsInActivity { get; set; }
         protected bool _available;
         public int NbTunrBeforeAvailable { get; set; }
-        public static string _type;
         protected int _decreasingEnergy = 1;
         protected int _decreasingHunger = 1;
         protected int _timeToEat = 3;
@@ -25,6 +24,7 @@ namespace Colony
         protected int _x, _y;
         public int[] _itinerary = { 0, 0 };
         protected Building[] _buildings = new Building[2];
+        public string SettlerType { get; set; }
 
 
         public Settler()
@@ -77,10 +77,7 @@ namespace Colony
             get { return _y; }
             set { _y = value;  }
         }
-        public string Type
-        {
-            get { return _type; }
-        }
+        
 
         public bool Available
         {

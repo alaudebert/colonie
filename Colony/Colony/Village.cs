@@ -173,7 +173,7 @@ namespace Colony
             List<Settler> availables = new List<Settler>();
             foreach (Settler settler in _settlers)
             {
-                if (settler.Available && settler.Type.Equals(type))
+                if (settler.Available && settler.SettlerType.Equals(type))
                 {
                     availables.Add(settler);
                 }
