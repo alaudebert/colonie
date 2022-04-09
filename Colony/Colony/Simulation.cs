@@ -47,18 +47,14 @@ namespace Colony
             bool end = false;
             while (!end && _turnNb < 100)
             {
-                FinishedSleepingOrEating(); //Tentative Roche
-                GoEatAndSleep(); //Tentative Roche
-                foreach (Settler settler in _village.GetSettlers())
-                Console.WriteLine(settler);
                 PendingBuildingCreation();
-
+                foreach (Settler settler in _village.GetSettlers())
+                {
+                    settler.Play(_village.GameBoardSettler, _turnNb);
+                    Console.WriteLine(settler);
+                }
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
                 {
-                    foreach (Building building in _village.Buildings)
-                    {
-                        _village.CreationBuilding(building);
-                    }
                     Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
                     DisplayGameBoard();
 
@@ -132,7 +128,6 @@ namespace Colony
                 {
                     _turnNb++;
                 }
-
             }
 
         }
@@ -161,12 +156,6 @@ namespace Colony
         {
             foreach ( InConstructionBuilding inConstruction in _village.InConstruction)
             {
-                foreach (Settler settler in inConstruction.Settlers)
-                {
-                    _village.GameBoardSettler[settler.X, settler.Y].Remove(settler);
-                    settler.Move();
-                    _village.GameBoardSettler[settler.X, settler.Y].Add(settler);
-                }
                 if (inConstruction.CreationTurn == _turnNb) 
                 { 
                     if(inConstruction.BuildingType == "H")
@@ -189,8 +178,7 @@ namespace Colony
                     }
                     foreach (Settler builder in inConstruction.Settlers)
                     {
-                        builder.Play();
-                        builder.Available = true;
+                        builder.IsInActivity = false;
                     }
                 }
              
@@ -355,11 +343,12 @@ namespace Colony
                         if (FreeSpaceBuilding(Hotel.type, x, y))//TODO faire une fonction pour empecher la recurrence de code
                         {
                             nbBuilders = Hotel._builderNb;
-                            List<Settler> settlers = BusyBulderList(nbBuilders); foreach (Settler settler in settlers)
+                            List<Settler> settlers = BusyBulderList(nbBuilders); 
+                            foreach (Settler settler in settlers)
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("H", Hotel._turnNb, x, y, settlers, "");
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("H", Hotel._turnNb+_turnNb, x, y, settlers, "");
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
@@ -381,7 +370,7 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("R", Restaurant._turnNb, x, y, settlers, "");
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("R", Restaurant._turnNb + _turnNb, x, y, settlers, "");
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
@@ -403,7 +392,7 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("S", SportsInfrastructure._turnNb, x, y, settlers, sportsinfrasctructure);
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("S", SportsInfrastructure._turnNb + _turnNb, x, y, settlers, sportsinfrasctructure);
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
@@ -478,7 +467,7 @@ namespace Colony
                 nbAvailable = _village.FindAvailable("B").Count();
                 Console.WriteLine(nbAvailable);
                 busyBuilder.Add(_village.FindAvailable("B")[0]);
-                _village.FindAvailable("B")[0].Available = false;
+                _village.FindAvailable("B")[0].IsInActivity = true;
             }
 
             return busyBuilder;
@@ -646,7 +635,7 @@ namespace Colony
             return canRecruitAthlete;
         }
 
-
+/*
         //Send settlers to eat or sleep as needed
         public void GoEatAndSleep() //Tentative Roche
         {
@@ -686,7 +675,7 @@ namespace Colony
         {
             for (int i = 0; i < _settlersTowerUnavailableEat.Count; i++)//Ca regarde tous les tours des colons indispo car  faim
             {
-                if (_settlersTowerUnavailableEat[i] == _turn) //Si on est au tour correspondant
+                if (_settlersTowerUnavailableEat[i] == _turnNb) //Si on est au tour correspondant
                 {
                     _settlersUnavailableEat[i].Available = true; //Le colons devient dispo
                     _settlersUnavailableEat[i].HungerState = Settler.Hunger; //On lui re rempli son niveau de faim
@@ -695,12 +684,12 @@ namespace Colony
 
             for (int i = 0; i < _settlersTowerUnavailableSleep.Count; i++)//Ca regarde tous les tours des colons indispo car fatigué
             {
-                if (_settlersTowerUnavailableSleep[i] == _turn) //Si on est au tour correspondant
+                if (_settlersTowerUnavailableSleep[i] == _turnNb) //Si on est au tour correspondant
                 {
                     _settlersUnavailableSleep[i].Available = true; //Le colons devient dispo
                     _settlersUnavailableSleep[i].EnergyState = Settler.Energy;//On lui re rempli son niveau d'energie
                 }
             }
-        }
+        }*/
     }
 }

@@ -27,7 +27,7 @@ namespace Colony
 
             foreach (Builder builder in builders)
             {
-                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb);  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
+                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb );  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
             }
             _turnNb = turnNb;
         }
@@ -86,10 +86,11 @@ namespace Colony
             }
             Restaurant restaurant = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
+            CreationBuilding(hotel);
+            CreationBuilding(restaurant);
             Builder s1 = new Builder();
             Builder s2 = new Builder();
             Builder s3 = new Builder();
-            Builder s4 = new Builder();
             s2.X = 0;
             s2.Y = 1;
             s3.X = 0;
@@ -102,7 +103,6 @@ namespace Colony
             AddSettler(s1);
             AddSettler(s2);
             AddSettler(s3);
-            AddSettler(s4);
         }
 
         public string[,] GameBoardBuilder
@@ -205,17 +205,13 @@ namespace Colony
                     if (_buildings[i] is Restaurant)
                     {
                         _buildings[i].Settlers.Add(settler);
+                        settler.Buildings[1] = _buildings[i];
                         addRestaurant = true;
                     }
                     else if(_buildings[i] is Hotel) 
                     {
                         _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
                         settler.Buildings[0] = _buildings[i]; //Tentative Roche
-                    }
-                    else if (_buildings[i].Type == "R")
-                    {
-                        _buildings[i].Settlers.Add(settler);
-                        addRestaurant = true;
                     }
                 }
                 i++;

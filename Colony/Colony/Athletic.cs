@@ -28,7 +28,7 @@ namespace Colony
         }
 
 
-        public override void Play()
+        public override void Play(List<Settler>[,] gameBoardSettler, int turnNb)
         {
             _session++;
             if (_session == 3)
