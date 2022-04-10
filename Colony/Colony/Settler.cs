@@ -25,6 +25,9 @@ namespace Colony
         protected Building[] _buildings = new Building[2];
 
 
+        /// <summary>
+        /// Builder that allows you to create a colonist, who is immediately available and has a maximum level of hunger and energy
+        /// </summary>
         public Settler()
         {
             _settlersNb++;
@@ -35,55 +38,89 @@ namespace Colony
             _available = true;
         }
 
+        /// <summary>
+        /// Allows to recover or modify the energy level of the colonist
+        /// </summary>
         public int EnergyState
         {
             get { return _energyState; }
             set { _energyState = value; }
         }
 
+
+        /// <summary>
+        /// Allows you to recover or modify the colon's hunger level
+        /// </summary>
         public int HungerState
         {
             get { return _hungerState; }
             set { _hungerState = value; }
         }
 
+
+        /// <summary>
+        /// Allows you to retrieve the buildings assigned to the settler (Building[0] corresponds to his hotel, Building[1] to his restaurant)
+        /// </summary>
         public Building[] Buildings
         {
             get { return _buildings; }
         }
 
+        /// <summary>
+        ///  de récupérer le nombre de tour que met un colon à manger
+        /// </summary>
         public int TimeToEat
         {
             get { return _timeToEat; }
         }
 
+
+        /// <summary>
+        /// Permet de récupérer le nombre de tour que met un colon à dormir
+        /// </summary>
         public int TimeToSleep
         {
             get { return _timeToSleep; }
         }
 
+        /// <summary>
+        /// Allows to retrieve or modify the abscissa of the colon position
+        /// </summary>
         public int X
         {
             get { return _x; }
             set { _x = value; }
         }
 
+        /// <summary>
+        /// Allows you to retrieve or modify the ordinate of the colon's position
+        /// </summary>
         public int Y
         {
             get { return _y; }
             set { _y = value;  }
         }
+
+        /// <summary>
+        /// Allows you to retrieve the colon type ("A" for an athlete, "B" for a builder and "C" for a coach)
+        /// </summary>
         public string Type
         {
             get { return _type; }
-        } 
-        
+        }
+
+        /// <summary>
+        /// Allows you to retrieve and modify the availability of the settler
+        /// </summary>
         public bool Available
         {
             get { return _available;  }
             set { _available = value; }
         }
 
+        /// <summary>
+        /// Method that makes a settler play, i.e. makes him lose his energy and hunger level
+        /// </summary>
         public virtual void Play()
         {
             _energyState -= _decreasingEnergy;
@@ -112,6 +149,9 @@ namespace Colony
             _itinerary[1] =  _y - yDestination;
         }
 
+        /// <summary>
+        /// Allows a settler to move, depending on the itinerary they have (_itinerary[0] for the abscissa, and _itinerary[1] for the ordinate)
+        /// </summary>
         public void Move()
         {
             if (_itinerary[0] != 0)
@@ -126,7 +166,10 @@ namespace Colony
             }
         }
 
-        //This method makes it possible to know if the colon must go to eat
+        /// <summary>
+        ///This method makes it possible to know if the colon must go to eat
+        /// </summary>
+        /// <returns>Returns true if hungry, false otherwise</returns>
         public bool IsHungry()
         {
             bool isHungry = false;
@@ -135,7 +178,10 @@ namespace Colony
             return isHungry;
         }
 
-        //This method allows you to know if the colon should go to sleep
+        /// <summary>
+        /// This method allows you to know if the colon should go to sleep
+        /// </summary>
+        /// <returns>Returns true if sleepy, false otherwise</returns>
         public bool IsSleepy()
         {
             bool isSleepy = false;

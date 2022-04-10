@@ -15,7 +15,11 @@ namespace Colony
         private string _nationality;
         private int _session = 0;
 
-
+        /// <summary>
+        /// Constructor that allows to create a sportsman
+        /// </summary>
+        /// <param name="nationality">Attributes the chosen nationality to the athlete</param>
+        /// <param name="sport">Attributes the chosen sport to the athlete</param>
         public Athletic(string nationality, string sport) : base()
         {
             _athleticNb++;
@@ -28,6 +32,17 @@ namespace Colony
         }
 
 
+        /// <summary>
+        /// Allows you to recover your level
+        /// </summary>
+        public int Level//TODO je crois que c'est inutile a supprimer apres accord d 'alex
+        {
+            get { return _level; }
+        }
+
+        /// <summary>
+        /// Allows the athlete to play, i.e. to go to an additional training session, and if we are at the 3rd session then it increases if level
+        /// </summary>
         public override void Play()
         {
             _session++;
@@ -43,11 +58,6 @@ namespace Colony
         {
             return base.ToString() + "Son niveau : " + _level + "\nSport qu'il pratique : "
                 + _sport + "\nNationalité : " + _nationality + "\n"; ;
-        }
-
-        public int getLevel()
-        {
-            return _level;
         }
     }
 }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
+    /// <summary>
+    /// structure that create a building under construction
+    /// </summary>
     struct InConstructionBuilding
     {
         private string _buildingType;
@@ -16,6 +19,15 @@ namespace Colony
         private int _turnNb;
         private string _name;
 
+        /// <summary>
+        /// Builder that saves a building under construction
+        /// </summary>
+        /// <param name="type">Type of building under construction</param>
+        /// <param name="turnNb">Tower where the creation of the building began</param>
+        /// <param name="x">Abscissa of the location where the building must be built (top left corner)</param>
+        /// <param name="y">Ordinate of the location where the building must be built (top left corner)</param>
+        /// <param name="builders">List of builders who build this building</param>
+        /// <param name="name">Name of Building (It allows to put the name of the sports infrastructure at its creation)</param>
         public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> builders, string name)
         {
             _buildingType = type;
@@ -25,6 +37,7 @@ namespace Colony
             _creationTurn = 0;
             _name = name;
 
+            //Calculates the turn where the creation of the building will be finished
             foreach (Builder builder in builders)
             {
                 _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb);  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
@@ -32,27 +45,49 @@ namespace Colony
             _turnNb = turnNb;
         }
 
+        /// <summary>
+        /// Returns the name of the building
+        /// </summary>
         public string Name
         {
             get { return _name; }
         }
 
+        /// <summary>
+        /// Returns the building type
+        /// </summary>
         public string BuildingType
         {
             get { return _buildingType; }
         }
+
+        /// <summary>
+        /// Returns the abscissa of the top left corner of the building
+        /// </summary>
         public int X
         {
             get { return _x; }
         }
+
+        /// <summary>
+        /// Returns the ordinate of the top left corner of the building
+        /// </summary>
         public int Y
         {
             get { return _y; }
         }
+
+        /// <summary>
+        /// Returns the list of builders who build this building
+        /// </summary>
         public List<Settler> Settlers//TODO cahnger le nom de la variable
         {
             get { return _settlers; }
         }
+
+        /// <summary>
+        /// Returns the turn where the building creation will be finished
+        /// </summary>
         public int CreationTurn
         {
             get { return _creationTurn; }
@@ -63,14 +98,16 @@ namespace Colony
     {
         private List<Building> _buildings = new List<Building>();
         private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
-        private int _maxNbSettlers;
+        private int _maxNbSettlers; //TOTO inutile je crois Alex
         private int _lenght;
         private int _width;
         private string[,] _gameBoardBuilder;
         private List<Settler>[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
-        
 
+        /// <summary>
+        /// Builder that allows you to create a village
+        /// </summary>
         public Village()
         {
             _lenght = 20;
@@ -105,31 +142,50 @@ namespace Colony
             AddSettler(s4);
         }
 
+        /// <summary>
+        /// Return the game board containing the buildings
+        /// </summary>
         public string[,] GameBoardBuilder
         {
             get { return _gameBoardBuilder; }
         }
 
+        /// <summary>
+        /// Return the game board containing the settlers
+        /// </summary>
         public List<Settler>[,] GameBoardSettler
         {
             get { return _gameBoardSettler; }
         }
+
+        /// <summary>
+        /// Returns the width of the board
+        /// </summary>
         public int Width
         {
             get { return _width; }
         }
 
+        /// <summary>
+        /// Returns the length of the board
+        /// </summary>
         public int Lenght
         {
             get { return _lenght; }
         }
 
+        /// <summary>
+        /// Returns the list of buildings present in the village
+        /// </summary>
         public List<Building> Buildings
         {
             get { return _buildings; }
         }
-        public List<InConstructionBuilding> InConstruction
 
+        /// <summary>
+        /// Returns and modifies the list of buildings under construction
+        /// </summary>
+        public List<InConstructionBuilding> InConstruction
         {
             get { return _inConstruction; }
             set { _inConstruction = value;  }
@@ -146,11 +202,18 @@ namespace Colony
             return retour;
         }
 
+        /// <summary>
+        /// Returns the list of settlers present in the village
+        /// </summary>
         public List<Settler> GetSettlers()
         {
             return _settlers;
         }
 
+        /// <summary>
+        /// Returns the number of settlers available in the village
+        /// </summary>
+        /// <param name="type">We enter the type of settlers whose information we want to know ("A" for an athlete, "B" for a builder and "C" for a coach)</param>
         public int NbSettlerAvailable(string type)
         {
             return FindAvailable(type).Count();
@@ -175,11 +238,19 @@ namespace Colony
         }
 
 
+        /// <summary>
+        /// Allows you to add a building in the game by adding it to the list of buildings present in the village
+        /// </summary>
+        /// <param name="building">We enter the building we want to add</param>
         public void AddBuildings(Building building)
         {
             _buildings.Add(building);
         }
 
+        /// <summary>
+        /// Allows you to add a settler to the list of settlers present in the village
+        /// </summary>
+        /// <param name="settler">Settler you want to add</param>
         public void AddSettler(Settler settler)
         {
             while (_gameBoardSettler[settler.X, settler.Y].Count != 0)
@@ -209,8 +280,8 @@ namespace Colony
                     }
                     else if(_buildings[i] is Hotel) 
                     {
-                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
-                        settler.Buildings[0] = _buildings[i]; //Tentative Roche
+                        _buildings[i].Settlers.Add(settler);
+                        settler.Buildings[0] = _buildings[i]; 
                     }
                     else if (_buildings[i].Type == "R")
                     {
@@ -223,7 +294,11 @@ namespace Colony
 
         }
 
-     
+
+        /// <summary>
+        /// See if there's room left in the restaurants
+        /// </summary>
+        /// <returns>returns true if there is space, false otherwise</returns>
         public bool FreeRestaurantPlaces()
         {
             bool places = false;
@@ -235,6 +310,11 @@ namespace Colony
             }
             return places;
         }
+
+        /// <summary>
+        /// See if there's room left in the hotels
+        /// </summary>
+        /// <returns>returns true if there is space, false otherwise</returns>
         public bool FreeHotelPlaces()
         {
             bool places = false;
@@ -248,14 +328,21 @@ namespace Colony
             return places;
         }
 
+        /// <summary>
+        /// See if it is possible to welcome new settlers in the village
+        /// </summary>
+        /// <returns>Returns true if there is at least one place left, false otherwise</returns>
         public bool CanRecruit()
         {
             return FreeHotelPlaces() && FreeRestaurantPlaces();
         }
 
 
-
-        public void CreationBuilding(Building building) //Création du building dans le plateau
+        /// <summary>
+        /// Creation of the building in the board
+        /// </summary>
+        /// <param name="building">We enter the building we want to create</param>
+        public void CreationBuilding(Building building) 
         {
             int nbColumns = 0;
             int nbLines = 0;
@@ -282,6 +369,10 @@ namespace Colony
             }
         }
 
+        /// <summary>
+        /// Creates a building under construction
+        /// </summary>
+        /// <param name="inConstruction">The building that is under construction</param>
         public void CreatePendingBuilding(InConstructionBuilding inConstruction)
         {
             int nbColumns = 0;

@@ -16,7 +16,9 @@ namespace Colony
         private List<Settler> _settlersUnavailableSleep = new List<Settler>();
         private List<int> _settlersTowerUnavailableSleep = new List<int>();
 
-
+        /// <summary>
+        /// Constructor that allows you to create a simulation, with an initial turn number of 1, and that contains a village
+        /// </summary>
         public Simulation()
         {
             _turnNb = _turn;
@@ -41,19 +43,21 @@ namespace Colony
             return retour;
         }
 
-        //Méthode qui nous permet de jouer
+        /// <summary>
+        /// This method allows the launch and continuation of the game
+        /// </summary>
         public void Play()
         {
             bool end = false;
-            while (!end && _turnNb < 100)
+            while (!end && _turnNb < 100) //As long as we haven't exceeded the number of turns around, or we haven't won the game, we play and move on to the next round
             {
-                FinishedSleepingOrEating(); //Tentative Roche
-                GoEatAndSleep(); //Tentative Roche
-                foreach (Settler settler in _village.GetSettlers())
-                Console.WriteLine(settler);
+                FinishedSleepingOrEating();//Tentative Roche
+                GoEatAndSleep();//Tentative Roche
+                foreach (Settler settler in _village.GetSettlers())//TOTO jsp si c'est à supprimer
+                    Console.WriteLine(settler);
                 PendingBuildingCreation();
 
-                if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
+                if (Proceed()) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
                 {
                     foreach (Building building in _village.Buildings)
                     {
@@ -137,8 +141,11 @@ namespace Colony
 
         }
 
-
-        public bool Proceed() //Permet de savoir si des actions sont réalisable, si c'est pas le cas on passe au tour suivant
+        /// <summary>
+        /// Allows you to know if actions are possible on this turn
+        /// </summary>
+        /// <returns>If we can perform actions on this turn it returns true, otherwise it returns false</returns>
+        public bool Proceed() 
         {
             bool proceed = false;
             if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
@@ -156,8 +163,10 @@ namespace Colony
         }
 
 
-        //Crée les building qui sont en cours de création si on est bien à leur tour de création
-        public void PendingBuildingCreation()//TODO a déplacer dans la classe village
+        /// <summary>
+        /// Create the buildings that are being created if it is their turn to create
+        /// </summary>
+        public void PendingBuildingCreation()
         {
             foreach ( InConstructionBuilding inConstruction in _village.InConstruction)
             {
@@ -197,7 +206,9 @@ namespace Colony
             }
         }
 
-        //Affiche le plateau de jeu
+        /// <summary>
+        /// Display the game board
+        /// </summary>
         public void DisplayGameBoard()
         {
             for (int i = 0; i < _village.Lenght; i++)
@@ -287,18 +298,25 @@ namespace Colony
             Console.Write("\n");
         }
 
-       
 
-        public bool FreeSpaceBuilding(string type, int x, int y) //Verifie si l 'espace est pas déjà occupé ou si ca sort pas du plateau
+        /// <summary>
+        /// Check if the space is not already occupied or if it does not come out of the board
+        /// </summary>
+        /// <param name="type">type of building you want to build</param>
+        /// <param name="x">Abscissa of the top left corner of where you want to build the building</param>
+        /// <param name="y">Ordinate of the top left corner of where you want to build the building</param>
+        /// <returns>returns true if space is free, false if space is unavailable or does not exist (game board exit)</returns>
+        public bool FreeSpaceBuilding(string type, int x, int y) 
         {
             int lines;
             int columns;
+            bool freeSpaceBuilding = true;
             lines = Building.GetLinesNb(type);
             columns = Building.GetColumnsNb(type);
             if (x + lines >= _village.GameBoardBuilder.GetLength(0) || y + columns >= _village.GameBoardBuilder.GetLength(1))
             {
                 Console.WriteLine("Vous ne pouvez pas construire ici, vous sortirez du plateau de jeu");
-                return false;
+                freeSpaceBuilding = false;
             }
             for (int i = x; i <= x + lines - 1; i++)
             {
@@ -307,13 +325,17 @@ namespace Colony
                     if (_village.GameBoardBuilder[i, j] != null)//O=Place  occupé par batiment, j'ai pas toruvé mieux, dans l'idéal juste colorier case
                     {
                         Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà ou qui est en cours de construction, choisi un autre emplacement!");
-                        return false;
+                        freeSpaceBuilding = false;
                     }
                 }
             }
-            return true;
+            return freeSpaceBuilding;
         }
 
+        /// <summary>
+        /// Method that offers the player to create a building
+        /// </summary>
+        /// <returns>Returns true if the player has chosen to build a building, false otherwise</returns>
         public bool CreateBuilding()
         {
             Console.WriteLine("Entrez 0 pour revenir en arrière");
@@ -423,7 +445,10 @@ namespace Colony
             return creation;
         }
 
-
+        /// <summary>
+        /// Method that allows the player to choose which sports infrastructure he wants to build
+        /// </summary>
+        /// <returns>returns the name of the sports infrastructure to create</returns>
         public string ChoiceSportsInfrastructure()
         {
             Console.WriteLine("Choisissez l'infrastructure sportive que vous souhaitez construire");
@@ -485,11 +510,11 @@ namespace Colony
 
         }
 
-
-        public bool createSettler() //Je l'ai mis en public temporairement pour les tests
-                                 //Faut ajouter que quand on crée bonhomme ça remplie son emplacement dans le plateau
-                                 //Jsp si le mieux c'est de remplir de tableau, et modifier à chaque fois que le personnage bouge, ou si c'est dans
-                                 //l'affichage qu'on cherche les position x et y  de chaque sellter (risquer car peut sortir du plateau)
+        /// <summary>
+        /// Méthode qui permet au joueur de choisir le colon qu'il souhaite recruter
+        /// </summary>
+        /// <returns>Returns true if he chose to recruit a colonist, false otherwise</returns>
+        public bool createSettler()
         {
             Console.WriteLine("Entrez 0 pour revenir en arrière");
             Console.WriteLine("Entrez 1 pour recruter un Batisseur");
@@ -534,7 +559,10 @@ namespace Colony
             return creation;
         }
 
-
+        /// <summary>
+        /// Method which allows the player to choose the nationality and the sport of the athlete he wants to recruit, and to create it
+        /// </summary>
+        /// <returns>Returns false if ultimately he does not wish to recruit an athlete, true otherwise</returns>
         private bool CreateAthletics()
         {
             bool createAthletics = true;
@@ -633,10 +661,13 @@ namespace Colony
                 }
             }
 
-            return createAthletics;            
+            return createAthletics;
         }
 
-
+        /// <summary>
+        /// Method that allows you to know if you can recruit an athlete (you can if there is at least one sports infrastructure on the game board)
+        /// </summary>
+        /// <returns>Returns true if there is a sports infrastructure present and therefore if an athlete can be recruited, false otherwise</returns>
         public bool CanRecruitAthlete()
         {
             bool canRecruitAthlete = false;
@@ -647,7 +678,9 @@ namespace Colony
         }
 
 
-        //Send settlers to eat or sleep as needed
+        /// <summary>
+        /// //Send settlers to eat or sleep if they need it
+        /// </summary>
         public void GoEatAndSleep() //Tentative Roche
         {
             foreach (Settler settler in _village.GetSettlers())
@@ -680,8 +713,9 @@ namespace Colony
             }
         }
 
-
-        //Make available colonists who have finished eating or sleeping, and complete their level of hunger or fatigue
+        /// <summary>
+        /// Makes colonists who have finished eating or sleeping available again, and completes their level of hunger or fatigue
+        /// </summary>
         public void FinishedSleepingOrEating() //Tentative Roche
         {
             for (int i = 0; i < _settlersTowerUnavailableEat.Count; i++)//Ca regarde tous les tours des colons indispo car  faim

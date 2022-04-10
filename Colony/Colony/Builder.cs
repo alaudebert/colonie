@@ -9,6 +9,10 @@ namespace Colony
     class Builder : Settler
     {
         private static int _builderNb;
+
+        /// <summary>
+        /// Builder that allows you to create a builder
+        /// </summary>
         public Builder() : base() 
         {
             _builderNb++;

@@ -9,6 +9,10 @@ namespace Colony
     class Coach : Settler
     {
         private static int _coachNb = 0;
+
+        /// <summary>
+        /// Constructor that allows you to create a coach
+        /// </summary>
         public Coach() : base() 
         {
             _type = "C";
