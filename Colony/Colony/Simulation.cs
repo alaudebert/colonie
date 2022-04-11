@@ -167,6 +167,12 @@ namespace Colony
             int id = int.Parse(Console.ReadLine());
             return _village.FindById(id);
         }
+
+        /// <summary>
+        /// Allows you to know if actions are possible on this turn
+        /// </summary>
+        /// <returns>If we can perform actions on this turn it returns true, otherwise it returns false</returns>
+
         public bool Proceed() //Permet de savoir si des actions sont réalisable, si c'est pas le cas on passe au tour suivant
         {
             bool proceed = false;
