@@ -15,6 +15,12 @@ namespace Colony
         public static int _turnNb = 2;
         public int _linesNb;
         public int _columnsNb;
+
+        /// <summary>
+        /// Constructeur qui permet de créer un restaurant 
+        /// </summary>
+        /// <param name="x">Abscissa of the top left corner of the building from where it is positioned on the platform</param>
+        /// <param name="y">Ordinate  of the top left corner of the building from where it is positioned on the platform</param>
         public Restaurant(int x, int y) : base(x, y)
         {
             _totalPlace = 10;
@@ -28,10 +34,17 @@ namespace Colony
             _settlers = new Settler[10]; 
         }
 
+        /// <summary>
+        /// It gives us a dimension of the restaurant: the number of lines it takes up on the game board
+        /// </summary>
         public int LinesNb
         {
             get { return Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0]; }
         }
+
+        /// <summary>
+        /// It returns a dimension of the restaurant: the number of columns it takes up on the game board
+        /// </summary>
         public int ColumnsNb
         {
             get { return Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1]; }

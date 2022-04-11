@@ -10,6 +10,10 @@ namespace Colony
     {
         private static int _builderNb;
         private string _type;
+
+        /// <summary>
+        /// Builder that allows you to create a builder
+        /// </summary>
         public Builder() : base() 
         {
             _builderNb++;

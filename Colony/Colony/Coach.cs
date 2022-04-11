@@ -10,7 +10,11 @@ namespace Colony
     {
         private static int _coachNb = 0;
         private static string _type;
-        public Coach() : base()
+
+        /// <summary>
+        /// Constructor that allows you to create a coach
+        /// </summary>
+        public Coach() : base() 
         {
             _type = "C";
             SettlerType = _type;

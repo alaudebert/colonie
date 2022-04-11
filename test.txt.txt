@@ -29,3 +29,10 @@ Ajouter la possibilité de relancer une partie quand le jeu est fini (que ce soi
 
  //Tentative Roche
 Pour retrouver mes nouvelles méthodes
+
+Je pense qu'il faut supprimer les nationalités des sportifs
+
+Supprimer les commentaires 
+ //Tentative Roche (j'ai pas osé les supprimer je savais pas ou t'en étais)
+//Alex
+une fois que ça a bie été vérifié

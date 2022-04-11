@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Colony
 {
-    class ReceptionBuilding : Building
+    class ReceptionBuilding : Building //Inutile je crois Alex
     {
-        protected List<Settler> settlers;
-        protected int _totalPlace;
+        protected List<Settler> settlers; //Inutile je crois Alex
+        protected int _totalPlace; //Inutile je crois Alex
 
-        public ReceptionBuilding(int x, int y) : base(x, y)
+        public ReceptionBuilding(int x, int y) : base(x, y) //Inutile je crois Alex
         {
             _x = x;
             _y = y;
