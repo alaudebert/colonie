@@ -241,7 +241,10 @@ namespace Colony
 
         }
 
-
+        // <summary>
+        /// See if there's room left in the restaurants
+        /// </summary>
+        /// <returns>returns true if there is space, false otherwise</returns>
         public bool FreeRestaurantPlaces()
         {
             bool places = false;
