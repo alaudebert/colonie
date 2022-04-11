@@ -22,7 +22,6 @@ namespace Colony
 
         public override string ToString()
         {
-
             string retour = "\nMA SIMULATION : \nMon village est le suivant : \n" + _village.ToString();
             retour += "\nIl y a : " + _village.Buildings.Count() + " batiments\n";
             if (_village.Buildings.Count() != 0)
@@ -40,22 +39,19 @@ namespace Colony
         //Méthode qui nous permet de jouer
         public void Play()
         {
-            bool end = false;
+            Console.WriteLine("----------------" + _village.ProfessionnelNb);
+            bool end = _village.ProfessionnelNb == 3;
             while (!end && _turnNb < 100)
             {
                 PendingBuildingCreation();
-                foreach (Settler settler in _village.GetSettlers())
-                {
-                    settler.Play(_village.GameBoardSettler, _turnNb);
-                    Console.WriteLine(settler);
-                }
-                if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
+                if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb) || _village.CanTrain()) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
                 {
                     Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
                     DisplayGameBoard();
 
                     bool buildBuilding = true;
                     bool recruitSettler = true;
+                    bool trainAthetics = true;
                     Console.WriteLine("Entrez 0 pour passer au tour suivant sans effectuer aucune action");
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb))
                     {
@@ -82,6 +78,15 @@ namespace Colony
                             Console.WriteLine("Il vous faut un restaurant");
                         }
                         recruitSettler = false;
+                    }
+                    if (_village.CanTrain())
+                    {
+                        Console.WriteLine("Entrez 3 pour entrainer un sportif");
+                    }
+                    else
+                    {
+                        trainAthetics = false;
+                        Console.WriteLine("Vous n\'avez pas de sportif à entrainer");
                     }
 
 
@@ -111,6 +116,20 @@ namespace Colony
                                 creation = false;
                             }
                             break;
+                        case 3:
+                            if (trainAthetics)
+                            {
+                                creation = _village.CanTrain();
+                                Coach coach = _village.CanBeCoach();
+                                Athletic athlete = ChooseAnAthlete();
+                                if (coach != null)
+                                {
+                                    athlete.myCoach = coach;
+                                }
+                                athlete.Train(coach, _turnNb);
+                            }
+
+                            break;
                         default:
                             Console.WriteLine("Votre réponse n'est pas valide");
                             creation = false;
@@ -124,11 +143,30 @@ namespace Colony
                 {
                     _turnNb++;
                 }
+                foreach (Settler settler in _village.GetSettlers())
+                {
+                    settler.Play(_village.GameBoardSettler, _turnNb);
+                    Console.WriteLine(settler);
+                }
             }
 
         }
 
-
+        public Athletic ChooseAnAthlete()
+        {
+            Athletic athlete = null;
+            List<Settler> settlers = _village.GetSettlers();
+            for (int i=0;  i < settlers.Count; i++)
+            {
+                if (settlers[i] is Athletic && settlers[i].Available)
+                {
+                    athlete = (Athletic)settlers[i];
+                    Console.WriteLine("Tapez {0} pour entrainer le {1} {2}", athlete.AthleticNb, athlete.Sport, athlete.Nationality);
+                }
+            }
+            int id = int.Parse(Console.ReadLine());
+            return _village.FindById(id);
+        }
         public bool Proceed() //Permet de savoir si des actions sont réalisable, si c'est pas le cas on passe au tour suivant
         {
             bool proceed = false;
@@ -607,9 +645,9 @@ namespace Colony
                     {
                         Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                     }
-                }
+                }//Attention tester avec le mauvais numéros
 
-                    Athletic athletic = new Athletic(nationality2, sport2);
+                    Athletic athletic = new Athletic(nationality2, sport2, _village);
                     _village.AddSettler(athletic);
                     Console.WriteLine("Vous avez recruté un nouveau sportif : ");
                     Console.WriteLine(athletic);

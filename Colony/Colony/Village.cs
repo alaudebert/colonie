@@ -18,6 +18,7 @@ namespace Colony
 
         public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> builders, string name)
         {
+
             _buildingType = type;
             _x = x;
             _y = y;
@@ -62,7 +63,7 @@ namespace Colony
     class Village
     {
         private List<Building> _buildings = new List<Building>();
-        private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
+        private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>();
         private int _maxNbSettlers;
         private int _lenght;
         private int _width;
@@ -70,11 +71,13 @@ namespace Colony
         private List<Settler>[,] _gameBoardSettler;
         private List<Settler> _settlers = new List<Settler>();
         public Dictionary<string, bool> SportsInfrastructures { get; set; }
+        public int ProfessionnelNb { get; set; }
 
 
 
         public Village()
         {
+            ProfessionnelNb = 0;
             SportsInfrastructures = new Dictionary<string, bool>();
             SportsInfrastructures.Add("Piscine olympique", false);
             SportsInfrastructures.Add("Terrain de sport collectif intérieur", false);
@@ -88,7 +91,7 @@ namespace Colony
             {
                 for (int y = 0; y < _lenght; y++)
                 {
-                    GameBoardSettler[y,i] = new List<Settler>();
+                    GameBoardSettler[y, i] = new List<Settler>();
                 }
             }
             Restaurant restaurant = new Restaurant(8, 8);
@@ -139,14 +142,14 @@ namespace Colony
 
         {
             get { return _inConstruction; }
-            set { _inConstruction = value;  }
+            set { _inConstruction = value; }
         }
 
         public override string ToString()
         {
             string retour = "Mon village est composé de " + _settlers.Count() + " colons. Les voicis : \n";
             foreach (Settler settler in _settlers)
-                retour += settler.ToString(); 
+                retour += settler.ToString();
             retour += "Mon village est composé de " + _buildings.Count() + " batiments. Les voici : \n ";
             foreach (Building building in _buildings)
                 retour += building.ToString();
@@ -191,7 +194,7 @@ namespace Colony
         {
             while (_gameBoardSettler[settler.X, settler.Y].Count != 0)
             {
-                if (settler.Y < _width) 
+                if (settler.Y < _width)
                 {
                     settler.Y++;
                 }
@@ -205,9 +208,15 @@ namespace Colony
             int i = 0;
             bool addHotel = false;
             bool addRestaurant = false;
-            while (i<_buildings.Count() && ( addHotel == false || addRestaurant == false) )
+            bool addSportInfrstructure = false;
+            bool canAddSportInfrastructure = settler is Athletic;
+            if (settler is SportsInfrastructure)
             {
-                if (_buildings[i].haveFreePlace()) 
+                canAddSportInfrastructure = true;
+            }
+            while (i < _buildings.Count() && (addHotel == false || addRestaurant == false || addSportInfrstructure == canAddSportInfrastructure))
+            {
+                if (_buildings[i].haveFreePlace())
                 {
                     if (_buildings[i] is Restaurant)
                     {
@@ -215,10 +224,16 @@ namespace Colony
                         settler.Buildings[1] = _buildings[i];
                         addRestaurant = true;
                     }
-                    else if(_buildings[i] is Hotel) 
+                    else if (_buildings[i] is Hotel)
                     {
                         _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
                         settler.Buildings[0] = _buildings[i]; //Tentative Roche
+                    }
+                    else if (canAddSportInfrastructure && _buildings[i] is SportsInfrastructure)
+                    {
+                        _buildings[i].Settlers.Add(settler);
+                        settler.Buildings[2] = _buildings[i];
+                        addSportInfrstructure = true;
                     }
                 }
                 i++;
@@ -226,14 +241,14 @@ namespace Colony
 
         }
 
-     
+
         public bool FreeRestaurantPlaces()
         {
             bool places = false;
             foreach (Building building in _buildings)
             {
-                if (building.Type == "R" && building.Settlers.Count() < building.TotalPlace){
-                        places = true;
+                if (building.Type == "R" && building.Settlers.Count() < building.TotalPlace) {
+                    places = true;
                 }
             }
             return places;
@@ -254,6 +269,64 @@ namespace Colony
         public bool CanRecruit()
         {
             return FreeHotelPlaces() && FreeRestaurantPlaces();
+        }
+
+        public Coach CanBeCoach()
+        {
+            bool available = false;
+            int i = 0;
+            Coach coach = null;
+            while (i < _settlers.Count && !available)
+            {
+                if (_settlers[i] is Coach && _settlers[i].Available)
+                {
+                    available = true;
+                    coach = (Coach)_settlers[i];
+                }
+                i++;
+            }
+            return coach;
+        }
+
+        public void GetInfrastructureByType(string name){
+            SportsInfrastructure sportsInfrastructure = null;
+            int i = 0;
+            bool findInfrastructure = false;
+            while(i<_buildings.Count && findInfrastructure){
+                if (_buildings[i] is SportsInfrastructure && _buildings[i].Name == name)
+                {
+                    sportsInfrastructure = (SportsInfrastructure)_buildings[i];
+                }
+            }
+            
+            }
+        public Athletic FindById(int id)
+        {
+            Athletic ourAthlete = null;
+            foreach(Settler settler in _settlers)
+            {
+                if (settler is Athletic)
+                {
+                    Athletic athlete = (Athletic)settler;
+                    if (athlete.AthleticNb == id)
+                    {
+                        ourAthlete = athlete;
+                    }
+                }
+            }
+            return ourAthlete;
+        }
+        public bool CanTrain()
+        {
+            bool canTrain = false;
+            foreach(Settler settler in _settlers)
+            {
+                if(settler is Athletic && settler.Available)
+                {
+                    canTrain = true;
+                }
+            }
+            return canTrain;
         }
 
 

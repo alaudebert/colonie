@@ -8,7 +8,6 @@ namespace Colony
 {
     abstract class Settler
     {
-        protected static int _settlersNb = 0;
         protected string _id;
         public static int Energy = 50;
         public static int Hunger = 30;
@@ -18,27 +17,26 @@ namespace Colony
         protected bool _available;
         public int NbTunrBeforeAvailable { get; set; }
         protected int _decreasingEnergy = 1;
-        protected int _decreasingHunger = 1;
+        protected int _decreasingHunger = 2;
         protected int _timeToEat = 3;
         protected int _timeToSleep = 5;
         protected int _x, _y;
         public int[] _itinerary = { 0, 0 };
-        protected Building[] _buildings = new Building[2];
+        protected Building[] _buildings;
         public string SettlerType { get; set; }
 
 
         public Settler()
         {
+            _buildings = new Building[2];
             NbTunrBeforeAvailable = 0;
             IsInActivity = false;
-            _settlersNb++;
             _energyState = Energy;
             _hungerState = Hunger;
             _x = 0;
             _y = 0;
-            //_available = true;
         }
-
+ 
         public int EnergyState
         {
             get { return _energyState; }
@@ -120,7 +118,6 @@ namespace Colony
                 }
                 else
                 {
-                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
                         _energyState = Energy;

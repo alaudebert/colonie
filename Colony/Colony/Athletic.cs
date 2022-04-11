@@ -9,37 +9,53 @@ namespace Colony
     class Athletic : Settler
     {
         public static int LevelIncrease = 1;
-        private static int _athleticNb;
+        private static int _idIncrease = 1;
+        public int AthleticNb { get; set; }
         private int _level;
-        private string _sport;
-        private string _nationality;
+        public string Sport { get; set; }
+        public string Nationality { get; set; }
         private int _session = 0;
-        private string _type;
+        private static string _type;
+        private bool IsTraining { get; set; }
+        public Coach myCoach { get; set; }
+        private Village _village;
 
 
-        public Athletic(string nationality, string sport) : base()
+        public Athletic(string nationality, string sport, Village village) : base()
         {
-            _athleticNb++;
-            SettlerType = _type;
+            _level = 0;
+            _village = village;
+            _buildings = new Building[3];
+            myCoach = null;
+            IsTraining = false;
+            AthleticNb = _idIncrease;
             _type = "A";
-            _id = _type + _athleticNb.ToString();
-            _nationality = nationality;
-            _sport = sport;
-            _decreasingEnergy = 5;
-            _decreasingHunger = 6;
+            SettlerType = _type;
+            _id = _type + AthleticNb.ToString();
+            Nationality = nationality;
+            Sport = sport;
         }
 
         public string Type
         {
             get { return _type; }
         }
-        public override void Play(List<Settler>[,] gameBoardSettler, int turnNb)
+
+        public override void Play(List<Settler>[,] GameBoardSettler, int turnNb)
         {
+
+            if (IsTraining)
+            {
+                _decreasingEnergy = 2;
+                _decreasingHunger = 3;
+                Train(myCoach, turnNb);
+            }
+
             if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0)
             {
-                gameBoardSettler[_x, _y].Remove(this);
+                GameBoardSettler[_x, _y].Remove(this);
                 this.Move();
-                gameBoardSettler[_x, _y].Add(this);
+                GameBoardSettler[_x, _y].Add(this);
             }
 
             _energyState -= _decreasingEnergy;
@@ -57,7 +73,6 @@ namespace Colony
                 }
                 else
                 {
-                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
                         _energyState = Energy;
@@ -89,19 +104,57 @@ namespace Colony
                 }
             }
 
-            _session++;
-            if (_session == 3)
-            {
-                _session = 0;
-                _level+= LevelIncrease;
-            }
         }
 
 
+        public void Train(Coach coach, int turnNb)
+        {
+            if (!IsInActivity)
+            {
+                Building building = _buildings[2];
+                CalculatingItinerary(building.X, building.Y);
+                int itinerary = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]);
+                NbTunrBeforeAvailable = 4 + turnNb + itinerary;
+                IsInActivity = true;
+                IsTraining = true;
+                if (coach != null)
+                {
+                    myCoach.CalculatingItinerary(building.X, building.Y);
+                }
+            }
+            
+            if (NbTunrBeforeAvailable == turnNb) {
+                if (coach != null)
+                {
+                    coach.Lead(turnNb);
+                    myCoach = coach;
+                    _session += 2;
+                }
+                else
+                {
+                    _session++;
+                }
+                if (_session == 4)
+                {
+                    _session = 0;
+                    _level += LevelIncrease;
+                }
+                if (_session == 1)//Attention faut changer
+                {
+                    _village.ProfessionnelNb += 1;
+                }
+                IsInActivity = false;
+                IsTraining = false;
+                NbTunrBeforeAvailable = 0;
+                _decreasingEnergy = 1;
+                _decreasingHunger = 2;
+            }
+        }
+
         public override string ToString()
         {
-            return base.ToString() + "Son niveau : " + _level + "\nSport qu'il pratique : "
-                + _sport + "\nNationalité : " + _nationality + "\n"; ;
+            return base.ToString() + "Son niveau : " + _level + "Son nombre de session" + _session + "\nSport qu'il pratique : "
+                + Sport + "\nNationalité : " + Nationality + "\n"; ;
         }
 
         public int getLevel()

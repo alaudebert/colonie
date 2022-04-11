@@ -16,10 +16,24 @@ namespace Colony
             SettlerType = _type;
             _coachNb++;
             _id = _type + _coachNb.ToString();
-            _decreasingHunger = 5;
-            _decreasingEnergy = 5;
+            _decreasingHunger = 3;
+            _decreasingEnergy = 3;
         }
 
+        public void Lead(int turnNb)
+        {
+            if (!IsInActivity)
+            {
+                NbTunrBeforeAvailable = 4 + turnNb;
+                IsInActivity = true;
+            }
+
+            if (NbTunrBeforeAvailable == turnNb)
+            {
+                IsInActivity = false;
+                NbTunrBeforeAvailable = 0;
+            }
+        }
         public string Type
         {
             get { return _type; }
