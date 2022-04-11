@@ -11,10 +11,6 @@ namespace Colony
         private Village _village;
         private static int _turn = 1;
         private int _turnNb;
-        private List<Settler> _settlersUnavailableEat = new List<Settler>();
-        private List<int> _settlersTowerUnavailableEat = new List<int>();
-        private List<Settler> _settlersUnavailableSleep = new List<Settler>();
-        private List<int> _settlersTowerUnavailableSleep = new List<int>();
 
         /// <summary>
         /// Constructor that allows you to create a simulation, with an initial turn number of 1, and that contains a village
@@ -51,18 +47,14 @@ namespace Colony
             bool end = false;
             while (!end && _turnNb < 100) //As long as we haven't exceeded the number of turns around, or we haven't won the game, we play and move on to the next round
             {
-                FinishedSleepingOrEating();//Tentative Roche
-                GoEatAndSleep();//Tentative Roche
-                foreach (Settler settler in _village.GetSettlers())//TOTO jsp si c'est à supprimer
-                    Console.WriteLine(settler);
                 PendingBuildingCreation();
-
-                if (Proceed()) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
+                foreach (Settler settler in _village.GetSettlers())
                 {
-                    foreach (Building building in _village.Buildings)
-                    {
-                        _village.CreationBuilding(building);
-                    }
+                    settler.Play(_village.GameBoardSettler, _turnNb);
+                    Console.WriteLine(settler);
+                }
+                if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel._builderNb, Restaurant._builderNb), SportsInfrastructure._builderNb)) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
+                {
                     Console.WriteLine("Vous êtes au tour {0} \n --------- ", _turnNb);
                     DisplayGameBoard();
 
@@ -136,7 +128,6 @@ namespace Colony
                 {
                     _turnNb++;
                 }
-
             }
 
         }
@@ -170,12 +161,6 @@ namespace Colony
         {
             foreach ( InConstructionBuilding inConstruction in _village.InConstruction)
             {
-                foreach (Settler settler in inConstruction.Settlers)
-                {
-                    _village.GameBoardSettler[settler.X, settler.Y].Remove(settler);
-                    settler.Move();
-                    _village.GameBoardSettler[settler.X, settler.Y].Add(settler);
-                }
                 if (inConstruction.CreationTurn == _turnNb) 
                 { 
                     if(inConstruction.BuildingType == "H")
@@ -195,11 +180,11 @@ namespace Colony
                         SportsInfrastructure sportsInfrastructurel = new SportsInfrastructure(inConstruction.X, inConstruction.Y, inConstruction.Name);
                         _village.AddBuildings(sportsInfrastructurel); 
                         _village.CreationBuilding(sportsInfrastructurel);
+                        _village.SportsInfrastructures[inConstruction.Name] = true;
                     }
                     foreach (Settler builder in inConstruction.Settlers)
                     {
-                        builder.Play();
-                        builder.Available = true;
+                        builder.IsInActivity = false;
                     }
                 }
              
@@ -355,7 +340,6 @@ namespace Colony
             }
             if (_village.NbSettlerAvailable("B") >= SportsInfrastructure._builderNb)//TODO les conditions pour construire une infrastructure ne sont pas les mêmes
             {
-                Console.WriteLine(_village.NbSettlerAvailable("B") + " "+SportsInfrastructure._builderNb); //A supprimer je crois
                 Console.WriteLine("Entrez 3 pour créer une Infrastructure Sportive");
                 createSportsInfrastructure = true;
             }
@@ -377,11 +361,12 @@ namespace Colony
                         if (FreeSpaceBuilding(Hotel.type, x, y))//TODO faire une fonction pour empecher la recurrence de code
                         {
                             nbBuilders = Hotel._builderNb;
-                            List<Settler> settlers = BusyBulderList(nbBuilders); foreach (Settler settler in settlers)
+                            List<Settler> settlers = BusyBulderList(nbBuilders); 
+                            foreach (Settler settler in settlers)
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("H", Hotel._turnNb, x, y, settlers, "");
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("H", Hotel._turnNb+_turnNb, x, y, settlers, "");
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
@@ -403,14 +388,14 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("R", Restaurant._turnNb, x, y, settlers, "");
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("R", Restaurant._turnNb + _turnNb, x, y, settlers, "");
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
                         }
                     }
                     else
-                        Console.WriteLine("Cette réponse n'est pas valide car tu n'as pas assez de batisseur pour construire un restaurat, choisi une réponse qui t'es proposé");
+                        Console.WriteLine("Cette réponse n'est pas valide car tu n'as pas assez de batisseur pour construire un restaurant, choisi une réponse qui t'es proposé");
                 }
                 else if (create == 3)
                 {
@@ -425,7 +410,7 @@ namespace Colony
                             {
                                 settler.CalculatingItinerary(x, y);
                             }
-                            InConstructionBuilding inConstruction = new InConstructionBuilding("S", SportsInfrastructure._turnNb, x, y, settlers, sportsinfrasctructure);
+                            InConstructionBuilding inConstruction = new InConstructionBuilding("S", SportsInfrastructure._turnNb + _turnNb, x, y, settlers, sportsinfrasctructure);
                             _village.InConstruction.Add(inConstruction);
                             creation = true;
                             _village.CreatePendingBuilding(inConstruction);//J'essaye
@@ -452,34 +437,18 @@ namespace Colony
         public string ChoiceSportsInfrastructure()
         {
             Console.WriteLine("Choisissez l'infrastructure sportive que vous souhaitez construire");
-            Console.WriteLine("Entrez 1 pour une salle de musculation \nEntrez 2 pour une piste d'athlétisme \nEntrez 3 pour une piscine olympique \nEntrez 4 pour un terrain de tennis \nEntrez 5 pour un terrain de basket \nEntrez 6 pour un terrain de football \nEntrez 7 pour un terrain de volley");
+            Console.WriteLine("Entrez 1 pour une piscine olympique \nEntrez 2 pour un terrain de sport collectif intérieur \nEntrez 3 pour un stade");
             int infrasctructure = int.Parse(Console.ReadLine());
             string sportsinfrasctructure = "";
             if (infrasctructure == 1)
-                sportsinfrasctructure = "Salle de musculation";
+                sportsinfrasctructure = "Piscine olympique";
             else if (infrasctructure == 2)
             {
-                sportsinfrasctructure = "Piste d'athlétisme";
+                sportsinfrasctructure = "Terrain de sport collectif intérieur";
             }
             else if (infrasctructure == 3)
             {
-                sportsinfrasctructure = "Piscine olympique";
-            }
-            else if (infrasctructure == 4)
-            {
-                sportsinfrasctructure = "Terrain de tennis";
-            }
-            else if (infrasctructure == 5)
-            {
-                sportsinfrasctructure = "Terrain de basket";
-            }
-            else if (infrasctructure == 6)
-            {
-                sportsinfrasctructure = "Terrain de football";
-            }
-            else if (infrasctructure == 7)
-            {
-                sportsinfrasctructure = "Terrain de volley";
+                sportsinfrasctructure = "Stade";
             }
             else
             {
@@ -503,7 +472,7 @@ namespace Colony
                 nbAvailable = _village.FindAvailable("B").Count();
                 Console.WriteLine(nbAvailable);
                 busyBuilder.Add(_village.FindAvailable("B")[0]);
-                _village.FindAvailable("B")[0].Available = false;
+                _village.FindAvailable("B")[0].IsInActivity = true;
             }
 
             return busyBuilder;
@@ -542,14 +511,9 @@ namespace Colony
             }
             else if (create == 3)
             {
-                if (CanRecruitAthlete())
-                {
-                    bool createAthletic = CreateAthletics();
-                    if (createAthletic == false)
-                        createSettler();
-                }
-                else
-                    Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive, veuillez entrer une réponse valide");
+                bool createAthletic = CreateAthletics();
+                if (createAthletic == false)
+                    createSettler();
             }
             else
             {
@@ -595,73 +559,90 @@ namespace Colony
             {
                 string sport2 = "";
                 string infrastructure = "";
-
+                bool swimingPool = false;
+                bool field = false;
+                bool stage = false;
+                bool value;
                 while (sport2 == "")
                 {
-                    Console.WriteLine("Choisissez son sport : \nEntrez 1 pour du football \nEntrez 2 pour du volley \nEntrez 3 pour du tennis \nEntrez 4 pour du basketball \nEntrez 5 pour de la natation \nEntrez 6 pour de l'athlétisme \nEntrez 7 pour du crossfit");//A en rajouter 
+                    Console.WriteLine("Choisissez son sport :");
+                    _village.SportsInfrastructures.TryGetValue("Piscine olympique", out value);
+                    if (value == true)
+                    {
+                        Console.WriteLine("Entrez 1 pour de la natation ");
+                        swimingPool = true;
+                    }
+                    else
+                    {
+                        _village.SportsInfrastructures.TryGetValue("Terrain de sport collectif intérieur", out value);
+                        if (value == true)
+                        {
+                            Console.WriteLine("Entrez 2 pour du volley ");
+                            Console.WriteLine("Entrez 3 pour du hand");
+                            Console.WriteLine("Entrez 4 pour du basket");
+                            field = true;
+                        }
+                        else
+                        {
+                            _village.SportsInfrastructures.TryGetValue("Stade", out value);
+                            if (value  == true)
+                            {
+                                Console.WriteLine("Entrez 5 pour du football ");
+                                Console.WriteLine("Entrez 6 pour du rugby");
+                                Console.WriteLine("Entrez 7 pour de l'athlétisme");
+                                stage = true;
+                            }
+                        }
+                    }
+                    
                     int sport = int.Parse(Console.ReadLine());
 
-                    switch (sport)
+                    if (sport == 1 && swimingPool)
                     {
-                        case 1:
-                            sport2 = "Football";
-                            infrastructure = "Terrain de football";
-                            break;
-                        case 2:
+                        sport2 = "Natation";
+                    }
+                    else if (field)
+                    {
+                        if (sport == 2)
+                        {
                             sport2 = "Volley";
-                            infrastructure = "Terrain de volley";
-                            break;
-                        case 3:
-                            sport2 = "Tennis";
-                            infrastructure = "Terrain de tennis";
-                            break;
-                        case 4:
+                        }
+                        else if (sport == 3)
+                        {
+                            sport2 = "Hand";
+                        }
+                        else if (sport == 4 && field)
+                        {
                             sport2 = "Basketball";
-                            infrastructure = "Terrain de basket";
-                            break;
-                        case 5:
-                            sport2 = "Natation";
-                            infrastructure = "Piscine olympique";
-                            break;
-                        case 6:
-                            sport2 = "Athlétisme";
-                            infrastructure = "Piste d'athlétisme";
-                            break;
-                        case 7:
-                            sport2 = "Crossfit";
-                            infrastructure = "Salle de musculation";
-                            break;
-                        default:
-                            Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
-                            break;
+                        }
                     }
-                }
-
-                bool construction = false;
-                foreach (Building building in _village.Buildings)
-                {
-                    if (building is SportsInfrastructure)
+                    else if (stage)
                     {
-                        if (building.Name == infrastructure)
-                            construction = true;
+                        if (sport == 5)
+                        {
+                            sport2 = "Football";
+                        }
+                        else if (sport == 6 && stage)
+                        {
+                            sport2 = "Rugby";
+                        }
+                        else if (sport == 7 && stage)
+                        {
+                            sport2 = "Athlétisme";
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                     }
                 }
 
-                if (construction == true)
-                {
                     Athletic athletic = new Athletic(nationality2, sport2);
                     _village.AddSettler(athletic);
                     Console.WriteLine("Vous avez recruté un nouveau sportif : ");
                     Console.WriteLine(athletic);
-                }
-                else
-                {
-                    Console.WriteLine("Vous ne pouvez pas recruter ce sportif car vous n'avez pas l'infrastructure spotive adapté à sa discipline");
-                    CreateAthletics();
-                }
             }
-
-            return createAthletics;
+            return createAthletics;            
         }
 
         /// <summary>
@@ -720,7 +701,7 @@ namespace Colony
         {
             for (int i = 0; i < _settlersTowerUnavailableEat.Count; i++)//Ca regarde tous les tours des colons indispo car  faim
             {
-                if (_settlersTowerUnavailableEat[i] == _turn) //Si on est au tour correspondant
+                if (_settlersTowerUnavailableEat[i] == _turnNb) //Si on est au tour correspondant
                 {
                     _settlersUnavailableEat[i].Available = true; //Le colons devient dispo
                     _settlersUnavailableEat[i].HungerState = Settler.Hunger; //On lui re rempli son niveau de faim
@@ -729,12 +710,12 @@ namespace Colony
 
             for (int i = 0; i < _settlersTowerUnavailableSleep.Count; i++)//Ca regarde tous les tours des colons indispo car fatigué
             {
-                if (_settlersTowerUnavailableSleep[i] == _turn) //Si on est au tour correspondant
+                if (_settlersTowerUnavailableSleep[i] == _turnNb) //Si on est au tour correspondant
                 {
                     _settlersUnavailableSleep[i].Available = true; //Le colons devient dispo
                     _settlersUnavailableSleep[i].EnergyState = Settler.Energy;//On lui re rempli son niveau d'energie
                 }
             }
-        }
+        }*/
     }
 }

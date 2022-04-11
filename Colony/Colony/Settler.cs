@@ -10,12 +10,13 @@ namespace Colony
     {
         protected static int _settlersNb = 0;
         protected string _id;
-        public static int Energy = 15;
-        public static int Hunger = 10;
+        public static int Energy = 50;
+        public static int Hunger = 30;
         protected int _energyState;
         protected int _hungerState;
+        public bool IsInActivity { get; set; }
         protected bool _available;
-        public static string _type;
+        public int NbTunrBeforeAvailable { get; set; }
         protected int _decreasingEnergy = 1;
         protected int _decreasingHunger = 1;
         protected int _timeToEat = 3;
@@ -23,6 +24,7 @@ namespace Colony
         protected int _x, _y;
         public int[] _itinerary = { 0, 0 };
         protected Building[] _buildings = new Building[2];
+        public string SettlerType { get; set; }
 
 
         /// <summary>
@@ -30,12 +32,14 @@ namespace Colony
         /// </summary>
         public Settler()
         {
+            NbTunrBeforeAvailable = 0;
+            IsInActivity = false;
             _settlersNb++;
             _energyState = Energy;
             _hungerState = Hunger;
             _x = 0;
             _y = 0;
-            _available = true;
+            //_available = true;
         }
 
         /// <summary>
@@ -100,36 +104,81 @@ namespace Colony
             get { return _y; }
             set { _y = value;  }
         }
+        
 
-        /// <summary>
-        /// Allows you to retrieve the colon type ("A" for an athlete, "B" for a builder and "C" for a coach)
-        /// </summary>
-        public string Type
-        {
-            get { return _type; }
-        }
-
-        /// <summary>
-        /// Allows you to retrieve and modify the availability of the settler
-        /// </summary>
         public bool Available
         {
-            get { return _available;  }
+            get
+            {
+                if (NbTunrBeforeAvailable == 0 && !IsInActivity)
+                {
+                    _available = true;
+                }
+                else
+                {
+                    _available = false;
+                }
+                return _available;
+            }
             set { _available = value; }
         }
 
-        /// <summary>
-        /// Method that makes a settler play, i.e. makes him lose his energy and hunger level
-        /// </summary>
-        public virtual void Play()
+        public virtual void Play(List<Settler>[,] GameBoardSettler, int turnNb)
         {
+            if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0) 
+            {
+                GameBoardSettler[_x, _y].Remove(this);
+                this.Move();
+                GameBoardSettler[_x, _y].Add(this);
+            }
+            
             _energyState -= _decreasingEnergy;
-            _hungerState -= _decreasingHunger; 
+            _hungerState -= _decreasingHunger;
 
-            if (_energyState < 0)
+            if (_energyState <= 0)
+            {
                 _energyState = 0;
-            if (_hungerState < 0)
+                if (!IsInActivity)
+                {
+                    this.CalculatingItinerary(_buildings[0].X, _buildings[0].Y);
+                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
+                    IsInActivity = true;
+                }
+                else
+                {
+                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
+                    if (NbTunrBeforeAvailable == turnNb)
+                    {
+                        _energyState = Energy;
+                        IsInActivity = false;
+                        NbTunrBeforeAvailable = 0;
+                    }
+                }
+            }
+            if (_hungerState <= 0)
+            {
                 _hungerState = 0;
+                if (!IsInActivity)
+                {
+                    this.CalculatingItinerary(_buildings[1].X, _buildings[1].Y);
+                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
+                    IsInActivity = true;
+                }
+                else
+                {
+                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
+                    if (NbTunrBeforeAvailable == turnNb)
+                    {
+                        Console.WriteLine("test");
+                        _hungerState = Hunger;
+                        IsInActivity = false;
+                        NbTunrBeforeAvailable = 0;
+                    }
+                }
+            }
+
         }
 
         public override string ToString()

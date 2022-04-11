@@ -14,6 +14,7 @@ namespace Colony
         private string _sport;
         private string _nationality;
         private int _session = 0;
+        private string _type;
 
         /// <summary>
         /// Constructor that allows to create a sportsman
@@ -23,6 +24,7 @@ namespace Colony
         public Athletic(string nationality, string sport) : base()
         {
             _athleticNb++;
+            SettlerType = _type;
             _type = "A";
             _id = _type + _athleticNb.ToString();
             _nationality = nationality;
@@ -31,20 +33,66 @@ namespace Colony
             _decreasingHunger = 6;
         }
 
-
-        /// <summary>
-        /// Allows you to recover your level
-        /// </summary>
-        public int Level//TODO je crois que c'est inutile a supprimer apres accord d 'alex
+        public string Type
         {
-            get { return _level; }
+            get { return _type; }
         }
-
-        /// <summary>
-        /// Allows the athlete to play, i.e. to go to an additional training session, and if we are at the 3rd session then it increases if level
-        /// </summary>
-        public override void Play()
+        public override void Play(List<Settler>[,] gameBoardSettler, int turnNb)
         {
+            if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0)
+            {
+                gameBoardSettler[_x, _y].Remove(this);
+                this.Move();
+                gameBoardSettler[_x, _y].Add(this);
+            }
+
+            _energyState -= _decreasingEnergy;
+            _hungerState -= _decreasingHunger;
+
+            if (_energyState <= 0)
+            {
+                _energyState = 0;
+                if (!IsInActivity)
+                {
+                    this.CalculatingItinerary(_buildings[0].X, _buildings[0].Y);
+                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
+                    IsInActivity = true;
+                }
+                else
+                {
+                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
+                    if (NbTunrBeforeAvailable == turnNb)
+                    {
+                        _energyState = Energy;
+                        IsInActivity = false;
+                        NbTunrBeforeAvailable = 0;
+                    }
+                }
+            }
+            if (_hungerState <= 0)
+            {
+                _hungerState = 0;
+                if (!IsInActivity)
+                {
+                    this.CalculatingItinerary(_buildings[1].X, _buildings[1].Y);
+                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
+                    IsInActivity = true;
+                }
+                else
+                {
+                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
+                    if (NbTunrBeforeAvailable == turnNb)
+                    {
+                        Console.WriteLine("test");
+                        _hungerState = Hunger;
+                        IsInActivity = false;
+                        NbTunrBeforeAvailable = 0;
+                    }
+                }
+            }
+
             _session++;
             if (_session == 3)
             {

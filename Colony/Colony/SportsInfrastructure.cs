@@ -13,6 +13,7 @@ namespace Colony
         public static int _turnNb = 1;
         public int _linesNb;
         public int _columnsNb;
+        protected string _name;
 
         /// <summary>
         /// Constructeur qui pemet de créer une infrastructure sportive

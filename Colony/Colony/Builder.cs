@@ -9,6 +9,7 @@ namespace Colony
     class Builder : Settler
     {
         private static int _builderNb;
+        private string _type;
 
         /// <summary>
         /// Builder that allows you to create a builder
@@ -17,10 +18,14 @@ namespace Colony
         {
             _builderNb++;
             _type = "B";
+            SettlerType = _type;
             _id = _type + _builderNb.ToString();
-            _decreasingEnergy = 15;
-            _decreasingHunger = 4;
+            _decreasingEnergy = 1;
+            _decreasingHunger = 1;
         }
-
-    }
+        public string Type
+        {
+            get { return _type; }
+        }
+        }
 }
