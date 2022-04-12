@@ -12,7 +12,6 @@ namespace Colony
         protected int _nbPlaces;
         protected int _x, _y;
         protected string _id;
-        public static string type;
         protected string _type;
         private List<Settler> _settlers;
         protected string _name;

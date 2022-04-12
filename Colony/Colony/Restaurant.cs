@@ -11,16 +11,17 @@ namespace Colony
 
         protected static int _restaurantNb = 0;
         private Settler[] _settlers;
-        public static int _builderNb = 2; 
-        public static int _turnNb = 2;
+        public static string type = "R";
+        public static int BuilderNb = 2; 
+        public static int TurnNb = 2;
         public int _linesNb;
         public int _columnsNb;
 
         /// <summary>
         /// Constructeur qui permet de créer un restaurant 
         /// </summary>
-        /// <param name="x">Abscissa of the top left corner of the building from where it is positioned on the platform</param>
-        /// <param name="y">Ordinate  of the top left corner of the building from where it is positioned on the platform</param>
+        /// <param name="x">Abscissa of the top left corner of the restaurant from where it is positioned on the platform</param>
+        /// <param name="y">Ordinate  of the top left corner of the restaurant from where it is positioned on the platform</param>
         public Restaurant(int x, int y) : base(x, y)
         {
             _totalPlace = 10;
@@ -28,7 +29,6 @@ namespace Colony
             _linesNb = 3;
             _columnsNb = 5;
             _restaurantNb++;
-            type = "R";
             _type = type;
             _id = _type + _restaurantNb.ToString();
             _settlers = new Settler[10]; 

@@ -9,8 +9,9 @@ namespace Colony
     class SportsInfrastructure : Building
     {
         protected static int _sportsInfrastructureNb = 0;
-        public static int _builderNb = 2; 
-        public static int _turnNb = 1;
+        public static int BuilderNb = 2;
+        public static string type = "S";
+        public static int TurnNb = 1;
         public int _linesNb;
         public int _columnsNb;
         protected string _name;
@@ -24,12 +25,10 @@ namespace Colony
         public SportsInfrastructure(int x, int y, string name) : base(x, y)
         {
             _sportsInfrastructureNb++;
-            type = "S";
             _type = type;
             _id = _type + _sportsInfrastructureNb.ToString();
             _name = name;
         }
-
 
         /// <summary>
         /// It gives us a dimension of sports infrastructure: the number of lines it takes on the game board

@@ -12,7 +12,7 @@ namespace Colony
         {
             //start a game
             Simulation s1 = new Simulation();
-            s1.Play();
+            s1.Launch();
         }
     }
 }

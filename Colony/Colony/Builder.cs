@@ -11,6 +11,7 @@ namespace Colony
         private static int _builderNb;
         private string _type;
 
+
         /// <summary>
         /// Builder that allows you to create a builder
         /// </summary>
@@ -23,9 +24,14 @@ namespace Colony
             _decreasingEnergy = 1;
             _decreasingHunger = 1;
         }
+
+
+        /// <summary>
+        /// Returns the type of the builder
+        /// </summary>
         public string Type
         {
             get { return _type; }
         }
-        }
+    }
 }

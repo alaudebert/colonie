@@ -10,19 +10,23 @@ namespace Colony
     {
         protected static int _hotelNb = 0;
         private Settler[] _settlers;
-        public static int _builderNb = 2;
-        public static int _turnNb = 2;
-        public int _linesNb; //TODO a supprimer apres l'accord d'Alex
-        public int _columnsNb; //TODO a supprimer apres l'accord d'Alex
+        public static string type = "H";
+        public static int BuilderNb = 2;
+        public static int TurnNb = 2;
+        public int _linesNb; 
+        public int _columnsNb;
 
+        /// <summary>
+        /// Builder who wants to create a hotel, with 5 places available for 
+        /// </summary>
+        /// <param name="x">Abscisse dans le village de l'angle en haut à gauche de l'hotel</param>
+        /// <param name="y">Ordinate dans le village de l'angle en haut à gauche de l'hotel</param>
         public Hotel(int x, int y) : base(x, y)
         {
             _totalPlace = 5;
             _nbPlaces = _totalPlace;
             _hotelNb++;
-            type = "H";
             _type = type;
-            //_id = _type + _hotelNb.ToString();
             _settlers = new Settler[5];
             _x = x;
             _y = y;

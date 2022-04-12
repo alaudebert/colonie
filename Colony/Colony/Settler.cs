@@ -104,8 +104,10 @@ namespace Colony
             get { return _y; }
             set { _y = value;  }
         }
-        
 
+        /// <summary>
+        /// Returns and changes a settler's availability
+        /// </summary>
         public bool Available
         {
             get
@@ -123,6 +125,11 @@ namespace Colony
             set { _available = value; }
         }
 
+        /// <summary>
+        /// Allows the colon to play (i.e. to make him move, to decrease his level of hunger and energy...)
+        /// </summary>
+        /// <param name="GameBoardSettler">Look in the Settlers </param>
+        /// <param name="turnNb">look at the turn where we are in the game</param>
         public virtual void Play(List<Settler>[,] GameBoardSettler, int turnNb)
         {
             if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0) 
@@ -181,12 +188,6 @@ namespace Colony
 
         }
 
-        public override string ToString()
-        {
-            return _id + "\nNiveau d'énergie : " + _energyState + "\nNiveau de faim : " + _hungerState
-                + "\nCoodronnées : " + _x + " , " + _y + "\nDisponibilité : " + _available + "\n";
-        }
-
         /// <summary>
         /// Calculate the distance between the destination and the setller location
         /// </summary>
@@ -237,6 +238,13 @@ namespace Colony
             if (_energyState == 0)
                 isSleepy = true;
             return isSleepy;
+        }
+
+
+        public override string ToString()
+        {
+            return _id + "\nNiveau d'énergie : " + _energyState + "\nNiveau de faim : " + _hungerState
+                + "\nCoodronnées : " + _x + " , " + _y + "\nDisponibilité : " + _available + "\n";
         }
 
     }

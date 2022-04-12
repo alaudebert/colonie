@@ -20,7 +20,12 @@ namespace Colony
         public Coach myCoach { get; set; }
         private Village _village;
 
-
+        /// <summary>
+        /// Constructor that allows to create a sportsman
+        /// </summary>
+        /// <param name="nationality">Nationality of the athlete</param>
+        /// <param name="sport">Sport that practices the athlete</param>
+        /// <param name="village">Village in which we create the athlete</param>
         public Athletic(string nationality, string sport, Village village) : base()
         {
             _level = 0;
@@ -36,11 +41,27 @@ namespace Colony
             Sport = sport;
         }
 
+        /// <summary>
+        /// Returns the athlete's type
+        /// </summary>
         public string Type
         {
             get { return _type; }
         }
 
+        /// <summary>
+        /// Returns the level of the athlete
+        /// </summary>
+        public int getLevel()
+        {
+            return _level;
+        }
+
+        /// <summary>
+        /// Modification of the Play method of the colonists, allowing to specify whether or not they should go to train, as well as the level of energy and hunger they lose
+        /// </summary>
+        /// <param name="GameBoardSettler">Settlers' game board</param>
+        /// <param name="turnNb">Turn of the game where we play our settlers</param>
         public override void Play(List<Settler>[,] GameBoardSettler, int turnNb)
         {
 
@@ -106,7 +127,11 @@ namespace Colony
 
         }
 
-
+        /// <summary>
+        /// Allows you to train a sportsman with a coach
+        /// </summary>
+        /// <param name="coach">Coach who trains him</param>
+        /// <param name="turnNb">Turn where it is trained</param>
         public void Train(Coach coach, int turnNb)
         {
             if (!IsInActivity)
@@ -157,9 +182,5 @@ namespace Colony
                 + Sport + "\nNationalité : " + Nationality + "\n"; ;
         }
 
-        public int getLevel()
-        {
-            return _level;
-        }
     }
 }
