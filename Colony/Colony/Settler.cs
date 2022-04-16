@@ -17,12 +17,12 @@ namespace Colony
         public bool IsInActivity { get; set; }
         protected bool _available;
         public int NbTunrBeforeAvailable { get; set; }
-        protected int _decreasingEnergy = 1;
-        protected int _decreasingHunger = 1;
+        protected int DecreasingEnergy { get; set; }
+        protected int DecreasingHunger { get; set; }
         protected int _timeToEat = 3;
         protected int _timeToSleep = 5;
         protected int _x, _y;
-        public int[] _itinerary = { 0, 0 };
+        public int[] Itinerary { get; set; }
         protected Building[] _buildings = new Building[2];
         public string SettlerType { get; set; }
 
@@ -31,12 +31,15 @@ namespace Colony
         /// Builder that allows you to create a colonist, who is immediately available and has a maximum level of hunger and energy
         /// </summary>
         public Settler()
-        {
+        { 
+            Itinerary= new int[] { 0, 0 };
             NbTunrBeforeAvailable = 0;
             IsInActivity = false;
             _settlersNb++;
             _energyState = Energy;
             _hungerState = Hunger;
+            DecreasingEnergy = 1;
+            DecreasingHunger = 1;
             _x = 0;
             _y = 0;
             //_available = true;
@@ -132,23 +135,23 @@ namespace Colony
         /// <param name="turnNb">look at the turn where we are in the game</param>
         public virtual void Play(List<Settler>[,] GameBoardSettler, int turnNb)
         {
-            if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0) 
+            if (Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) != 0) 
             {
                 GameBoardSettler[_x, _y].Remove(this);
                 this.Move();
                 GameBoardSettler[_x, _y].Add(this);
             }
             
-            _energyState -= _decreasingEnergy;
-            _hungerState -= _decreasingHunger;
+            EnergyState -= DecreasingEnergy;
+            HungerState -= DecreasingHunger;
 
             if (_energyState <= 0)
             {
                 _energyState = 0;
                 if (!IsInActivity)
                 {
-                    this.CalculatingItinerary(_buildings[0].X, _buildings[0].Y);
-                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    this.CalculatingItinerary(Buildings[0].X, Buildings[0].Y);
+                    NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
                     Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
                     IsInActivity = true;
                 }
@@ -157,7 +160,7 @@ namespace Colony
                     Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
-                        _energyState = Energy;
+                        EnergyState = Energy;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;
                     }
@@ -168,8 +171,8 @@ namespace Colony
                 _hungerState = 0;
                 if (!IsInActivity)
                 {
-                    this.CalculatingItinerary(_buildings[1].X, _buildings[1].Y);
-                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    this.CalculatingItinerary(Buildings[1].X, Buildings[1].Y);
+                    NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
                     Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
                     IsInActivity = true;
                 }
@@ -179,7 +182,7 @@ namespace Colony
                     if (NbTunrBeforeAvailable == turnNb)
                     {
                         Console.WriteLine("test");
-                        _hungerState = Hunger;
+                        HungerState = Hunger;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;
                     }
@@ -195,8 +198,8 @@ namespace Colony
         /// <param name="yDestination"></param>
         public void CalculatingItinerary(int xDestination, int yDestination)
         {
-            _itinerary[0] =  _x - xDestination;
-            _itinerary[1] =  _y - yDestination;
+            Itinerary[0] =  X - xDestination;
+            Itinerary[1] =  Y - yDestination;
         }
 
         /// <summary>
@@ -204,15 +207,15 @@ namespace Colony
         /// </summary>
         public void Move()
         {
-            if (_itinerary[0] != 0)
+            if (Itinerary[0] != 0)
             {
-                _x = _itinerary[0] > 0 ? _x - 1 : _x + 1;
-                _itinerary[0] = _itinerary[0] > 0 ? _itinerary[0] - 1 : _itinerary[0] + 1;
+                X = Itinerary[0] > 0 ? X - 1 : X + 1;
+                Itinerary[0] = Itinerary[0] > 0 ? Itinerary[0] - 1 : Itinerary[0] + 1;
             }
-            else if (_itinerary[1] != 0)
+            else if (Itinerary[1] != 0)
             {
-                _y = _itinerary[1] > 0 ? _y - 1 : _y + 1;
-                _itinerary[1] = _itinerary[1] > 0 ? _itinerary[1] - 1 : _itinerary[1] + 1;
+                Y = Itinerary[1] > 0 ? Y - 1 : Y + 1;
+                Itinerary[1] = Itinerary[1] > 0 ? Itinerary[1] - 1 : Itinerary[1] + 1;
             }
         }
 
@@ -223,7 +226,7 @@ namespace Colony
         public bool IsHungry()
         {
             bool isHungry = false;
-            if (_hungerState == 0)
+            if (HungerState == 0)
                 isHungry = true;
             return isHungry;
         }
@@ -235,7 +238,7 @@ namespace Colony
         public bool IsSleepy()
         {
             bool isSleepy = false;
-            if (_energyState == 0)
+            if (EnergyState == 0)
                 isSleepy = true;
             return isSleepy;
         }
@@ -243,8 +246,12 @@ namespace Colony
 
         public override string ToString()
         {
-            return _id + "\nNiveau d'énergie : " + _energyState + "\nNiveau de faim : " + _hungerState
-                + "\nCoodronnées : " + _x + " , " + _y + "\nDisponibilité : " + _available + "\n";
+            return 
+                "| "+_id 
+                + "\n| Niveau d'énergie : " + EnergyState + "    |"
+                + "\n| Niveau de faim : " + HungerState + "      |"
+                + "\n| Coodronnées : " + X + " , " + Y + "      |"
+                + "\n| Disponibilité : " + Available + "     |\n";
         }
 
     }

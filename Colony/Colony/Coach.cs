@@ -21,8 +21,8 @@ namespace Colony
             SettlerType = _type;
             _coachNb++;
             _id = _type + _coachNb.ToString();
-            _decreasingHunger = 3;
-            _decreasingEnergy = 3;
+            DecreasingHunger = 3;
+            DecreasingEnergy = 3;
         }
 
 

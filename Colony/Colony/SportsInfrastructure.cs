@@ -12,9 +12,6 @@ namespace Colony
         public static int BuilderNb = 2;
         public static string type = "S";
         public static int TurnNb = 1;
-        public int _linesNb;
-        public int _columnsNb;
-        protected string _name;
 
         /// <summary>
         /// Constructeur qui pemet de créer une infrastructure sportive
@@ -35,7 +32,7 @@ namespace Colony
         /// </summary>
         public int LinesNb
         {
-            get { return Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[0]; }
+            get { return Building.Size.FirstOrDefault(x => x.Key == "S").Value[0]; }
         }
 
 
@@ -44,7 +41,7 @@ namespace Colony
         /// </summary>
         public int ColumnsNb
         {
-            get { return Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[1]; }
+            get { return Building.Size.FirstOrDefault(x => x.Key == "S").Value[1]; }
         }
 
 

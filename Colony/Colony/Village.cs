@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Colony
 {
     /// <summary>
-    /// Structure that allows you to create buildings that are under construction while they are being created
+    /// structure that create a building under construction
     /// </summary>
     struct InConstructionBuilding
     {
@@ -20,14 +20,14 @@ namespace Colony
         private string _name;
 
         /// <summary>
-        /// Builder to create a building under construction
+        /// Builder that saves a building under construction
         /// </summary>
-        /// <param name="type">Specify the type of building ("S" for a sports infrastructure, "H" for a hotel and "R" for a restaurant</param>
-        /// <param name="turnNb">Turn where the construction of the building began</param>
-        /// <param name="x">Abscissa of the board where you want to build the angel at the top left dub building</param>
-        /// <param name="y">Ordinate of the board where you want to build the angel at the top left dub building</param>
-        /// <param name="builders">List of builders requisitioned to build this building</param>
-        /// <param name="name">The name makes it possible to specify the type of sports infrastructure when there is one.</param>
+        /// <param name="type">Type of building under construction</param>
+        /// <param name="turnNb">Tower where the creation of the building began</param>
+        /// <param name="x">Abscissa of the location where the building must be built (top left corner)</param>
+        /// <param name="y">Ordinate of the location where the building must be built (top left corner)</param>
+        /// <param name="builders">List of builders who build this building</param>
+        /// <param name="name">Name of Building (It allows to put the name of the sports infrastructure at its creation)</param>
         public InConstructionBuilding(string type,int turnNb, int x, int y, List<Settler> builders, string name)
         {
 
@@ -38,16 +38,16 @@ namespace Colony
             _creationTurn = 0;
             _name = name;
 
-            //Calculates the turn when the building will be finished
+            //Calculates the turn where the creation of the building will be finished
             foreach (Builder builder in builders)
             {
-                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder._itinerary[0]) + Math.Abs(builder._itinerary[1]) + turnNb );  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
+                _creationTurn = Math.Max(_creationTurn, Math.Abs(builder.Itinerary[0]) + Math.Abs(builder.Itinerary[1]) + turnNb );  //TODO Je crois que ça prend pas en compte le temps de construction du batiment
             }
             _turnNb = turnNb;
         }
 
         /// <summary>
-        /// Returns the name of the building under construction
+        /// Returns the name of the building
         /// </summary>
         public string Name
         {
@@ -55,7 +55,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the type of the building under 
+        /// Returns the building type
         /// </summary>
         public string BuildingType
         {
@@ -63,7 +63,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the absicce of the board where the angel is built at the top left of the building under construction
+        /// Returns the abscissa of the top left corner of the building
         /// </summary>
         public int X
         {
@@ -71,7 +71,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the ordinate of the board where the angel is built at the top left of the building under construction
+        /// Returns the ordinate of the top left corner of the building
         /// </summary>
         public int Y
         {
@@ -79,15 +79,15 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the list of builders requisitioned to build the building under construction
+        /// Returns the list of builders who build this building
         /// </summary>
-        public List<Settler> Settlers
+        public List<Settler> Settlers//TODO cahnger le nom de la variable
         {
             get { return _settlers; }
         }
 
         /// <summary>
-        /// Returns the turn when the building will be 
+        /// Returns the turn where the building creation will be finished
         /// </summary>
         public int CreationTurn
         {
@@ -98,7 +98,7 @@ namespace Colony
     class Village
     {
         private List<Building> _buildings = new List<Building>();
-        private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>();
+        private List<InConstructionBuilding> _inConstruction = new List<InConstructionBuilding>(); 
         private int _maxNbSettlers;
         private int _lenght;
         private int _width;
@@ -109,8 +109,10 @@ namespace Colony
         public int ProfessionnelNb { get; set; }
 
 
+
+
         /// <summary>
-        /// Builder which allows you to build a , which already contains a hotel, a restaurant and 3 builders
+        /// Builder that allows you to create a village
         /// </summary>
         public Village()
         {
@@ -124,7 +126,6 @@ namespace Colony
             _width = 15;
             _gameBoardSettler = new List<Settler>[_lenght, _width];
             _gameBoardBuilder = new string[_lenght, _width];
-
             for (int i = 0; i < _width; i++)
             {
                 for (int y = 0; y < _lenght; y++)
@@ -132,7 +133,6 @@ namespace Colony
                     GameBoardSettler[y, i] = new List<Settler>();
                 }
             }
-
             Restaurant restaurant = new Restaurant(8, 8);
             Hotel hotel = new Hotel(0, 0);
             CreationBuilding(hotel);
@@ -144,6 +144,8 @@ namespace Colony
             s2.Y = 1;
             s3.X = 0;
             s3.Y = 2;
+            //s4.X = 0;
+            //s4.Y = 3;
             _maxNbSettlers = 4;
             _buildings.Add(hotel);
             _buildings.Add(restaurant);
@@ -153,7 +155,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the array containing the buildings
+        /// Return the game board containing the buildings
         /// </summary>
         public string[,] GameBoardBuilder
         {
@@ -161,7 +163,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the array containing the 
+        /// Return the game board containing the settlers
         /// </summary>
         public List<Settler>[,] GameBoardSettler
         {
@@ -169,7 +171,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the width of the game 
+        /// Returns the width of the board
         /// </summary>
         public int Width
         {
@@ -177,7 +179,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the length of the game board
+        /// Returns the length of the board
         /// </summary>
         public int Lenght
         {
@@ -185,7 +187,7 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns the list of buildings contained in the village
+        /// Returns the list of buildings present in the village
         /// </summary>
         public List<Building> Buildings
         {
@@ -193,17 +195,27 @@ namespace Colony
         }
 
         /// <summary>
-        /// Returns and modifies the list of buildings under construction contained in the village
+        /// Returns and modifies the list of buildings under construction
         /// </summary>
         public List<InConstructionBuilding> InConstruction
-
         {
             get { return _inConstruction; }
             set { _inConstruction = value; }
         }
 
+        public override string ToString()
+        {
+            string retour = "Mon village est composé de " + _settlers.Count() + " colons. Les voicis : \n";
+            foreach (Settler settler in _settlers)
+                retour += settler.ToString();
+            retour += "Mon village est composé de " + _buildings.Count() + " batiments. Les voici : \n ";
+            foreach (Building building in _buildings)
+                retour += building.ToString();
+            return retour;
+        }
+
         /// <summary>
-        /// Returns the list of settlers contained in the village
+        /// Returns the list of settlers present in the village
         /// </summary>
         public List<Settler> GetSettlers()
         {
@@ -211,10 +223,9 @@ namespace Colony
         }
 
         /// <summary>
-        /// Counts the number of settlers available based on the chosen settler type
+        /// Returns the number of settlers available in the village
         /// </summary>
-        /// <param name="type">Type of settlers whose number we want to know is available ("A" for a psortif, "B" for a builder and "C" for a hidden one)</param>
-        /// <returns>Returns the number of colons available according to the type of colon chosen</returns>
+        /// <param name="type">We enter the type of settlers whose information we want to know ("A" for an athlete, "B" for a builder and "C" for a coach)</param>
         public int NbSettlerAvailable(string type)
         {
             return FindAvailable(type).Count();
@@ -238,19 +249,20 @@ namespace Colony
             return availables;
         }
 
+
         /// <summary>
-        /// Allows you to add a building in the 
+        /// Allows you to add a building in the game by adding it to the list of buildings present in the village
         /// </summary>
-        /// <param name="building">Building to add to a village (it must therefore be created beforehand</param>
+        /// <param name="building">We enter the building we want to add</param>
         public void AddBuildings(Building building)
         {
             _buildings.Add(building);
         }
 
         /// <summary>
-        /// Add a settler to the village
+        /// Allows you to add a settler to the list of settlers present in the village
         /// </summary>
-        /// <param name="settler">Settler to add to the </param>
+        /// <param name="settler">Settler you want to add</param>
         public void AddSettler(Settler settler)
         {
             while (_gameBoardSettler[settler.X, settler.Y].Count != 0)
@@ -277,7 +289,7 @@ namespace Colony
             }
             while (i < _buildings.Count() && (addHotel == false || addRestaurant == false || addSportInfrstructure == canAddSportInfrastructure))
             {
-                if (_buildings[i].haveFreePlace())
+                if (_buildings[i].HaveFreePlace())
                 {
                     if (_buildings[i] is Restaurant)
                     {
@@ -287,8 +299,8 @@ namespace Colony
                     }
                     else if (_buildings[i] is Hotel)
                     {
-                        _buildings[i].Settlers.Add(settler);//Le probleme vient d'ici, on peut pas recruter autre chose qu'un batisseur en premier je sais pas pourquoi
-                        settler.Buildings[0] = _buildings[i]; //Tentative Roche
+                        _buildings[i].Settlers.Add(settler);
+                        settler.Buildings[0] = _buildings[i]; 
                     }
                     else if (canAddSportInfrastructure && _buildings[i] is SportsInfrastructure)
                     {
@@ -302,10 +314,7 @@ namespace Colony
 
         }
 
-        // <summary>
-        /// See if there is still space available for welcoming new settlers in the restaurants present in the village
-        /// </summary>
-        /// <returns>Returns true if there is space, false otherwise</returns>
+     
         public bool FreeRestaurantPlaces()
         {
             bool places = false;
@@ -319,9 +328,9 @@ namespace Colony
         }
 
         /// <summary>
-        /// See if there is still space available to welcome new settlers in the hotels present in the village
+        /// See if there's room left in the hotels
         /// </summary>
-        /// <returns>Returns true if there is space, false otherwise</returns>
+        /// <returns>returns true if there is space, false otherwise</returns>
         public bool FreeHotelPlaces()
         {
             bool places = false;
@@ -336,18 +345,14 @@ namespace Colony
         }
 
         /// <summary>
-        /// See if there is enough space in hotels and restaurants to recruit a new settler.
+        /// See if it is possible to welcome new settlers in the village
         /// </summary>
-        /// <returns>Returns true if there is enough space, false otherwise.</returns>
+        /// <returns>Returns true if there is at least one place left, false otherwise</returns>
         public bool CanRecruit()
         {
             return FreeHotelPlaces() && FreeRestaurantPlaces();
         }
 
-        /// <summary>
-        /// Find out if there is a coach available
-        /// </summary>
-        /// <returns>Returns the available coach if there is one, null otherwise</returns>
         public Coach CanBeCoach()
         {
             bool available = false;
@@ -365,30 +370,18 @@ namespace Colony
             return coach;
         }
 
-        /// <summary>
-        /// Find out if there is a particular sports infrastructure present in the 
-        /// </summary>
-        /// <param name="name">Name of the infrastructure for which we want to know if it exists or not</param>
-        public void GetInfrastructureByType(string name)
-        {
+        public void GetInfrastructureByType(string name){
             SportsInfrastructure sportsInfrastructure = null;
             int i = 0;
             bool findInfrastructure = false;
-            while(i<_buildings.Count && findInfrastructure)
-            {
+            while(i<_buildings.Count && findInfrastructure){
                 if (_buildings[i] is SportsInfrastructure && _buildings[i].Name == name)
                 {
                     sportsInfrastructure = (SportsInfrastructure)_buildings[i];
                 }
             }
-
-        }
-
-        /// <summary>
-        /// Search if a particular athlete is present
-        /// </summary>
-        /// <param name="id">The id of the athlete you are looking </param>
-        /// <returns>Returns the athlete if it exists, null otherwise</returns>
+            
+            }
         public Athletic FindById(int id)
         {
             Athletic ourAthlete = null;
@@ -405,11 +398,6 @@ namespace Colony
             }
             return ourAthlete;
         }
-
-        /// <summary>
-        /// See if one or more athletes can 
-        /// </summary>
-        /// <returns>Returns true if there is one who can train (i.e. if there is a colonist who is an athlete who is available), false otherwise</returns>
         public bool CanTrain()
         {
             bool canTrain = false;
@@ -423,28 +411,29 @@ namespace Colony
             return canTrain;
         }
 
+
         /// <summary>
-        /// Creation of the building in the 
+        /// Creation of the building in the board
         /// </summary>
-        /// <param name="building">Building to be created</param>
+        /// <param name="building">We enter the building we want to create</param>
         public void CreationBuilding(Building building) 
         {
             int nbColumns = 0;
             int nbLines = 0;
             if (building is Hotel)
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "H").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "H").Value[0];
             }
             else if (building is Restaurant)
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "R").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "R").Value[0];
             }
             else if(building is SportsInfrastructure)
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "S").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "S").Value[0];
 
             }
             for (int x = building.X; x < nbLines + building.X; x++)
@@ -455,9 +444,9 @@ namespace Colony
         }
 
         /// <summary>
-        /// Creation of a building in progress
+        /// Creates a building under construction
         /// </summary>
-        /// <param name="inConstruction">Building under </param>
+        /// <param name="inConstruction">The building that is under construction</param>
         public void CreatePendingBuilding(InConstructionBuilding inConstruction)
         {
             int nbColumns = 0;
@@ -465,20 +454,20 @@ namespace Colony
             string inCreation = "";
             if (inConstruction.BuildingType == "H")
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "H").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "H").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "H").Value[0];
                 inCreation = "XH";
             }
             else if (inConstruction.BuildingType == "R")
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "R").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "R").Value[0];
                 inCreation = "XR";
             }
             else if (inConstruction.BuildingType == "S")
             {
-                nbColumns = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[1];
-                nbLines = Building._buildingSize.FirstOrDefault(x => x.Key == "S").Value[0];
+                nbColumns = Building.Size.FirstOrDefault(x => x.Key == "S").Value[1];
+                nbLines = Building.Size.FirstOrDefault(x => x.Key == "S").Value[0];
                 inCreation = "XS";
 
             }
@@ -487,18 +476,6 @@ namespace Colony
                 for (int y = inConstruction.Y; y < nbColumns + inConstruction.Y; y++)
                     _gameBoardBuilder[x, y] = inCreation;
             }
-        }
-
-
-        public override string ToString()
-        {
-            string retour = "Mon village est composé de " + _settlers.Count() + " colons. Les voicis : \n";
-            foreach (Settler settler in _settlers)
-                retour += settler.ToString();
-            retour += "Mon village est composé de " + _buildings.Count() + " batiments. Les voici : \n ";
-            foreach (Building building in _buildings)
-                retour += building.ToString();
-            return retour;
         }
 
     }

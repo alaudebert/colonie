@@ -15,7 +15,7 @@ namespace Colony
         protected string _type;
         private List<Settler> _settlers;
         protected string _name;
-        public static Dictionary<string, int[]> _buildingSize = new Dictionary<string, int[]> { { "H", new int[2] { 3, 3 } }, { "R", new int[2]{ 3, 5 } }, { "S", new int[2]{ 5, 5 } } };
+        public static Dictionary<string, int[]> Size { get; set; }
 
         /// <summary>
         /// This constructor allows you to create a building on the chosen coordinates
@@ -24,15 +24,10 @@ namespace Colony
         /// <param name="y">Ordinate of the position of the top left corner of the building on the game board</param>
         public Building(int x, int y)
         {
+            Size = new Dictionary<string, int[]> { { "H", new int[2] { 3, 3 } }, { "R", new int[2] { 3, 5 } }, { "S", new int[2] { 5, 5 } } };
             _x = x;
             _y = y;
             _settlers = new List<Settler>();
-        }
-
-
-        public string Id//TODO a supprimer après l'accord d'Alex
-        {
-            get { return _id; }
         }
 
         /// <summary>
@@ -48,7 +43,7 @@ namespace Colony
         /// </summary>
         public Dictionary<string, int[]> BuildingSize
         {
-            get { return _buildingSize; }
+            get { return Size; }
         }
 
         /// <summary>
@@ -58,7 +53,7 @@ namespace Colony
         /// <returns></returns>
         public static int GetLinesNb(string type)
         {
-            return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[0];
+            return Building.Size.FirstOrDefault(x => x.Key == type).Value[0];
         }
 
         /// <summary>
@@ -68,16 +63,9 @@ namespace Colony
         /// <returns></returns>
         public static int GetColumnsNb(string type)
         {
-            return Building._buildingSize.FirstOrDefault(x => x.Key == type).Value[1];
+            return Building.Size.FirstOrDefault(x => x.Key == type).Value[1];
         }
 
-        /// <summary>
-        /// Returns the number of places there are for settlers in the building
-        /// </summary>
-        public int NbPlaces//TODO à supprimer après l'accord d'Alex
-        {
-            get { return _nbPlaces; }
-        }
 
         /// <summary>
         /// Returns the abscissa of the position of the top left corner of the building
@@ -125,16 +113,16 @@ namespace Colony
         /// Say if the building have free place
         /// </summary>
         /// <returns>True if the building have free place and false if they are not</returns>
-        public bool haveFreePlace()
+        public bool HaveFreePlace()
         {
             int i = 0;
             bool freePlace = false;
 
-            if (_settlers.Count() != 0)
+            if (Settlers.Count() != 0)
             {
-                while (i < _settlers.Count() || !freePlace)
+                while (i < Settlers.Count() || !freePlace)
                 {
-                    if (_settlers[i] != null)
+                    if (Settlers[i] != null)
                     {
                         freePlace = true;
                     }
@@ -151,8 +139,8 @@ namespace Colony
 
         public override string ToString()
         {
-            return "\ncolonnes \nIl a comme coodronnées : " + _x + " , " + _y
-                + "\n Son nom est : " + _name + "\n";
+            return "\ncolonnes \nIl a comme coodronnées : " + X + " , " + Y
+                + "\n Son nom est : " + Name + "\n";
         }
     }
 }

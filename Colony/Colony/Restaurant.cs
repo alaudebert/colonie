@@ -39,7 +39,7 @@ namespace Colony
         /// </summary>
         public int LinesNb
         {
-            get { return Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[0]; }
+            get { return Building.Size.FirstOrDefault(x => x.Key == "R").Value[0]; }
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Colony
         /// </summary>
         public int ColumnsNb
         {
-            get { return Building._buildingSize.FirstOrDefault(x => x.Key == "R").Value[1]; }
+            get { return Building.Size.FirstOrDefault(x => x.Key == "R").Value[1]; }
         }
 
         public override string ToString()

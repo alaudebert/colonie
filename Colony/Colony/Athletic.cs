@@ -14,7 +14,7 @@ namespace Colony
         private int _level;
         public string Sport { get; set; }
         public string Nationality { get; set; }
-        private int _session = 0;
+        private int Session;
         private static string _type;
         private bool IsTraining { get; set; }
         public Coach myCoach { get; set; }
@@ -28,6 +28,7 @@ namespace Colony
         /// <param name="village">Village in which we create the athlete</param>
         public Athletic(string nationality, string sport, Village village) : base()
         {
+            Session = 0;
             _level = 0;
             _village = village;
             _buildings = new Building[3];
@@ -67,28 +68,28 @@ namespace Colony
 
             if (IsTraining)
             {
-                _decreasingEnergy = 2;
-                _decreasingHunger = 3;
+                DecreasingEnergy = 2;
+                DecreasingHunger = 3;
                 Train(myCoach, turnNb);
             }
 
-            if (Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) != 0)
+            if (Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) != 0)
             {
                 GameBoardSettler[_x, _y].Remove(this);
                 this.Move();
                 GameBoardSettler[_x, _y].Add(this);
             }
 
-            _energyState -= _decreasingEnergy;
-            _hungerState -= _decreasingHunger;
+            EnergyState -= DecreasingEnergy;
+            HungerState -= DecreasingHunger;
 
-            if (_energyState <= 0)
+            if (EnergyState <= 0)
             {
-                _energyState = 0;
+                EnergyState = 0;
                 if (!IsInActivity)
                 {
                     this.CalculatingItinerary(_buildings[0].X, _buildings[0].Y);
-                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
                     Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
                     IsInActivity = true;
                 }
@@ -96,19 +97,19 @@ namespace Colony
                 {
                     if (NbTunrBeforeAvailable == turnNb)
                     {
-                        _energyState = Energy;
+                        EnergyState = Energy;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;
                     }
                 }
             }
-            if (_hungerState <= 0)
+            if (HungerState <= 0)
             {
-                _hungerState = 0;
+                HungerState = 0;
                 if (!IsInActivity)
                 {
-                    this.CalculatingItinerary(_buildings[1].X, _buildings[1].Y);
-                    NbTunrBeforeAvailable = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]) + 2 + turnNb;
+                    this.CalculatingItinerary(Buildings[1].X, Buildings[1].Y);
+                    NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
                     Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
                     IsInActivity = true;
                 }
@@ -118,7 +119,7 @@ namespace Colony
                     if (NbTunrBeforeAvailable == turnNb)
                     {
                         Console.WriteLine("test");
-                        _hungerState = Hunger;
+                        HungerState = Hunger;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;
                     }
@@ -136,9 +137,9 @@ namespace Colony
         {
             if (!IsInActivity)
             {
-                Building building = _buildings[2];
+                Building building = Buildings[2];
                 CalculatingItinerary(building.X, building.Y);
-                int itinerary = Math.Abs(_itinerary[0]) + Math.Abs(_itinerary[1]);
+                int itinerary = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]);
                 NbTunrBeforeAvailable = 4 + turnNb + itinerary;
                 IsInActivity = true;
                 IsTraining = true;
@@ -153,32 +154,32 @@ namespace Colony
                 {
                     coach.Lead(turnNb);
                     myCoach = coach;
-                    _session += 2;
+                    Session += 2;
                 }
                 else
                 {
-                    _session++;
+                    Session++;
                 }
-                if (_session == 4)
+                if (Session == 4)
                 {
-                    _session = 0;
+                    Session = 0;
                     _level += LevelIncrease;
                 }
-                if (_session >= 1)//Attention faut changer
+                if (Session >= 1)//Attention faut changer
                 {
                     _village.ProfessionnelNb += 1;
                 }
                 IsInActivity = false;
                 IsTraining = false;
                 NbTunrBeforeAvailable = 0;
-                _decreasingEnergy = 1;
-                _decreasingHunger = 2;
+                DecreasingEnergy = 1;
+                DecreasingHunger = 2;
             }
         }
 
         public override string ToString()
         {
-            return base.ToString() + "Son niveau : " + _level + "Son nombre de session" + _session + "\nSport qu'il pratique : "
+            return base.ToString() + "Son niveau : " + getLevel() + "Son nombre de session" + Session + "\nSport qu'il pratique : "
                 + Sport + "\nNationalité : " + Nationality + "\n"; ;
         }
 

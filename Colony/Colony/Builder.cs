@@ -21,8 +21,8 @@ namespace Colony
             _type = "B";
             SettlerType = _type;
             _id = _type + _builderNb.ToString();
-            _decreasingEnergy = 1;
-            _decreasingHunger = 1;
+            DecreasingEnergy = 1;
+            DecreasingHunger = 1;
         }
 
 
