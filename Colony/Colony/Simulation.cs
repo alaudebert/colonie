@@ -40,14 +40,13 @@ namespace Colony
 
         public void Launch()
         {
-            Console.WriteLine("Bienvenue dans notre jeu : LE VILLAGE OLYMPIQUE !\n");
-            Console.WriteLine("- Si vous voulez lire les règles du jeu, entrez 1 \n- Si vous voulez dirèctement jouer, entrez 2");
-            int choice = int.Parse(Console.ReadLine());
+            string instruction = "Bienvenue dans notre jeu : LE VILLAGE OLYMPIQUE !\n - Si vous voulez lire les règles du jeu, entrez 1 \n- Si vous voulez dirèctement jouer, entrez 2";
+            int choice = VerifySyntax(instruction);
             if (choice == 1)
             {
                 RulesOfTheGame();
-                Console.WriteLine("Entrez 2 si maintenant vous souhaitez jouer\n");
-                choice = int.Parse(Console.ReadLine());
+                instruction = "Entrez 2 si maintenant vous souhaitez jouer\n";
+                choice = VerifySyntax(instruction);
             }
             if (choice == 2)
                 Play();
@@ -58,13 +57,28 @@ namespace Colony
             }
         }
 
+        public int VerifySyntax(string phrase)
+        {
+            Console.WriteLine(phrase);
+            bool valid = int.TryParse(Console.ReadLine(), out int resultat);
+            while (!valid)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("La syntaxe est incorrecte veuillez entrer un nombre");
+                Console.ResetColor();
+                Console.WriteLine(phrase);
+                valid = int.TryParse(Console.ReadLine(), out resultat);
+            }
+            return resultat;
+        }
+
         /// <summary>
         /// Method that allows us to play, and launching a game and continuing it until it is finished (i.e. won or lost)
         /// </summary>
         public void Play()
         {
-            bool end = _village.ProfessionnelNb == 3;
-            while (!end && _turnNb < 100)
+            bool end = false;
+            while (end == false && _turnNb < 100)
             {
                 PendingBuildingCreation();
                 if (_village.CanRecruit() || _village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel.BuilderNb, Restaurant.BuilderNb), SportsInfrastructure.BuilderNb) || _village.CanTrain()) //Verifie qu'on peut effectuer une action sur ce tour, ou alors ça passe tout seul au tour suivant
@@ -75,10 +89,10 @@ namespace Colony
                     bool buildBuilding = true;
                     bool recruitSettler = true;
                     bool trainAthetics = true;
-                    Console.WriteLine("Entrez 0 pour passer au tour suivant sans effectuer aucune action");
+                    string instruction ="Entrez 0 pour passer au tour suivant sans effectuer aucune action";
                     if (_village.NbSettlerAvailable("B") >= Math.Min(Math.Min(Hotel.BuilderNb, Restaurant.BuilderNb), SportsInfrastructure.BuilderNb))
                     {
-                        Console.WriteLine("Entrez 1 pour créer un batiment");
+                        instruction += "\nEntrez 1 pour créer un batiment";
                     }
                     else
                     {
@@ -87,7 +101,7 @@ namespace Colony
                     }
                     if (_village.CanRecruit())
                     {
-                        Console.WriteLine("Entrez 2 pour recruter un colon");
+                        instruction += "\nEntrez 2 pour recruter un colon";
                     }
                     else
                     {
@@ -104,7 +118,7 @@ namespace Colony
                     }
                     if (_village.CanTrain())
                     {
-                        Console.WriteLine("Entrez 3 pour entrainer un sportif");
+                        instruction += "\nEntrez 3 pour entrainer un sportif";
                     }
                     else
                     {
@@ -114,7 +128,7 @@ namespace Colony
 
 
                     bool creation = true;
-                    int create = int.Parse(Console.ReadLine());
+                    int create = VerifySyntax(instruction);
                     switch (create)
                     {
                         case 0:
@@ -171,8 +185,23 @@ namespace Colony
                     settler.Play(_village.GameBoardSettler, _turnNb);
                     Console.WriteLine(settler);
                 }
+                end = _village.ProfessionnelNb >= 1;
             }
-
+            if (end)
+            {
+                Console.WriteLine("-----------------------------------------");
+                Console.WriteLine("|Félicitation vous pouvez participer aux|");
+                Console.WriteLine("|         Jeux OLYMPIQUES 2024          |");
+                Console.WriteLine("-----------------------------------------");
+            }
+            else
+            {
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.WriteLine("|Dommage vous avez perdue vous ne pourrez pas participer aux|");
+                Console.WriteLine("|                 Jeux OLYMPIQUES 2024                      |");
+                Console.WriteLine("-------------------------------------------------------------");
+                Launch();
+            }
         }
 
         /// <summary>
@@ -204,15 +233,16 @@ namespace Colony
         {
             Athletic athlete = null;
             List<Settler> settlers = _village.GetSettlers();
+            string instruction = "";
             for (int i=0;  i < settlers.Count; i++)
             {
                 if (settlers[i] is Athletic && settlers[i].Available)
                 {
                     athlete = (Athletic)settlers[i];
-                    Console.WriteLine("Tapez {0} pour entrainer le {1} {2}", athlete.AthleticNb, athlete.Sport, athlete.Nationality);
+                    instruction = "Tapez " + athlete.AthleticNb + " pour entrainer le "+ athlete.Sport + " {1}" + athlete.Nationality + " {2}";
                 }
             }
-            int id = int.Parse(Console.ReadLine());
+            int id = VerifySyntax(instruction);
             return _village.FindById(id);
         }
 
@@ -406,34 +436,35 @@ namespace Colony
         /// <returns>Returns true if the player has chosen to build a building, false if the player has finally changed his mind</returns>
         public bool ChoiceBuilding()
         {
-            Console.WriteLine("Entrez 0 pour revenir en arrière");
+
+            string instruction = "Entrez 0 pour revenir en arrière";
             bool creation = false;
             bool createHotel = false;
             bool createRestaurant = false;
             bool createSportsInfrastructure = false;
             if (_village.NbSettlerAvailable("B") >= Hotel.BuilderNb)
             {
-                Console.WriteLine("Entrez 1 pour créer un Hotel");
+                instruction += "\nEntrez 1 pour créer un Hotel";
                 createHotel = true; 
             }
             if (_village.NbSettlerAvailable("B") >= Restaurant.BuilderNb)
             {
-                Console.WriteLine("Entrez 2 pour créer un Restaurant");
+                instruction += "\nEntrez 2 pour créer un Restaurant";
                 createRestaurant = true;
             }
             if (_village.NbSettlerAvailable("B") >= SportsInfrastructure.BuilderNb)//TODO les conditions pour construire une infrastructure ne sont pas les mêmes
             {
-                Console.WriteLine("Entrez 3 pour créer une Infrastructure Sportive");
+                instruction += "\nEntrez 3 pour créer une Infrastructure Sportive";
                 createSportsInfrastructure = true;
             }
-            int create = int.Parse(Console.ReadLine());
+            int create = VerifySyntax(instruction);
 
             if (create == 1 || create == 2 || create == 3)
             {
-                Console.WriteLine("Entrez la ligne de l'angle en haut à gauche de votre batiment");
-                int x = int.Parse(Console.ReadLine());
-                Console.WriteLine("Entrez la colonne de l'angle en haut à gauche de votre batiment");
-                int y = int.Parse(Console.ReadLine());
+                instruction = "Entrez la ligne de l'angle en haut à gauche de votre batiment";
+                int x = VerifySyntax(instruction);
+                instruction = "Entrez la colonne de l'angle en haut à gauche de votre batiment";
+                int y = VerifySyntax(instruction);
 
                 if (create == 1)
                 {
@@ -531,9 +562,8 @@ namespace Colony
         /// <returns>returns true if he has selected a sports infrastructure to create, false if ultimately he does not want to create a sports infrastructure</returns>
         public string ChoiceSportsInfrastructure()
         {
-            Console.WriteLine("Choisissez l'infrastructure sportive que vous souhaitez construire");
-            Console.WriteLine("Entrez 1 pour une piscine olympique \nEntrez 2 pour un terrain de sport collectif intérieur \nEntrez 3 pour un stade");
-            int infrasctructure = int.Parse(Console.ReadLine());
+            string instruction = "Choisissez l'infrastructure sportive que vous souhaitez construire\n Entrez 1 pour une piscine olympique \nEntrez 2 pour un terrain de sport collectif intérieur \nEntrez 3 pour un stade";
+            int infrasctructure = VerifySyntax(instruction);
             string sportsinfrasctructure = "";
             if (infrasctructure == 1)
                 sportsinfrasctructure = "Piscine olympique";
@@ -580,14 +610,12 @@ namespace Colony
         /// <returns>returns true if he has selected a settler to recruit, false if he does not want to recruit a settler</returns>
         public bool ChoiceSettler()
         {
-            Console.WriteLine("Entrez 0 pour revenir en arrière");
-            Console.WriteLine("Entrez 1 pour recruter un Batisseur");
-            Console.WriteLine("Entrez 2 pour recruter un Coach");
+            string instruction = " Entrez 0 pour revenir en arrière\n Entrez 1 pour recruter un Batisseur\n Entrez 2 pour recruter un Coach";
             if (CanRecruitAthlete())
-                Console.WriteLine("Entrez 3 pour recruter un Sportif");
+                instruction += "\nEntrez 3 pour recruter un Sportif";
             else
                 Console.WriteLine("Vous ne pouvez pas recruter un sportif car vous n'avez aucune infrastructure sportive");
-            int create = int.Parse(Console.ReadLine());
+            int create = VerifySyntax(instruction);
             bool creation = true;
             if (create ==0)
                 creation = false;
@@ -629,9 +657,8 @@ namespace Colony
             string nationality2 = "";
             while (nationality2 == "")
             {
-                Console.WriteLine("Entrez 0 pour revenir en arrière");
-                Console.WriteLine("Choisissez sa nationnalité \nEntrez 1 pour que le sportif soit Français \nEntrez 2 pour que le sportif soit Anglais\nEntrez 3 pour que le sportif soit Américain\nEntrez 4 pour que le sportif soit Japonais");//A en rajouter
-                int nationality = int.Parse(Console.ReadLine());
+                string instruction = "Entrez 0 pour revenir en arrière\n Choisissez sa nationnalité \nEntrez 1 pour que le sportif soit Français \nEntrez 2 pour que le sportif soit Anglais\nEntrez 3 pour que le sportif soit Américain\nEntrez 4 pour que le sportif soit Japonais";//A en rajouter
+                int nationality = VerifySyntax(instruction);
 
                 if (nationality == 0)
                 {
@@ -658,13 +685,14 @@ namespace Colony
                 bool field = false;
                 bool stage = false;
                 bool value;
+                string instruction = "";
                 while (sport2 == "")
                 {
-                    Console.WriteLine("Choisissez son sport :");
+                    instruction = "Choisissez son sport :\n";
                     _village.SportsInfrastructures.TryGetValue("Piscine olympique", out value);
                     if (value == true)
                     {
-                        Console.WriteLine("Entrez 1 pour de la natation ");
+                        instruction += "\nEntrez 1 pour de la natation ";
                         swimingPool = true;
                     }
                     else
@@ -672,9 +700,9 @@ namespace Colony
                         _village.SportsInfrastructures.TryGetValue("Terrain de sport collectif intérieur", out value);
                         if (value == true)
                         {
-                            Console.WriteLine("Entrez 2 pour du volley ");
-                            Console.WriteLine("Entrez 3 pour du hand");
-                            Console.WriteLine("Entrez 4 pour du basket");
+                            instruction += "\nEntrez 2 pour du volley ";
+                            instruction += "\nEntrez 3 pour du hand";
+                            instruction += "\nEntrez 4 pour du basket";
                             field = true;
                         }
                         else
@@ -682,15 +710,15 @@ namespace Colony
                             _village.SportsInfrastructures.TryGetValue("Stade", out value);
                             if (value  == true)
                             {
-                                Console.WriteLine("Entrez 5 pour du football ");
-                                Console.WriteLine("Entrez 6 pour du rugby");
-                                Console.WriteLine("Entrez 7 pour de l'athlétisme");
+                                instruction += "\nEntrez 5 pour du football ";
+                                instruction += "\nEntrez 6 pour du rugby";
+                                instruction += "\nEntrez 7 pour de l'athlétisme";
                                 stage = true;
                             }
                         }
                     }
                     
-                    int sport = int.Parse(Console.ReadLine());
+                    int sport = VerifySyntax(instruction);
 
                     if (sport == 1 && swimingPool)
                     {

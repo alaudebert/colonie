@@ -164,7 +164,7 @@ namespace Colony
                     _session = 0;
                     _level += LevelIncrease;
                 }
-                if (_session == 1)//Attention faut changer
+                if (_session >= 1)//Attention faut changer
                 {
                     _village.ProfessionnelNb += 1;
                 }
