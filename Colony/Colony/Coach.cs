@@ -8,7 +8,8 @@ namespace Colony
 {
     class Coach : Settler
     {
-        private static int _coachNb = 0;
+        private static int _nb = 0;
+        private int _coachNb;
         private static string _type;
 
 
@@ -17,9 +18,10 @@ namespace Colony
         /// </summary>
         public Coach() : base() 
         {
+            _nb++;
             _type = "C";
             SettlerType = _type;
-            _coachNb++;
+            _coachNb = _nb;
             _id = _type + _coachNb.ToString();
             DecreasingHunger = 3;
             DecreasingEnergy = 3;
@@ -42,7 +44,7 @@ namespace Colony
         {
             if (!IsInActivity)
             {
-                NbTunrBeforeAvailable = 4 + turnNb;
+                NbTunrBeforeAvailable = 4 + turnNb + Math.Abs(Itinerary[0])+ Math.Abs(Itinerary[1]);
                 IsInActivity = true;
             }
 

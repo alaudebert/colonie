@@ -55,9 +55,7 @@ namespace Colony
                 Play();
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer une réponse valide \n");
-                Console.ResetColor();
+                Error("Votre réponse n'est pas valide, veuillez entrer une réponse valide \n");
                 Launch();
             }
         }
@@ -68,13 +66,18 @@ namespace Colony
             bool valid = int.TryParse(Console.ReadLine(), out int resultat);
             while (!valid)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("La syntaxe est incorrecte veuillez entrer un nombre");
-                Console.ResetColor();
+                Error("La syntaxe est incorrecte veuillez entrer un nombre");
                 Console.WriteLine(phrase);
                 valid = int.TryParse(Console.ReadLine(), out resultat);
             }
             return resultat;
+        }
+
+        public void Error(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -83,28 +86,26 @@ namespace Colony
         public void Play()
         {
             bool end = false;
-            while (end == false && TurnNb < 10)
+            while (end == false && TurnNb < 100)
             {
-                PendingBuildingCreation();
                 //The minimum builder required to build a building
                 int villageSetllerAvailable = Math.Min(Math.Min(Hotel.BuilderNb, Restaurant.BuilderNb), SportsInfrastructure.BuilderNb);
-                //Verify if an action is possible
-                if (Village.CanRecruit() || Village.NbSettlerAvailable("B") >= villageSetllerAvailable || Village.CanTrain()) 
-                {
-                    Console.WriteLine("Vous êtes au tour {0} \n --------- ", TurnNb);
-                    DisplayGameBoard();
+                
+                Console.WriteLine("Vous êtes au tour {0} \n --------- ", TurnNb);
+                PendingBuildingCreation();
+                DisplayGameBoard();
 
                     bool buildBuilding = true;
                     bool recruitSettler = true;
                     bool trainAthetics = true;
-                    string instruction ="Entrez 0 pour passer au tour suivant sans effectuer aucune action\nEntrez 10 pour avoir le détail des colons de votre colonie";
+                    string instruction ="Entrez 0 pour passer au tour suivant sans effectuer aucune action\nEntrez 10 pour avoir le détail des colons de votre colonie\nEntrez 20 pour voir les regles du jeu";
                     if (Village.NbSettlerAvailable("B") >= villageSetllerAvailable)
                     {
                         instruction += "\nEntrez 1 pour créer un batiment";
                     }
                     else
                     {
-                        Console.WriteLine("Vous n'avez pas assez de Colon pour construire un batiment");
+                        Error("Vous n'avez pas assez de Colon pour construire un batiment");
                         buildBuilding = false;
                     }
                     if (Village.CanRecruit())
@@ -113,14 +114,14 @@ namespace Colony
                     }
                     else
                     {
-                        Console.WriteLine("Vous n'avez pas assez d'infrastructure pour accueillir des colons, ");
+                        Error("Vous n'avez pas assez d'infrastructure pour accueillir des colons, ");
                         if (!Village.FreeHotelPlaces())
                         {
-                            Console.WriteLine("Il vous faut un hotel");
+                            Error("Il vous faut un hotel");
                         }
                         if (!Village.FreeRestaurantPlaces())
                         {
-                            Console.WriteLine("Il vous faut un restaurant");
+                            Error("Il vous faut un restaurant");
                         }
                         recruitSettler = false;
                     }
@@ -131,13 +132,21 @@ namespace Colony
                     else
                     {
                         trainAthetics = false;
-                        Console.WriteLine("Vous n\'avez pas de sportif à entrainer");
+                        Error("Vous n\'avez pas de sportif à entrainer");
                     }
 
 
-                    bool creation = true;
-                    int create = VerifySyntax(instruction);
-                    switch (create)
+                bool creation = true;
+                    int create = VerifySyntax(instruction); 
+                if (create != 10 && create != 20)
+                {
+                    foreach (Settler settler in Village.GetSettlers())
+                    {
+                        settler.Play(Village.GameBoardSettler, TurnNb);
+                    }
+                    end = Village.ProfessionnelNb >= 2;
+                }
+                switch (create)
                     {
                         case 0:
                             break;
@@ -147,7 +156,7 @@ namespace Colony
                                     creation = ChoiceBuilding();
                                 else
                                 {
-                                    Console.WriteLine("Vous n'avez toujours pas assez de Colon pour construire un batiment, entrez une réponse valide");
+                                    Error("Vous n'avez toujours pas assez de Colon pour construire un batiment, entrez une réponse valide");
                                     creation = false;
                                 }
                             }
@@ -157,7 +166,7 @@ namespace Colony
                                 creation = ChoiceSettler();
                             else
                             {
-                                Console.WriteLine("Vous n'avez toujours pas assez d'infrastructure pour accueillir des colons, veuillez entrer une réponse valide ");
+                                Error("Vous n'avez toujours pas assez d'infrastructure pour accueillir des colons, veuillez entrer une réponse valide ");
                                 creation = false;
                             }
                             break;
@@ -172,6 +181,10 @@ namespace Colony
                                     athlete.myCoach = coach;
                                 }
                                 athlete.Train(coach, TurnNb);
+                            }else
+                            {
+                                Error("Vous n'avez toujours pas de sportif à entrainer, veuillez entrer une réponse valide ");
+                                creation = false;
                             }
                             break;
                         case 10:
@@ -184,25 +197,18 @@ namespace Colony
                             }
                             Console.WriteLine("----------------------------");
                             break;
+                        case 20:
+                            RulesOfTheGame(); 
+                            creation = false;
+                            break;
                         default:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Votre réponse n'est pas valide");
+                            Error("Votre réponse n'est pas valide");
                             creation = false;
                             break;
                     }
 
                     if (creation == true)
                         TurnNb++;
-                }
-                else
-                {
-                    TurnNb++;
-                }
-                foreach (Settler settler in Village.GetSettlers())
-                {
-                    settler.Play(Village.GameBoardSettler, TurnNb);
-                }
-                end = Village.ProfessionnelNb >= 1;
             }
             if (end)
             {
@@ -227,19 +233,39 @@ namespace Colony
         public void RulesOfTheGame()
         {
             Console.WriteLine("----------LES REGLES DU JEU----------");
-            Console.WriteLine("OBJECTIF : \n\nL'objectif de ce jeu est simple : construire un village olympique assez développé afin de lancer les Jeux Olympiques 2022! \nPour cela, il faudra que le village contienne au moins 1 sportifs suffisamment entraînés (soit au niveau 1), accompagné bien evidemment de leur infrastructure nécéssaire pour s'entrainter et participer aux JO, et des hotels et restaurants nécéssaire pour les accueil. \nDe plus, il faudra avoir réaliser tout cela avant avoir atteint le 10ième tour du jeu!\n\n ");
-            Console.WriteLine("INFORMATIONS SUPPLEMENTAIRES : \n");
-            Console.WriteLine("Il existe 3 types de colons : \n- Les batisseurs \n- Les sportifs \n- Les coachs\n");
-            Console.WriteLine("Il existe 7 catégories de sportifs : \n- Les nageurs \n- Les volleyeur \n- Les handballeur \n- Les basketteur \n- Les footballeur \n- Les rugbyman \n- Les athlètes\n");
-            Console.WriteLine("Il existe 3 types de batiments : \n - Les hotels \n - Les restaurants \n - Les infrastructures sportives\n");
-            Console.WriteLine("De plus, il existe aussi 7 types d'infrastructuresportives : \n- Une piscine olympique \n- Un terrain de volleyball \n- Un terrain de handball \n- Un terrain de basketball \n- Un terrain de football \n- Un terrain de rugby \n- Une piste d'athlétisme\n");
-            Console.WriteLine("Pour accueilr un nouveau colon, il est donc nécéssaire qu'il y ait encore une place  disponnible dans un hotel et dans un restaurant. De plus, si ce colon est un sportif, il faut qu'il y ait déjà dans le village l'infrastructure sportive correspondant à sa discipline (par exemple, un il faut qu'il y ait un terrain de football pour recruter un footballeur)\n");
-            Console.WriteLine("Afin de construire les infrastructures nécéssaire, il faut que des batisseurs soient réquisitionnés, qu'ils se déplacent sur la surface de construction, et qu'il prennent le temps de batire la batiment. \n- Un hotel necessite 2 batisseurs et est construit en 2 tours \n- Un restaurant necessite 2 batisseurs et est construit en 2 tours \n- Une infrastructure sportive necessite 2 batisseurs et est construit en 1 tours\n");
-            Console.WriteLine("Il est donc possible qu'à certains moments du jeu, vous ne pouvez pas recruter de colons car il n'y as pas l'espace nécéssaire dans les hotels est restaurants, ou alors que vous ne pouvez pas construire de nouveau batiments car vous n'avez pas assez de batisseur. Mais ne vous en faites pas, cela vous sera indiqué.\n");
-            Console.WriteLine("A chaque tour du jeu, en fonction de ce que vous pouvez faire, il vous sera donc proposé de construire un batiment, de recruter un colon ou d'entainer un sportif. Cependant, vous avez aussi la possibilité de passer le tour si vous ne souhaitez réaliser aucune action.\n");
-            Console.WriteLine("L'objectif étant d'avoir des sportif ayant un certain niveau, il faudra donc les entrainer. Plus vous entrainez un sportif, plus son niveau augmentera.\n");
-            Console.WriteLine("Il est important de savoir que lorsqu'un sportif s'entraine avec un coach, son niveau augmente plus vite\n\n");
-            Console.WriteLine("A vous de jouer maintenant, bonne chance !\n");
+            Console.WriteLine();
+            Console.WriteLine("Le But :");
+            Console.WriteLine();
+            Console.WriteLine("     * Vous voulez participer aux jeux Olympiques 2022 qui aurony lieu dans 100 tours.");
+            Console.WriteLine("     * Pour y participer il vous faut au moins 2 sportifs suffisamment entrainé (2 sportif au niveau 1) avant le 100 ème tour");
+            Console.WriteLine("     * Vous partez avec un hotel (en bleu), un restaurant (en violet) et 3 batisseurs ");
+            Console.WriteLine();
+            Console.WriteLine("Les fonctionnements : ");
+            Console.WriteLine();
+            Console.WriteLine("     * Vous pouvez recruter des colons, pour cela il faut assez de place dans les hotels et les restaurants");
+            Console.WriteLine("         - Un hotel à 5 places et un restaurant en a 10");
+            Console.WriteLine("         - Vous pouvez recruter un batisseur");
+            Console.WriteLine("         - Vous pouvez recruter un coach");
+            Console.WriteLine("         - Vous pouvez recruter un sportif que si vous avez l'infrastructure sportive lié à son sport \n(le terrain de sport collectif intérieur pour le volley)");
+            Console.WriteLine();
+            Console.WriteLine("     * Vous pouvez construir si vous avez assez de batisseurs disponnible");
+            Console.WriteLine("         - 2 batisseurs pour un Hotel");
+            Console.WriteLine("         - 3 batisseurs pour un Restaurant");
+            Console.WriteLine("         - 5 batisseurs pour une infrastructure sportive");
+            Console.WriteLine();
+            Console.WriteLine("      * Les batiments seront construit quand tout les batisseurs seront au bon emplacement pendant un certain temps");
+            Console.WriteLine("         - 2 tours pour un Hotel");
+            Console.WriteLine("         - 2 tours pour un Restaurant");
+            Console.WriteLine("         - 4 tours pour une infrastructure sportive");
+            Console.WriteLine();
+            Console.WriteLine("     * Vous pouvez entrainer un coach");
+            Console.WriteLine("         - Si un coach est disponnible sur le plateau il sera automatiquement attricué au sportif");
+            Console.WriteLine("         - Quand un sportif s'entraine il gagne 1 point de session (2 s'il est avec un coach)");
+            Console.WriteLine("         - Quand le sportif à 2 points de session il gagne 1 niveau (il est donc au niveau maximum)");
+            Console.WriteLine("         - Le sportif est entrainé quand il est sur la case de son infrastructure sportive pendant 4 tours");
+            Console.WriteLine(); 
+            Console.WriteLine("----------A VOUS DE JOUER----------");
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -250,15 +276,14 @@ namespace Colony
         {
             List<Settler> settlers = Village.GetSettlers();
             string instruction = "";
-            for (int i=0;  i < settlers.Count; i++)
+            for (int i = 0;  i < settlers.Count; i++)
             {
                 if (settlers[i] is Athletic athletic && settlers[i].Available)
                 {
-                    Athletic athlete = athletic;
-                    instruction = "Tapez " + athlete.AthleticNb + " pour entrainer le "+ athlete.Sport + " {1}" + athlete.Nationality + " {2}";
+                    Console.WriteLine("Tapez " + athletic.AthleticNb + " pour entrainer le "+ athletic.Sport + athletic.Nationality);
                 }
             }
-            int id = VerifySyntax(instruction);
+            int id = VerifySyntax("");
             return Village.FindById(id);
         }
 
@@ -314,7 +339,11 @@ namespace Colony
                     }
                     foreach (Settler builder in inConstruction.Settlers)
                     {
-                        builder.IsInActivity = false;
+                        builder.IsInActivity = false; 
+                        if (builder.EnergyState == 0 || builder.HungerState == 0)
+                        {
+                            builder.NaturalNeed(TurnNb);
+                        }
                     }
                 }
              
@@ -379,7 +408,7 @@ namespace Colony
                             }
                             else if (Village.GameBoardBuilder[i, j].Equals("R"))
                             {
-                                backGroundColor = ConsoleColor.Red;
+                                backGroundColor = ConsoleColor.Magenta;
                             }
                             else if (Village.GameBoardBuilder[i, j].Equals("S"))
                             {
@@ -441,9 +470,7 @@ namespace Colony
                 {
                     if (Village.GameBoardBuilder[i, j] != null)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Tu ne peux pas construire sur un batiment qui existe déjà ou qui est en cours de construction, choisi un autre emplacement!");
-                        Console.ResetColor();
+                        Error("Tu ne peux pas construire sur un batiment qui existe déjà ou qui est en cours de construction, choisi un autre emplacement!");
                         return false;
                     }
                 }
@@ -592,9 +619,7 @@ namespace Colony
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Votre réponse n'est pas valable. Veuillez entrer une réponse valide");
-                Console.ResetColor();
+                Error("Votre réponse n'est pas valable. Veuillez entrer une réponse valide");
                 ChoiceSportsInfrastructure();
             }
             return sportsinfrasctructure; 
@@ -646,7 +671,6 @@ namespace Colony
             {
                 Coach coach = new Coach();
                 Village.AddSettler(coach);
-                Athletic.LevelIncrease++;
                 Console.WriteLine("Athletic.LevelIncrease : " + Athletic.LevelIncrease);
             }
             else if (create == 3)
@@ -657,9 +681,7 @@ namespace Colony
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Votre réponse n'est pas valide");
-                Console.ResetColor();
+                Error("Votre réponse n'est pas valide");
                 ChoiceSettler();
             }
             return creation;
@@ -694,9 +716,7 @@ namespace Colony
                     nationality2 = "Japonais";
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
-                    Console.ResetColor();
+                    Error("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                 }
             }
 
@@ -776,9 +796,7 @@ namespace Colony
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
-                        Console.ResetColor();
+                        Error("Votre réponse n'est pas valide, veuillez entrer un numéro valide");
                     }
                 }
 

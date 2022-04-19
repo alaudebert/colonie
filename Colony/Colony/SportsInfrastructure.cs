@@ -9,9 +9,9 @@ namespace Colony
     class SportsInfrastructure : Building
     {
         protected static int _sportsInfrastructureNb = 0;
-        public static int BuilderNb = 2;
+        public static int BuilderNb = 5;
         public static string type = "S";
-        public static int TurnNb = 1;
+        public static int TurnNb = 4;
 
         /// <summary>
         /// Constructeur qui pemet de créer une infrastructure sportive

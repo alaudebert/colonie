@@ -12,7 +12,7 @@ namespace Colony
         protected static int _restaurantNb = 0;
         private Settler[] _settlers;
         public static string type = "R";
-        public static int BuilderNb = 2; 
+        public static int BuilderNb = 3; 
         public static int TurnNb = 2;
         public int _linesNb;
         public int _columnsNb;

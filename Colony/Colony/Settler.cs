@@ -10,8 +10,8 @@ namespace Colony
     {
         protected static int _settlersNb = 0;
         protected string _id;
-        public static int Energy = 50;
-        public static int Hunger = 30;
+        public static int Energy = 25;
+        public static int Hunger = 10;
         protected int _energyState;
         protected int _hungerState;
         public bool IsInActivity { get; set; }
@@ -145,6 +145,12 @@ namespace Colony
             EnergyState -= DecreasingEnergy;
             HungerState -= DecreasingHunger;
 
+            NaturalNeed(turnNb);
+
+        }
+
+        public void NaturalNeed(int turnNb)
+        {
             if (_energyState <= 0)
             {
                 _energyState = 0;
@@ -152,12 +158,11 @@ namespace Colony
                 {
                     this.CalculatingItinerary(Buildings[0].X, Buildings[0].Y);
                     NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
-                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
+                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);//TODO reccurence de code
                     IsInActivity = true;
                 }
                 else
                 {
-                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
                         EnergyState = Energy;
@@ -173,24 +178,20 @@ namespace Colony
                 {
                     this.CalculatingItinerary(Buildings[1].X, Buildings[1].Y);
                     NbTunrBeforeAvailable = Math.Abs(Itinerary[0]) + Math.Abs(Itinerary[1]) + 2 + turnNb;
-                    Console.WriteLine("nb tour " + NbTunrBeforeAvailable);
                     IsInActivity = true;
                 }
                 else
                 {
-                    Console.WriteLine("tour " + NbTunrBeforeAvailable);
                     if (NbTunrBeforeAvailable == turnNb)
                     {
-                        Console.WriteLine("test");
                         HungerState = Hunger;
                         IsInActivity = false;
                         NbTunrBeforeAvailable = 0;
                     }
                 }
             }
-
         }
-
+            
         /// <summary>
         /// Calculate the distance between the destination and the setller location
         /// </summary>
