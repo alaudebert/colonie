@@ -59,7 +59,11 @@ namespace Colony
                 Launch();
             }
         }
-
+        /// <summary>
+        /// Verify if the syntax of the input is a number
+        /// </summary>
+        /// <param name="phrase">The input</param>
+        /// <returns>The number contain in the input chain if it's realy a number</returns>
         public int VerifySyntax(string phrase)
         {
             Console.WriteLine(phrase);
@@ -73,6 +77,10 @@ namespace Colony
             return resultat;
         }
 
+        /// <summary>
+        /// Display an error message in red color
+        /// </summary>
+        /// <param name="message">The error message</param>
         public void Error(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -99,6 +107,8 @@ namespace Colony
                     bool recruitSettler = true;
                     bool trainAthetics = true;
                     string instruction ="Entrez 0 pour passer au tour suivant sans effectuer aucune action\nEntrez 10 pour avoir le détail des colons de votre colonie\nEntrez 20 pour voir les regles du jeu";
+                    
+                    //We proposed all the option available
                     if (Village.NbSettlerAvailable("B") >= villageSetllerAvailable)
                     {
                         instruction += "\nEntrez 1 pour créer un batiment";
