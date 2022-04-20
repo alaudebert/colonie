@@ -1,17 +1,4 @@
 # colony
-Jeu codé en c# : but développer une colonie
+Jeu codé en c# : but développer un jeu de gestion consistant à créer le village Olympique pour les Jeux Olympiques 2022
 
-Tableau avec information:
-- Nb colon dispo
-- Nb de colon totaux
-- Batiments en cour de constructions et nombre de tours avant construction
-- Nb de place en Restaurant 
-- Nb de place en Hotel
-
-
-Sportif: 
-- Il peut être recruté que si on a infrastructure correspondant
-- Le sportif gagne 1 point d'entrainement de plus par coach présent sur le plateau
-
-Bug:
-- Quand on construit un coach ou un sportif au premier tour on sort de la boucle
+Jeu réalisé par Eléa Roche et Alex Audebert

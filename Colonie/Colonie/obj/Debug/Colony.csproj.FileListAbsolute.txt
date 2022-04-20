@@ -1,7 +1,0 @@
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\bin\Debug\Colonie.exe.config
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\bin\Debug\Colonie.exe
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\bin\Debug\Colonie.pdb
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\obj\Debug\Colony.csproj.AssemblyReference.cache
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\obj\Debug\Colony.csproj.CoreCompileInputs.cache
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\obj\Debug\Colonie.exe
-C:\Users\elear\OneDrive\Documents\Mes Docs\Cours\ENSC\1A\S5\Programmation\Programmation avancée\TD\Projet\colonie\Colonie\Colonie\obj\Debug\Colonie.pdb
